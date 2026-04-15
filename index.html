@@ -3,262 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PiXXiE Sonic Soul Resonance - Ultimate</title>
+    <title>PiXXiE Soul Resonance - Final Edition</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
         :root {
-            --bg-color: #08090c;
-            --card-width: 320px;
-            --card-height: 520px;
+            --primary-fairy: #d4a5ff;
+            --bg-dark: #0a0b10;
+            --card-w: 320px;
+            --card-h: 520px;
         }
 
-        /* --- 終極內容防護 (禁止選取、拖拽、長按下載) --- */
+        /* --- 1. 終極內容防護 --- */
         * {
-            -webkit-user-select: none; /* Safari/iOS */
-            user-select: none; /* 標準語法 */
-            -webkit-touch-callout: none; /* 禁止 iOS 長按彈出菜單 */
-            -webkit-user-drag: none; /* 禁止拖拽圖片/畫布 */
-            outline: none; /* 移除點擊時的高亮外框 */
-            -webkit-tap-highlight-color: transparent; /* 移除點擊時的半透明灰色背景 */
+            -webkit-user-select: none; user-select: none;
+            -webkit-touch-callout: none; -webkit-user-drag: none;
+            outline: none; -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            margin: 0; padding: 0; background-color: var(--bg-color); color: #fff;
-            font-family: -apple-system, system-ui, "Microsoft JhengHei", sans-serif;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin: 0; padding: 0; background-color: var(--bg-dark); color: #fff;
+            font-family: 'PingFang TC', 'Helvetica Neue', sans-serif;
+            display: flex; align-items: center; justify-content: center;
             min-height: 100vh; overflow: hidden; touch-action: none;
-            overscroll-behavior: none; /* 禁止 Safari 橡皮筋回彈 */
+            overscroll-behavior: none;
         }
 
-        /* --- 入場動畫 (優雅浮現) --- */
-        @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(25px); filter: blur(8px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        /* 背景微光 */
+        body::after {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(212, 165, 255, 0.08) 0%, transparent 80%);
+            z-index: 0; pointer-events: none;
         }
-        .animate-item { opacity: 0; animation: slideInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-        .delay-1 { animation-delay: 0.15s; }
-        .delay-2 { animation-delay: 0.3s; }
-        .delay-3 { animation-delay: 0.45s; }
 
-        /* --- 首頁佈局 --- */
-        #intro-screen { text-align: center; display: flex; flex-direction: column; align-items: center; z-index: 10; }
+        /* --- 2. 動畫定義 --- */
+        @keyframes fairyIn {
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+        .animate-item { opacity: 0; animation: fairyIn 1s cubic-bezier(0.15, 0.85, 0.35, 1) forwards; }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+
+        /* --- 3. 首頁設計 (精靈甜酷風) --- */
+        #intro-screen { text-align: center; z-index: 10; width: 100%; }
         
-        .visualizer-container {
-            position: relative; width: 220px; height: 220px;
-            display: flex; align-items: center; justify-content: center; margin: 30px 0;
+        .main-title {
+            font-size: 2.8rem; font-weight: 200; letter-spacing: 12px;
+            background: linear-gradient(to bottom, #fff, var(--primary-fairy));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 5px; text-transform: uppercase;
         }
+        .sub-title { font-size: 0.7rem; letter-spacing: 5px; color: rgba(255,255,255,0.4); margin-bottom: 60px; }
+
+        /* 靈魂光球錄音組 */
+        .orb-container {
+            position: relative; width: 220px; height: 220px;
+            margin: 0 auto; display: flex; align-items: center; justify-content: center;
+        }
+        .soul-orb {
+            width: 120px; height: 120px; border-radius: 50%;
+            background: rgba(212, 165, 255, 0.12);
+            border: 1px solid rgba(212, 165, 255, 0.4);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            cursor: pointer; position: relative; z-index: 5;
+            box-shadow: 0 0 40px rgba(212, 165, 255, 0.1), inset 0 0 20px rgba(255,255,255,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .soul-orb::after {
+            content: 'REC'; font-size: 11px; letter-spacing: 3px; color: var(--primary-fairy); font-weight: bold;
+        }
+        .soul-orb:active { transform: scale(0.88); background: rgba(212, 165, 255, 0.25); }
+
         #mic-wave {
             position: absolute; width: 100%; height: 100%;
-            border-radius: 50%; border: 1.5px solid #ff75c3; opacity: 0.4;
-            transform: scale(0.8); transition: transform 0.1s ease-out;
-            box-shadow: inset 0 0 20px rgba(255, 117, 195, 0.2), 0 0 20px rgba(255, 117, 195, 0.2);
+            border-radius: 50%; border: 1.5px solid var(--primary-fairy);
+            opacity: 0.2; transform: scale(0.65);
+            box-shadow: 0 0 50px rgba(212, 165, 255, 0.1);
         }
-        .record-btn {
-            position: relative; z-index: 2; padding: 18px 45px;
-            border: none; border-radius: 50px; background: #fff; color: #000;
-            font-weight: 800; font-size: 1.1rem; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(255,255,255,0.15);
-            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        .record-btn:active { transform: scale(0.92); }
 
-        /* --- 卡牌核心 --- */
+        /* --- 4. 卡牌結果頁 --- */
         #result-screen { display: none; perspective: 1500px; text-align: center; }
         
         .pixxie-card {
-            width: var(--card-width); height: var(--card-height);
-            background: #111218; border-radius: 24px; position: relative;
-            transform-style: preserve-3d; transition: transform 0.1s ease-out;
-            box-shadow: 0 45px 80px rgba(0,0,0,0.9);
-            overflow: hidden; border: 1px solid rgba(255,255,255,0.08);
-            -webkit-mask-image: -webkit-radial-gradient(white, black); /* 圓角防溢出 */
-            margin-bottom: 30px;
+            width: var(--card-w); height: var(--card-h); background: #111218;
+            border-radius: 28px; position: relative; transform-style: preserve-3d;
+            transition: transform 0.1s ease-out; box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            overflow: hidden; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.08);
+            -webkit-mask-image: -webkit-radial-gradient(white, black);
         }
 
-        /* 👑 終極全息光膜技術 (不會起格的流體光學) */
-        
-        /* 圖層1：聚光燈高光 (跟隨手指的白熾光) */
-        .pixxie-card::before {
+        /* SS 級：全息彩虹流體閃膜 (透過 CSS 變數控制手指位移) */
+        .pixxie-card.rank-ss::before {
             content: ''; position: absolute; inset: 0; z-index: 11;
-            background: radial-gradient(
-                circle at calc(var(--rx, 0.5) * 100%) calc(var(--ry, 0.5) * 100%),
-                rgba(255, 255, 255, 0.6) 0%,
-                transparent 50%
-            );
-            mix-blend-mode: overlay; pointer-events: none; opacity: 0; transition: opacity 0.8s;
+            background: radial-gradient(circle at calc(var(--rx, 0.5) * 100%) calc(var(--ry, 0.5) * 100%), rgba(255, 255, 255, 0.5) 0%, transparent 60%);
+            mix-blend-mode: overlay; opacity: 0; transition: opacity 0.8s;
         }
-
-        /* 圖層2：大面積彩虹雷射流淌 (不起格的平滑過渡) */
-        .pixxie-card::after {
+        .pixxie-card.rank-ss::after {
             content: ''; position: absolute; inset: 0; z-index: 10;
-            background: linear-gradient(
-                115deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.1) 20%,
-                rgba(255, 117, 195, 0.4) 40%, /* 粉色 */
-                rgba(161, 140, 209, 0.5) 50%, /* 紫色 */
-                rgba(68, 227, 255, 0.4) 60%,  /* 青色 */
-                rgba(255, 255, 255, 0.1) 80%,
-                transparent 100%
-            );
-            /* 放大背景以確保漸變極度平滑，消除鋸齒 */
-            background-size: 300% 300%;
-            /* 使用位移來移動虹光，模擬真實折射 */
-            background-position: calc(var(--rx, 0.5) * 100%) calc(var(--ry, 0.5) * 100%);
-            mix-blend-mode: color-dodge; /* 絕對提亮，拒絕灰暗 */
-            pointer-events: none; opacity: 0; transition: opacity 0.8s ease-out;
+            background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.1) 20%, rgba(255,117,195,0.4) 40%, rgba(161,140,209,0.5) 50%, rgba(68,227,255,0.4) 60%, rgba(255,255,255,0.1) 80%, transparent 100%);
+            background-size: 300% 300%; background-position: calc(var(--rx, 0.5) * 100%) calc(var(--ry, 0.5) * 100%);
+            mix-blend-mode: color-dodge; opacity: 0; transition: opacity 0.8s;
+        }
+        /* S 級：珍珠高光 */
+        .pixxie-card.rank-s::before {
+            content: ''; position: absolute; inset: 0; z-index: 11;
+            background: radial-gradient(circle at calc(var(--rx, 0.5) * 100%) calc(var(--ry, 0.5) * 100%), rgba(255, 255, 255, 0.25) 0%, transparent 60%);
+            mix-blend-mode: screen; opacity: 0; transition: opacity 0.8s;
         }
 
         .pixxie-card.revealed::before, .pixxie-card.revealed::after { opacity: 1; }
 
-        /* 防止內部元素干擾手指滑動感應 */
-        .pixxie-card * { pointer-events: none; }
-
-        #webgl-container { 
-            width: 100%; height: 320px; margin-top: 10px;
-            filter: contrast(1.15) saturate(1.25); /* 確保星雲鮮豔 */
-        }
-
-        /* --- 資訊排版 --- */
-        .card-info { width: 85%; margin: auto auto 30px auto; text-align: left; position: relative; z-index: 5; }
-        .song-title { font-size: 1.8rem; font-weight: 800; margin: 0; color: #fff; text-shadow: 0 4px 15px rgba(0,0,0,0.8); }
-        .lyrics { font-size: 0.85rem; color: rgba(255,255,255,0.75); line-height: 1.6; border-top: 1px dotted rgba(255,255,255,0.15); padding-top: 10px; margin-top: 10px; }
+        .card-info { width: 85%; margin: 0 auto 35px auto; text-align: left; position: relative; z-index: 5; }
+        .song-title { font-size: 1.7rem; font-weight: 800; margin: 0; color: #fff; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .lyrics { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: 12px; line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 12px; }
         
         .rank-badge {
-            display: inline-block; padding: 3px 12px; border: 1px solid rgba(255, 117, 195, 0.6);
-            border-radius: 6px; font-size: 0.6rem; font-weight: 900; color: #ff75c3;
-            margin-top: 12px; letter-spacing: 1.5px; text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(255, 117, 195, 0.2);
-            background: linear-gradient(90deg, rgba(255, 117, 195, 0.1), transparent);
+            display: inline-block; padding: 3px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 900;
+            margin-top: 18px; border: 1px solid rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px;
         }
+        .ss-style { color: #ff75c3; border-color: #ff75c3; box-shadow: 0 0 15px rgba(255,117,195,0.3); background: rgba(255,117,195,0.1); }
+        .s-style { color: #44e3ff; border-color: #44e3ff; background: rgba(68,227,255,0.1); }
 
-        /* --- 底部按鈕組 --- */
-        .action-btns { display: flex; gap: 12px; width: var(--card-width); }
-        .btn-secondary {
-            flex: 1; padding: 15px 0; border-radius: 14px; border: 1px solid rgba(255,255,255,0.15);
-            background: rgba(255,255,255,0.06); color: #fff; font-weight: bold; font-size: 0.9rem;
-            backdrop-filter: blur(12px); cursor: pointer; transition: all 0.2s;
+        .btn-group { display: flex; gap: 12px; width: var(--card-w); z-index: 20; }
+        .btn-action {
+            flex: 1; padding: 16px 0; border-radius: 15px; border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06); color: #fff; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); font-weight: bold; font-size: 0.9rem;
         }
-        .btn-secondary:active { transform: scale(0.95); background: rgba(255,255,255,0.15); }
     </style>
 </head>
 <body>
 
     <div id="intro-screen">
-        <h2 class="animate-item">PiXXiE</h2>
-        <p class="animate-item delay-1" style="color: #888; font-size: 0.85rem; letter-spacing: 4px;">SONIC SOUL RESONANCE</p>
+        <h1 class="main-title animate-item">PiXXiE</h1>
+        <p class="sub-title animate-item delay-1">SONIC SOUL RESONANCE</p>
         
-        <div class="visualizer-container animate-item delay-2">
+        <div class="orb-container animate-item delay-2">
             <div id="mic-wave"></div>
-            <button class="record-btn" id="recordBtn">按住傾訴靈魂</button>
+            <div class="soul-orb" id="recordBtn"></div>
         </div>
         
-        <p id="status" class="animate-item delay-3" style="color: rgba(255,255,255,0.4); font-size: 0.75rem;">
-            需使用 HTTPS 環境以啟動麥克風<br>嚴禁截取或複製卡片資源
+        <p style="margin-top: 60px; font-size: 0.65rem; color: rgba(212,165,255,0.5); letter-spacing: 3px; font-weight: bold;" class="animate-item delay-2">
+            HOLD ORB TO START
         </p>
     </div>
 
     <div id="result-screen">
         <div class="pixxie-card" id="soulCard">
-            <div id="webgl-container"></div>
+            <div id="webgl-container" style="width:100%; height:320px; filter: saturate(1.2) contrast(1.1);"></div>
             <div class="card-info">
-                <h3 class="song-title">rain (ติดฝน)</h3>
-                <p class="lyrics">"ตกอยู่ในฤดูกาลที่ทำให้ฉันนั้นต้องติดฝน..."<br>受困於那個讓我淋濕的季節</p>
-                <div class="rank-badge">SS Rank Resonance</div>
+                <h3 class="song-title">Resonating...</h3>
+                <p class="lyrics">Analyzing your soul's unique vibration.</p>
+                <div class="rank-badge">Matching</div>
             </div>
         </div>
-        <div class="action-btns">
-            <button class="btn-secondary" id="backBtn">重新測試</button>
-            <button class="btn-secondary" id="downloadBtn">領取典藏卡</button>
+        <div class="btn-group">
+            <button class="btn-action" onclick="location.reload()">RE-TRY</button>
+            <button class="btn-action" id="downloadBtn" style="background: rgba(212,165,255,0.15); border-color: rgba(212,165,255,0.3);">COLLECT CARD</button>
         </div>
     </div>
 
 <script>
-// --- 終極防護：封鎖右鍵菜單 ---
-document.addEventListener('contextmenu', event => event.preventDefault());
+// 禁止右鍵
+document.addEventListener('contextmenu', e => e.preventDefault());
 
-/**
- * 視覺引擎：鮮豔的水彩星雲
- */
+// --- 💿 曲庫清單與分類 ---
+const songDatabase = {
+    "BLUE": [
+        { title: "rain (ติดฝน)", lyrics: "ตกอยู่ในฤดูกาลที่ทำให้ฉันนั้นต้องติดฝน...<br>受困於那個讓我淋濕的季節", col1: "#0a2a66", col2: "#ff4b91", keywords: ["rain", "雨", "下雨", "ติดฝน"] },
+        { title: "DEJAYOU", lyrics: "เหมือนว่าฉัน Dejayou...<br>彷彿陷入了似曾相識的夢境", col1: "#200a44", col2: "#cc33ff", keywords: ["deja", "夢", "似曾相識"] }
+    ],
+    "COOL": [
+        { title: "MUTE", lyrics: "Just shut up and mute your mouth...<br>請安靜，閉上你的嘴", col1: "#005544", col2: "#001133", keywords: ["mute", "閉嘴", "安靜"] },
+        { title: "Drip", lyrics: "Drip drop, let it flow...<br>看著魅力溢出，無法被定義", col1: "#111111", col2: "#00ff88", keywords: ["drip", "流", "掉下來"] }
+    ],
+    "UPBEAT": [
+        { title: "Whatever", lyrics: "ถ้าไม่ได้เธอมาก็ไม่เป็นไร...<br>如果得不到你，那就算了吧", col1: "#ff66aa", col2: "#ffcc33", keywords: ["whatever", "隨便", "算了"] },
+        { title: "FEAST", lyrics: "มาฉลองกันใน Feast...<br>讓我們在盛宴中盡情狂歡", col1: "#ee0000", col2: "#ffcc00", keywords: ["feast", "盛宴", "派對"] }
+    ],
+    "PLAYFUL": [
+        { title: "ZOL (งอนละ)", lyrics: "ฉันงอนเธอแล้วนะ...<br>我生你的氣了喔", col1: "#8800ff", col2: "#ff3399", keywords: ["zol", "生氣", "งอนละ"] },
+        { title: "Oops!", lyrics: "Oops! ใจมันหลุดไปแล้ว...<br>哎呀！心不小心掉在你那了", col1: "#33ffaa", col2: "#ffff33", keywords: ["oops", "哎呀", "哎呦"] }
+    ]
+};
+
+// --- 🎙️ 語音與音訊引擎 ---
+let audioCtx, analyser, dataArray, isRecording = false, audioHistory = [];
+let recognizedText = "";
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition;
+
+if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'zh-TW';
+    recognition.continuous = true;
+    recognition.onresult = (e) => { 
+        recognizedText += e.results[e.results.length-1][0].transcript.toLowerCase(); 
+    };
+}
+
+// --- 🎨 Three.js 視覺引擎 ---
 let scene, camera, renderer, material;
-let uniformAmp = { value: 0.0 };
+let uniformAmp = { value: 0.0 }, uCol1 = { value: new THREE.Color() }, uCol2 = { value: new THREE.Color() };
 
 function initThreeJS() {
     const container = document.getElementById('webgl-container');
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
     camera.position.z = 2.4;
-
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
-    // 自動限制像素比，兼顧畫質與效能
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
 
-    const geometry = new THREE.SphereGeometry(1, 128, 128);
+    const geo = new THREE.SphereGeometry(1, 128, 128);
     material = new THREE.ShaderMaterial({
         transparent: true,
-        uniforms: { uTime: { value: 0 }, uAmp: uniformAmp },
+        uniforms: { uTime: { value: 0 }, uAmp: uniformAmp, col1: uCol1, col2: uCol2 },
         vertexShader: `
-            uniform float uTime; uniform float uAmp;
-            varying vec3 vNormal;
+            uniform float uTime; uniform float uAmp; varying vec3 vNormal;
             void main() {
                 vNormal = normal;
-                float noise = sin(position.x * 2.5 + uTime) * cos(position.y * 2.5 + uTime) * uAmp;
-                // 驅動形變，製造立體水彩感
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position + normal * (noise * 0.45), 1.0);
+                float n = sin(position.x * 2.5 + uTime) * cos(position.y * 2.5 + uTime) * uAmp;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position + normal * (n * 0.4), 1.0);
             }
         `,
         fragmentShader: `
-            varying vec3 vNormal;
+            uniform vec3 col1; uniform vec3 col2; varying vec3 vNormal;
             void main() {
-                float rim = 1.0 - max(dot(vNormal, vec3(0.0, 0.0, 1.0)), 0.0);
-                // 絕對鮮豔的高對比底色配置 (Deep Blue & Hot Pink)
-                vec3 col = mix(vec3(0.05, 0.35, 1.0), vec3(1.0, 0.15, 0.65), vNormal.y * 0.5 + 0.5);
-                // 增加高光強度
-                gl_FragColor = vec4(col + pow(rim, 2.5) * 1.6, 1.0);
+                float rim = 1.0 - max(dot(vNormal, vec3(0.0,0.0,1.0)), 0.0);
+                vec3 c = mix(col1, col2, vNormal.y * 0.5 + 0.5);
+                gl_FragColor = vec4(c + pow(rim, 2.5) * 1.5, 1.0);
             }
         `
     });
-    scene.add(new THREE.Mesh(geometry, material));
-
-    function animate() {
-        requestAnimationFrame(animate);
-        material.uniforms.uTime.value += 0.012;
-        renderer.render(scene, camera);
-    }
-    animate();
+    scene.add(new THREE.Mesh(geo, material));
+    const anim = () => { requestAnimationFrame(anim); material.uniforms.uTime.value += 0.01; renderer.render(scene, camera); };
+    anim();
 }
 
-/**
- * 錄音交互引擎
- */
-let audioCtx, analyser, dataArray, isRecording = false;
-const recordBtn = document.getElementById('recordBtn');
-const micWave = document.getElementById('mic-wave');
-const statusText = document.getElementById('status');
+// --- 🕹️ 交互邏輯 ---
+const orb = document.getElementById('recordBtn');
+const wave = document.getElementById('mic-wave');
 
-async function startMic(e) {
+async function startResonance(e) {
     e.preventDefault();
-    try {
-        if (!audioCtx) {
-            initThreeJS();
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 128;
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            audioCtx.createMediaStreamSource(stream).connect(analyser);
-            dataArray = new Uint8Array(analyser.frequencyBinCount);
-        }
-        audioCtx.resume();
-        isRecording = true;
-        recordBtn.innerText = "靈魂感應中...";
-        loop();
-    } catch (err) {
-        statusText.innerText = "無法存取麥克風，請檢查權限或確保在 HTTPS 環境下";
-        statusText.style.color = "#ff4444";
+    if (!audioCtx) {
+        initThreeJS();
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioCtx.createMediaStreamSource(stream).connect(analyser);
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
     }
+    isRecording = true; audioHistory = []; recognizedText = "";
+    if (recognition) recognition.start();
+    loop();
 }
 
 function loop() {
@@ -266,104 +268,126 @@ function loop() {
     requestAnimationFrame(loop);
     analyser.getByteFrequencyData(dataArray);
     let avg = dataArray.reduce((a,b)=>a+b)/dataArray.length;
-    
-    // 首頁即時波紋震動
-    micWave.style.transform = `scale(${1 + avg/120})`;
-    micWave.style.opacity = 0.4 + (avg/255) * 0.6;
-    uniformAmp.value = avg / 60; // 傳遞給 Three.js
+    audioHistory.push(avg);
+    wave.style.transform = `scale(${0.65 + avg/150})`;
+    wave.style.opacity = 0.2 + avg/200;
+    uniformAmp.value = avg / 60;
 }
 
-function endMic(e) {
+function endResonance(e) {
     e.preventDefault();
     if (!isRecording) return;
     isRecording = false;
+    if (recognition) recognition.stop();
+    setTimeout(calculateResult, 600);
+}
+
+function calculateResult() {
+    const frames = audioHistory.length;
+    const avgVol = audioHistory.reduce((a,b)=>a+b,0)/frames || 0;
+    const allSongs = Object.values(songDatabase).flat();
     
+    // 1. 歌名關鍵字匹配
+    let finalSong = allSongs.find(s => s.keywords.some(k => recognizedText.includes(k)));
+    if (!finalSong) {
+        const cats = ["BLUE", "COOL", "UPBEAT", "PLAYFUL"];
+        const targetCat = cats[Math.floor(avgVol) % 4];
+        finalSong = songDatabase[targetCat][0];
+    }
+
+    // 2. 成員專屬顏色覆寫
+    let c1 = finalSong.col1, c2 = finalSong.col2;
+    let isSpecial = false;
+
+    if (recognizedText.includes("mabel")) { c1 = "#ff0033"; c2 = "#8800ff"; isSpecial = true; }
+    else if (recognizedText.includes("ingkho")) { c1 = "#ffff00"; c2 = "#ff66aa"; isSpecial = true; }
+    else if (recognizedText.includes("pimma")) { c1 = "#0088ff"; c2 = "#00ffaa"; isSpecial = true; }
+
+    // 3. 更新視覺與文字
+    uCol1.value.set(c1); uCol2.value.set(c2);
+    document.querySelector('.song-title').innerText = finalSong.title;
+    document.querySelector('.lyrics').innerHTML = finalSong.lyrics;
+
+    const card = document.getElementById('soulCard');
+    const badge = document.querySelector('.rank-badge');
+    
+    // 4. 等級判定
+    if (frames > 150 || isSpecial) {
+        card.className = "pixxie-card rank-ss";
+        badge.innerText = "SS Rank Resonance";
+        badge.className = "rank-badge ss-style";
+    } else if (frames > 60) {
+        card.className = "pixxie-card rank-s";
+        badge.innerText = "S Rank Harmony";
+        badge.className = "rank-badge s-style";
+    } else {
+        card.className = "pixxie-card rank-a";
+        badge.innerText = "A Rank Match";
+        badge.className = "rank-badge";
+    }
+
     // 切換場景
     document.getElementById('intro-screen').style.display = 'none';
     document.getElementById('result-screen').style.display = 'block';
-    
-    // 延遲顯示光膜，製造開卡儀式感
-    setTimeout(() => {
-        document.getElementById('soulCard').classList.add('revealed');
-    }, 150);
+    setTimeout(() => card.classList.add('revealed'), 200);
 }
 
-recordBtn.addEventListener('mousedown', startMic);
-recordBtn.addEventListener('mouseup', endMic);
-recordBtn.addEventListener('touchstart', startMic);
-recordBtn.addEventListener('touchend', endMic);
+orb.addEventListener('mousedown', startResonance);
+orb.addEventListener('mouseup', endResonance);
+orb.addEventListener('touchstart', startResonance);
+orb.addEventListener('touchend', endResonance);
 
-/**
- * 卡片物理光學模擬 (計算手指比例，驅動光膜與3D旋轉)
- */
+// --- 🛡️ 3D 卡片物理模擬與防護 ---
 const card = document.getElementById('soulCard');
 const handleMove = (e) => {
-    e.preventDefault(); // 阻止滾動干擾
+    e.preventDefault();
     const x = e.touches ? e.touches[0].clientX : e.clientX;
     const y = e.touches ? e.touches[0].clientY : e.clientY;
     const rect = card.getBoundingClientRect();
-    
-    // 計算 0 ~ 1 的比例
     const px = Math.min(Math.max((x - rect.left) / rect.width, 0), 1);
     const py = Math.min(Math.max((y - rect.top) / rect.height, 0), 1);
     
-    // 傳遞變數給 CSS 光膜
     card.style.setProperty('--rx', px);
     card.style.setProperty('--ry', py);
-    
-    // 3D 傾斜效果 (最大 18 度)
-    card.style.transform = `rotateY(${(px - 0.5) * 18}deg) rotateX(${(py - 0.5) * -18}deg)`;
+    card.style.transform = `rotateY(${(px - 0.5) * 20}deg) rotateX(${(py - 0.5) * -20}deg)`;
 };
 
-// 監聽滑鼠與觸控
 card.addEventListener('mousemove', handleMove);
 card.addEventListener('touchmove', handleMove, { passive: false });
-// 滑出時歸位
-card.addEventListener('mouseleave', () => {
-    card.style.transform = 'rotateY(0deg) rotateX(0deg)';
-});
-card.addEventListener('touchend', () => {
-    card.style.transform = 'rotateY(0deg) rotateX(0deg)';
-});
+card.addEventListener('mouseleave', () => card.style.transform = 'rotateY(0deg) rotateX(0deg)');
+card.addEventListener('touchend', () => card.style.transform = 'rotateY(0deg) rotateX(0deg)');
 
-/**
- * 按鈕邏輯
- */
-document.getElementById('backBtn').addEventListener('click', () => location.reload());
-
+// --- 📸 海報導出與 iOS 適配 ---
 document.getElementById('downloadBtn').addEventListener('click', () => {
     const btn = document.getElementById('downloadBtn');
-    btn.innerText = "生成中...";
-    card.style.transform = 'none'; // 導出時端正卡片
+    btn.innerText = "GENERATING...";
+    card.style.transform = 'none'; // 導出前必須歸位
     
-    html2canvas(card, { 
-        scale: 3, // 高畫質導出
-        backgroundColor: '#08090c', 
-        useCORS: true,
-        logging: false
-    }).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        
-        // 針對 iOS 友好的導出方案：新開視窗供長按下載
-        const newWin = window.open();
-        if(!newWin || newWin.closed) {
-            // 降級方案：若被瀏覽器攔截，則強制下載
-            const link = document.createElement('a');
-            link.href = imgData;
-            link.download = 'PiXXiE_SS_SoulCard.png';
-            link.click();
-        } else {
-            newWin.document.write(`
-                <body style="margin:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; color:#fff; font-family:sans-serif;">
-                    <p style="margin-bottom:20px; font-size:14px; opacity:0.7;">iOS 用戶請「長按圖片」儲存至相簿</p>
-                    <img src="${imgData}" style="max-width:90%; border-radius:12px; box-shadow:0 0 20px rgba(255,117,195,0.5);" />
-                </body>
-            `);
-            newWin.document.title = "典藏卡領取";
-        }
-        btn.innerText = "領取成功";
-        setTimeout(() => btn.innerText = "領取典藏卡", 3000);
-    });
+    setTimeout(() => {
+        html2canvas(card, { 
+            scale: 3, 
+            backgroundColor: '#0a0b10', 
+            useCORS: true 
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const newWin = window.open();
+            if(!newWin || newWin.closed) {
+                const link = document.createElement('a');
+                link.href = imgData;
+                link.download = 'PiXXiE_SoulCard.png';
+                link.click();
+            } else {
+                newWin.document.write(`
+                    <body style="margin:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; color:#fff; font-family:sans-serif;">
+                        <p style="margin-bottom:20px; font-size:14px; opacity:0.7;">iOS 用戶請「長按圖片」儲存至相簿</p>
+                        <img src="${imgData}" style="max-width:90%; border-radius:15px; box-shadow:0 0 30px rgba(212,165,255,0.4);" />
+                    </body>
+                `);
+            }
+            btn.innerText = "COLLECTED";
+            setTimeout(() => btn.innerText = "COLLECT CARD", 3000);
+        });
+    }, 100);
 });
 </script>
 </body>
