@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PiXXiE Sonic Soul Resonance - Ultimate</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #08090c;
+            --card-width: 320px;
+            --card-height: 520px;
+        }
+
+        /* --- 終極內容防護 (禁止選取、拖拽、長按下載) --- */
+        * {
+            -webkit-user-select: none; /* Safari/iOS */
+            user-select: none; /* 標準語法 */
+            -webkit-touch-callout: none; /* 禁止 iOS 長按彈出菜單 */
+            -webkit-user-drag: none; /* 禁止拖拽圖片/畫布 */
+            outline: none; /* 移除點擊時的高亮外框 */
+            -webkit-tap-highlight-color: transparent; /* 移除點擊時的半透明灰色背景 */
+        }
+
+        body {
+            margin: 0; padding: 0; background-color: var(--bg-color); color: #fff;
+            font-family: -apple-system, system-ui, "Microsoft JhengHei", sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; overflow: hidden; touch-action: none;
+            overscroll-behavior: none; /* 禁止 Safari 橡皮筋回彈 */
+        }
+
+        /* --- 入場動畫 (優雅浮現) --- */
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(25px); filter: blur(8px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        .animate-item { opacity: 0; animation: slideInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .delay-1 { animation-delay: 0.15s; }
+        .delay-2 { animation-delay: 0.3s; }
+        .delay-3 { animation-delay: 0.45s; }
+
+        /* --- 首頁佈局 --- */
+        #intro-screen { text-align: center; display: flex; flex-direction: column; align-items: center; z-index: 10; }
+        
+        .visualizer-container {
+            position: relative; width: 220px; height: 220px;
+            display: flex; align-items: center; justify-content: center; margin: 30px 0;
+        }
+        #mic-wave {
+            position: absolute; width: 100%; height: 100%;
+            border-radius: 50%; border: 1.5px solid #ff75c3; opacity: 0.4;
+            transform: scale(0.8); transition: transform 0.1s ease-out;
+            box-shadow: inset 0 0 20px rgba(255, 117, 195, 0.2), 0 0 20px rgba(255, 117, 195, 0.2);
+        }
+        .record-btn {
+            position: relative; z-index: 2; padding: 18px 45px;
+            border: none; border-radius: 50px; background: #fff; color: #000;
+            font-weight: 800; font-size: 1.1rem; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255,255,255,0.15);
+            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .record-btn:active { transform: scale(0.92); }
+
+        /* --- 卡牌核心 --- */
+        #result-screen { display: none; perspective: 1500px; text-align: center; }
+        
+        .pixxie-card {
+            width: var(--card-width); height: var(--card-height);
+            background: #111218; border-radius: 24px; position: relative;
+            transform-style: preserve-3d; transition: transform 0.1s ease-out;
+            box-shadow: 0 45px 80px rgba(0,0,0,0.9);
+            overflow: hidden; border: 1px solid rgba(255,255,255,0.08);
+            -webkit-mask-image: -webkit-radial-gradient(white, black); /* 圓角防溢出 */
+            margin-bottom: 30px;
+        }
+
+        /* 👑 終極全息光膜技術 (不會起格的流體光學) */
+        
+        /* 圖層1：聚光燈高光 (跟隨手指的白熾光) */
+        .pixxie-card::before {
+            content: ''; position: absolute; inset: 0; z-index: 11;
+            background: radial-gradient(
+                circle at calc(var(--rx, 0.5) * 100%) calc(var(--ry, 0.5) * 100%),
+                rgba(255, 255, 255, 0.6) 0%,
+                transparent 50%
+            );
+            mix-blend-mode: overlay; pointer-events: none; opacity: 0; transition: opacity 0.8s;
+        }
+
+        /* 圖層2：大面積彩虹雷射流淌 (不起格的平滑過渡) */
+        .pixxie-card::after {
+            content: ''; position: absolute; inset: 0; z-index: 10;
+            background: linear-gradient(
+                115deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.1) 20%,
+                rgba(255, 117, 195, 0.4) 40%, /* 粉色 */
+                rgba(161, 140, 209, 0.5) 50%, /* 紫色 */
+                rgba(68, 227, 255, 0.4) 60%,  /* 青色 */
+                rgba(255, 255, 255, 0.1) 80%,
+                transparent 100%
+            );
+            /* 放大背景以確保漸變極度平滑，消除鋸齒 */
+            background-size: 300% 300%;
+            /* 使用位移來移動虹光，模擬真實折射 */
+            background-position: calc(var(--rx, 0.5) * 100%) calc(var(--ry, 0.5) * 100%);
+            mix-blend-mode: color-dodge; /* 絕對提亮，拒絕灰暗 */
+            pointer-events: none; opacity: 0; transition: opacity 0.8s ease-out;
+        }
+
+        .pixxie-card.revealed::before, .pixxie-card.revealed::after { opacity: 1; }
+
+        /* 防止內部元素干擾手指滑動感應 */
+        .pixxie-card * { pointer-events: none; }
+
+        #webgl-container { 
+            width: 100%; height: 320px; margin-top: 10px;
+            filter: contrast(1.15) saturate(1.25); /* 確保星雲鮮豔 */
+        }
+
+        /* --- 資訊排版 --- */
+        .card-info { width: 85%; margin: auto auto 30px auto; text-align: left; position: relative; z-index: 5; }
+        .song-title { font-size: 1.8rem; font-weight: 800; margin: 0; color: #fff; text-shadow: 0 4px 15px rgba(0,0,0,0.8); }
+        .lyrics { font-size: 0.85rem; color: rgba(255,255,255,0.75); line-height: 1.6; border-top: 1px dotted rgba(255,255,255,0.15); padding-top: 10px; margin-top: 10px; }
+        
+        .rank-badge {
+            display: inline-block; padding: 3px 12px; border: 1px solid rgba(255, 117, 195, 0.6);
+            border-radius: 6px; font-size: 0.6rem; font-weight: 900; color: #ff75c3;
+            margin-top: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(255, 117, 195, 0.2);
+            background: linear-gradient(90deg, rgba(255, 117, 195, 0.1), transparent);
+        }
+
+        /* --- 底部按鈕組 --- */
+        .action-btns { display: flex; gap: 12px; width: var(--card-width); }
+        .btn-secondary {
+            flex: 1; padding: 15px 0; border-radius: 14px; border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.06); color: #fff; font-weight: bold; font-size: 0.9rem;
+            backdrop-filter: blur(12px); cursor: pointer; transition: all 0.2s;
+        }
+        .btn-secondary:active { transform: scale(0.95); background: rgba(255,255,255,0.15); }
+    </style>
+</head>
+<body>
+
+    <div id="intro-screen">
+        <h2 class="animate-item">PiXXiE</h2>
+        <p class="animate-item delay-1" style="color: #888; font-size: 0.85rem; letter-spacing: 4px;">SONIC SOUL RESONANCE</p>
+        
+        <div class="visualizer-container animate-item delay-2">
+            <div id="mic-wave"></div>
+            <button class="record-btn" id="recordBtn">按住傾訴靈魂</button>
+        </div>
+        
+        <p id="status" class="animate-item delay-3" style="color: rgba(255,255,255,0.4); font-size: 0.75rem;">
+            需使用 HTTPS 環境以啟動麥克風<br>嚴禁截取或複製卡片資源
+        </p>
+    </div>
+
+    <div id="result-screen">
+        <div class="pixxie-card" id="soulCard">
+            <div id="webgl-container"></div>
+            <div class="card-info">
+                <h3 class="song-title">rain (ติดฝน)</h3>
+                <p class="lyrics">"ตกอยู่ในฤดูกาลที่ทำให้ฉันนั้นต้องติดฝน..."<br>受困於那個讓我淋濕的季節</p>
+                <div class="rank-badge">SS Rank Resonance</div>
+            </div>
+        </div>
+        <div class="action-btns">
+            <button class="btn-secondary" id="backBtn">重新測試</button>
+            <button class="btn-secondary" id="downloadBtn">領取典藏卡</button>
+        </div>
+    </div>
+
+<script>
+// --- 終極防護：封鎖右鍵菜單 ---
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+/**
+ * 視覺引擎：鮮豔的水彩星雲
+ */
+let scene, camera, renderer, material;
+let uniformAmp = { value: 0.0 };
+
+function initThreeJS() {
+    const container = document.getElementById('webgl-container');
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.z = 2.4;
+
+    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
+    // 自動限制像素比，兼顧畫質與效能
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    const geometry = new THREE.SphereGeometry(1, 128, 128);
+    material = new THREE.ShaderMaterial({
+        transparent: true,
+        uniforms: { uTime: { value: 0 }, uAmp: uniformAmp },
+        vertexShader: `
+            uniform float uTime; uniform float uAmp;
+            varying vec3 vNormal;
+            void main() {
+                vNormal = normal;
+                float noise = sin(position.x * 2.5 + uTime) * cos(position.y * 2.5 + uTime) * uAmp;
+                // 驅動形變，製造立體水彩感
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position + normal * (noise * 0.45), 1.0);
+            }
+        `,
+        fragmentShader: `
+            varying vec3 vNormal;
+            void main() {
+                float rim = 1.0 - max(dot(vNormal, vec3(0.0, 0.0, 1.0)), 0.0);
+                // 絕對鮮豔的高對比底色配置 (Deep Blue & Hot Pink)
+                vec3 col = mix(vec3(0.05, 0.35, 1.0), vec3(1.0, 0.15, 0.65), vNormal.y * 0.5 + 0.5);
+                // 增加高光強度
+                gl_FragColor = vec4(col + pow(rim, 2.5) * 1.6, 1.0);
+            }
+        `
+    });
+    scene.add(new THREE.Mesh(geometry, material));
+
+    function animate() {
+        requestAnimationFrame(animate);
+        material.uniforms.uTime.value += 0.012;
+        renderer.render(scene, camera);
+    }
+    animate();
+}
+
+/**
+ * 錄音交互引擎
+ */
+let audioCtx, analyser, dataArray, isRecording = false;
+const recordBtn = document.getElementById('recordBtn');
+const micWave = document.getElementById('mic-wave');
+const statusText = document.getElementById('status');
+
+async function startMic(e) {
+    e.preventDefault();
+    try {
+        if (!audioCtx) {
+            initThreeJS();
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 128;
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            audioCtx.createMediaStreamSource(stream).connect(analyser);
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+        audioCtx.resume();
+        isRecording = true;
+        recordBtn.innerText = "靈魂感應中...";
+        loop();
+    } catch (err) {
+        statusText.innerText = "無法存取麥克風，請檢查權限或確保在 HTTPS 環境下";
+        statusText.style.color = "#ff4444";
+    }
+}
+
+function loop() {
+    if (!isRecording) return;
+    requestAnimationFrame(loop);
+    analyser.getByteFrequencyData(dataArray);
+    let avg = dataArray.reduce((a,b)=>a+b)/dataArray.length;
+    
+    // 首頁即時波紋震動
+    micWave.style.transform = `scale(${1 + avg/120})`;
+    micWave.style.opacity = 0.4 + (avg/255) * 0.6;
+    uniformAmp.value = avg / 60; // 傳遞給 Three.js
+}
+
+function endMic(e) {
+    e.preventDefault();
+    if (!isRecording) return;
+    isRecording = false;
+    
+    // 切換場景
+    document.getElementById('intro-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    
+    // 延遲顯示光膜，製造開卡儀式感
+    setTimeout(() => {
+        document.getElementById('soulCard').classList.add('revealed');
+    }, 150);
+}
+
+recordBtn.addEventListener('mousedown', startMic);
+recordBtn.addEventListener('mouseup', endMic);
+recordBtn.addEventListener('touchstart', startMic);
+recordBtn.addEventListener('touchend', endMic);
+
+/**
+ * 卡片物理光學模擬 (計算手指比例，驅動光膜與3D旋轉)
+ */
+const card = document.getElementById('soulCard');
+const handleMove = (e) => {
+    e.preventDefault(); // 阻止滾動干擾
+    const x = e.touches ? e.touches[0].clientX : e.clientX;
+    const y = e.touches ? e.touches[0].clientY : e.clientY;
+    const rect = card.getBoundingClientRect();
+    
+    // 計算 0 ~ 1 的比例
+    const px = Math.min(Math.max((x - rect.left) / rect.width, 0), 1);
+    const py = Math.min(Math.max((y - rect.top) / rect.height, 0), 1);
+    
+    // 傳遞變數給 CSS 光膜
+    card.style.setProperty('--rx', px);
+    card.style.setProperty('--ry', py);
+    
+    // 3D 傾斜效果 (最大 18 度)
+    card.style.transform = `rotateY(${(px - 0.5) * 18}deg) rotateX(${(py - 0.5) * -18}deg)`;
+};
+
+// 監聽滑鼠與觸控
+card.addEventListener('mousemove', handleMove);
+card.addEventListener('touchmove', handleMove, { passive: false });
+// 滑出時歸位
+card.addEventListener('mouseleave', () => {
+    card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+});
+card.addEventListener('touchend', () => {
+    card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+});
+
+/**
+ * 按鈕邏輯
+ */
+document.getElementById('backBtn').addEventListener('click', () => location.reload());
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+    const btn = document.getElementById('downloadBtn');
+    btn.innerText = "生成中...";
+    card.style.transform = 'none'; // 導出時端正卡片
+    
+    html2canvas(card, { 
+        scale: 3, // 高畫質導出
+        backgroundColor: '#08090c', 
+        useCORS: true,
+        logging: false
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        
+        // 針對 iOS 友好的導出方案：新開視窗供長按下載
+        const newWin = window.open();
+        if(!newWin || newWin.closed) {
+            // 降級方案：若被瀏覽器攔截，則強制下載
+            const link = document.createElement('a');
+            link.href = imgData;
+            link.download = 'PiXXiE_SS_SoulCard.png';
+            link.click();
+        } else {
+            newWin.document.write(`
+                <body style="margin:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; color:#fff; font-family:sans-serif;">
+                    <p style="margin-bottom:20px; font-size:14px; opacity:0.7;">iOS 用戶請「長按圖片」儲存至相簿</p>
+                    <img src="${imgData}" style="max-width:90%; border-radius:12px; box-shadow:0 0 20px rgba(255,117,195,0.5);" />
+                </body>
+            `);
+            newWin.document.title = "典藏卡領取";
+        }
+        btn.innerText = "領取成功";
+        setTimeout(() => btn.innerText = "領取典藏卡", 3000);
+    });
+});
+</script>
+</body>
+</html>
