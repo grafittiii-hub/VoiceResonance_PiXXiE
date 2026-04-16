@@ -3,92 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PiXXiE Soul Resonance - Ultimate Liquid Edition</title>
+    <title>PiXXiE Soul Resonance - Ultimate Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;700;800;900&family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    
+    
     <style>
-        :root { 
-            --primary-fairy: #d4a5ff; 
-            --bg-dark: #0a0b10; 
-            --card-w: 320px; 
-            --card-h: 520px; 
+        :root { 
+            --primary-fairy: #d4a5ff; 
+            --bg-dark: #0a0b10; 
+            --card-w: 320px; 
+            --card-h: 520px; 
             --border-width: 2px;
         }
-        * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-user-drag: none; outline: none; -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-        
-        body { margin: 0; padding: 0; background-color: var(--bg-dark); color: #fff; font-family: 'Montserrat', 'Prompt', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; touch-action: none; overscroll-behavior: none; }
-        body::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(212, 165, 255, 0.08) 0%, transparent 80%); z-index: 0; pointer-events: none; }
-        
-        @keyframes fairyIn { 0% { opacity: 0; transform: translateY(30px) scale(0.9); filter: blur(10px); } 100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
+        
+        * { 
+            -webkit-user-select: none; user-select: none; 
+            -webkit-touch-callout: none; -webkit-user-drag: none; 
+            outline: none; -webkit-tap-highlight-color: transparent; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            margin: 0; padding: 0; 
+            background-color: var(--bg-dark); 
+            color: #fff; 
+            font-family: 'Montserrat', 'Prompt', sans-serif; 
+            display: flex; align-items: center; justify-content: center; 
+            min-height: 100vh; width: 100vw;
+            overflow: hidden; touch-action: none; overscroll-behavior: none; 
+        }
+
+        body::after { 
+            content: ''; position: absolute; inset: 0; 
+            background: radial-gradient(circle at 50% 50%, rgba(212, 165, 255, 0.08) 0%, transparent 80%); 
+            z-index: 0; pointer-events: none; 
+        }
+        
+        @keyframes fairyIn { 
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); filter: blur(10px); } 
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } 
+        }
+        
         .animate-item { opacity: 0; animation: fairyIn 1s cubic-bezier(0.15, 0.85, 0.35, 1) forwards; }
-        .delay-1 { animation-delay: 0.2s; } .delay-2 { animation-delay: 0.4s; }
-        
-        #intro-screen { text-align: center; z-index: 10; width: 100%; position: relative; }
-        .main-title { font-size: 2.8rem; font-weight: 200; letter-spacing: 12px; background: linear-gradient(to bottom, #fff, var(--primary-fairy)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; text-transform: uppercase; }
+        .delay-1 { animation-delay: 0.2s; } 
+        .delay-2 { animation-delay: 0.4s; }
+        
+        #intro-screen { text-align: center; z-index: 10; width: 100%; position: relative; display: block; }
+        
+        .main-title { 
+            font-size: 2.8rem; font-weight: 200; letter-spacing: 12px; 
+            background: linear-gradient(to bottom, #fff, var(--primary-fairy)); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            margin-bottom: 5px; text-transform: uppercase; 
+        }
+        
         .sub-title { font-size: 0.7rem; letter-spacing: 5px; color: rgba(255,255,255,0.4); margin-bottom: 60px; }
-        
-        .orb-container { position: relative; width: 280px; height: 280px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
-        
-        /* 1. 優化：多層次聲波環 */
-        .mic-wave { position: absolute; border-radius: 50%; border: 1px solid var(--primary-fairy); opacity: 0; pointer-events: none; transition: transform 0.1s ease-out, opacity 0.2s; }
+        
+        /* 多層次聲波環佈局 */
+        .orb-container { 
+            position: relative; width: 280px; height: 280px; 
+            margin: 0 auto; display: flex; align-items: center; justify-content: center; 
+        }
+        
+        .mic-wave { 
+            position: absolute; border-radius: 50%; border: 1px solid var(--primary-fairy); 
+            opacity: 0; pointer-events: none; 
+            transition: transform 0.1s ease-out, opacity 0.2s; 
+        }
         .w1 { width: 120px; height: 120px; border-width: 2px; z-index: 4; }
         .w2 { width: 160px; height: 160px; border-width: 1px; opacity: 0.4; z-index: 3; }
         .w3 { width: 210px; height: 210px; border-width: 0.5px; border-style: dashed; z-index: 2; }
         .w4 { width: 260px; height: 260px; border-width: 8px; filter: blur(15px); opacity: 0; z-index: 1; }
 
-        @keyframes breathe { 0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(212, 165, 255, 0.1), inset 0 0 20px rgba(255,255,255,0.1); } 50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(212, 165, 255, 0.3), inset 0 0 30px rgba(255,255,255,0.2); } }
-        
-        .soul-orb { width: 120px; height: 120px; border-radius: 50%; background: rgba(212, 165, 255, 0.12); border: 1px solid rgba(212, 165, 255, 0.4); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); cursor: pointer; position: relative; z-index: 5; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; justify-content: center; animation: breathe 3s ease-in-out infinite; }
+        @keyframes breathe { 
+            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(212, 165, 255, 0.1), inset 0 0 20px rgba(255,255,255,0.1); } 
+            50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(212, 165, 255, 0.3), inset 0 0 30px rgba(255,255,255,0.2); } 
+        }
+        
+        .soul-orb { 
+            width: 120px; height: 120px; border-radius: 50%; 
+            background: rgba(212, 165, 255, 0.12); border: 1px solid rgba(212, 165, 255, 0.4); 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+            cursor: pointer; position: relative; z-index: 5; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            display: flex; align-items: center; justify-content: center; 
+            animation: breathe 3s ease-in-out infinite; 
+        }
         .soul-orb.recording { animation: none; transform: scale(0.9); background: rgba(212, 165, 255, 0.3); border-color: #fff; box-shadow: 0 0 50px rgba(212, 165, 255, 0.5); }
         .soul-orb::after { content: 'REC'; font-size: 11px; letter-spacing: 3px; color: #fff; font-weight: 700; }
-        
+        
         .particle { position: absolute; width: 4px; height: 4px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px var(--primary-fairy); pointer-events: none; opacity: 0; }
         @keyframes floatUp { 0% { opacity: 0.8; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); } }
 
-        #result-screen { display: none; perspective: 1500px; text-align: center; }
-        
-        /* 高級壓克力質感卡片 */
-        .pixxie-card { 
-            width: var(--card-w); height: var(--card-h); 
+        #result-screen { display: none; perspective: 1500px; text-align: center; width: 100%; }
+        
+        /* 高級壓克力與動態流動邊框 */
+        .pixxie-card { 
+            width: var(--card-w); height: var(--card-h); 
             background: rgba(25, 18, 35, 0.65);
-            backdrop-filter: blur(18px); 
-            -webkit-backdrop-filter: blur(18px);
-            border-radius: 28px; 
-            position: relative; 
-            transform-style: preserve-3d; 
-            transition: transform 0.1s ease-out; 
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.05); 
-            overflow: hidden; 
-            margin-bottom: 30px; 
+            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            border-radius: 28px; 
+            position: relative; margin: 0 auto 30px auto;
+            transform-style: preserve-3d; 
+            transition: transform 0.1s ease-out; 
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.05); 
+            overflow: hidden; 
             border: var(--border-width) solid transparent;
             background-clip: padding-box, border-box;
-            background-image: 
-                linear-gradient(rgba(25, 18, 35, 0.95), rgba(25, 18, 35, 0.95)), 
+            background-image: 
+                linear-gradient(rgba(25, 18, 35, 0.95), rgba(25, 18, 35, 0.95)), 
                 conic-gradient(from calc(var(--rx, 0.5) * 360deg), var(--primary-fairy), rgba(212,165,255,0.1), #fff, var(--primary-fairy));
             background-origin: border-box;
             -webkit-mask-image: -webkit-radial-gradient(white, black);
         }
-        
-        .pixxie-card.rank-ss::after { 
-            content: ''; position: absolute; inset: 0; z-index: 10; 
-            background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.1) 20%, rgba(255,117,195,0.4) 40%, rgba(161,140,209,0.5) 50%, rgba(68,227,255,0.4) 60%, rgba(255,255,255,0.1) 80%, transparent 100%); 
-            background-size: 300% 300%; 
-            background-position: calc(var(--rx, 0.5) * 100%) calc(var(--ry, 0.5) * 100%); 
+        
+        /* SS Rank 全息膜層 */
+        .pixxie-card.rank-ss::after { 
+            content: ''; position: absolute; inset: 0; z-index: 10; 
+            background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.1) 20%, rgba(255,117,195,0.4) 40%, rgba(161,140,209,0.5) 50%, rgba(68,227,255,0.4) 60%, rgba(255,255,255,0.1) 80%, transparent 100%); 
+            background-size: 300% 300%; 
+            background-position: calc(var(--rx, 0.5) * 100%) calc(var(--ry, 0.5) * 100%); 
             mix-blend-mode: color-dodge; opacity: 0; transition: opacity 0.8s;
-            border-radius: 28px; 
-            pointer-events: none;
+            border-radius: 28px; pointer-events: none;
         }
 
-        /* 三角形碎鑽全息效果 */
+        /* 三角形碎鑽全息感 */
         .pixxie-card.special-holo::before {
             content: ''; position: absolute; inset: 0; z-index: 12;
-            background-image: 
+            background-image: 
                 conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0.12) 0deg, transparent 60deg),
                 conic-gradient(from 120deg at 30% 40%, rgba(212,165,255,0.2) 0deg, transparent 80deg),
                 conic-gradient(from 240deg at 70% 60%, rgba(68,227,255,0.15) 0deg, transparent 100deg);
             background-size: 120px 120px;
-            mix-blend-mode: overlay; 
+            mix-blend-mode: overlay; 
             opacity: 0; pointer-events: none;
             background-position: calc(var(--rx, 0.5) * 60px) calc(var(--ry, 0.5) * 60px);
             transition: opacity 0.8s;
@@ -100,13 +147,14 @@
 
         #webgl-container { width: 100%; height: 350px; margin-top: 10px; position: relative; z-index: 2; pointer-events: none; }
 
+        /* 回復原來的文字位置 (左下) */
         .card-info { width: 85%; margin: 0 auto 35px auto; text-align: left; position: relative; z-index: 5; }
         .song-title { font-size: 1.7rem; font-weight: 800; margin: 0; color: #fff; text-shadow: 0 0 18px var(--primary-fairy); letter-spacing: 1.5px; }
         .lyrics { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: 12px; line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 12px; }
         .rank-badge { display: inline-block; padding: 3px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 900; margin-top: 18px; border: 1px solid rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; }
         .ss-style { color: #ff75c3; border-color: #ff75c3; box-shadow: 0 0 15px rgba(255,117,195,0.3); background: rgba(255,117,195,0.1); }
-        
-        .btn-group { display: flex; gap: 12px; width: var(--card-w); z-index: 20; }
+        
+        .btn-group { display: flex; gap: 12px; width: var(--card-w); margin: 0 auto; z-index: 20; position: relative; }
         .btn-action { flex: 1; padding: 16px 0; border-radius: 15px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.1); color: #fff; font-weight: bold; font-size: 0.9rem; cursor: pointer; backdrop-filter: blur(10px); }
     </style>
 </head>
@@ -141,39 +189,39 @@
     </div>
 
 <script>
-// --- 歌曲資料庫 ---
+// --- 核心資料庫 ---
 const songDatabase = {
     "Q1": [
-        { title: "Shake!", col1: "#ff3300", col2: "#ffcc00", keywords: ["shake", "เชค", "summer shake", "shake it shake it"] },
-        { title: "FYI", col1: "#ff0066", col2: "#ff99cc", keywords: ["fyi","ก็มันชอบอยู่ชอบอยู่","เธอรู้ยัง","เขินอยู่", "แต่กลัวไม่ทัน","ยังโสดอยู่นะ","จีบเธอก่อนแล้วกัน"] },
-        { title: "ACHOO!", col1: "#00ccff", col2: "#00ff99", keywords: ["achoo", "ฮัดชิ้ว", "พิมมา", "I'mma I'mma", "allergic to you", "Pimma"] },
+        { title: "Shake!", col1: "#ff3300", col2: "#ffcc00", keywords: ["shake", "เชค", "summer shake"] },
+        { title: "FYI", col1: "#ff0066", col2: "#ff99cc", keywords: ["fyi","ก็มันชอบอยู่ชอบอยู่"] },
+        { title: "ACHOO!", col1: "#00ccff", col2: "#00ff99", keywords: ["achoo", "ฮัดชิ้ว", "พิมมา"] },
         { title: "Not Bad", col1: "#333333", col2: "#00ff88", keywords: ["not bad", "ก็ไม่ได้แย่"] },
-        { title: "Game Changer", col1: "#6600ff", col2: "#00ffff", keywords: ["game changer","hair flip", "heart flip", "ไม่ดี", "game switch"] }
+        { title: "Game Changer", col1: "#6600ff", col2: "#00ffff", keywords: ["game changer","hair flip"] }
     ],
     "Q2": [
-        { title: "Mutelu", col1: "#200a44", col2: "#cc33ff", keywords: ["mutelu", "มูเตลู", "พรหมลิขิตจะทำให้เราได้หากันเจอ", "oh ah-ah-ah-ah-ah-ah","Everything for you","cupid"] },
-        { title: "Pick A Card", col1: "#ff0033", col2: "#000000", keywords: ["pick a card", "I'll tell you what to do","my baby boo"] },
-        { title: "Dejayou", col1: "#330066", col2: "#ff00ff", keywords: ["dejayou", "deja","oh boy you make me","คิดถึงเธออีกแล้ว"] },
-        { title: "TOXIQUE", col1: "#111111", col2: "#ff0000", keywords: ["toxique", "toxic", "girl you're toxic", "come a little closer now","you know it","don't ya"] },
-        { title: "Magic Car", col1: "#0055ff", col2: "#00ffcc", keywords: ["magic car","ทุกอย่างบนโลกใบนี้ช่าง","สวยงาม","ไปหมดเลย","ทุกที่ช่างดูสดใส", "แค่ร่วมทางไปกับเธอ"] },
-        { title: "ONE SHOT", col1: "#cc0000", col2: "#333333", keywords: ["one shot", "I've got"] },
-        { title: "HUH?", col1: "#ffff00", col2: "#000000", keywords: ["huh","ไม่ได้เห็น", "พูดดังดังได้ไหม"] },
-        { title: "FEAT", col1: "#ff6600", col2: "#ff0066", keywords: ["feat","F", "E","A", "T","get set go","are you a good boy","I'm a bad girl","lips"] },
-        { title: "BADLY", col1: "#440000", col2: "#ff3300", keywords: ["badly","I want you"] }
+        { title: "Mutelu", col1: "#200a44", col2: "#cc33ff", keywords: ["mutelu", "มูเตลู"] },
+        { title: "Pick A Card", col1: "#ff0033", col2: "#000000", keywords: ["pick a card"] },
+        { title: "Dejayou", col1: "#330066", col2: "#ff00ff", keywords: ["dejayou", "deja"] },
+        { title: "TOXIQUE", col1: "#111111", col2: "#ff0000", keywords: ["toxique", "toxic"] },
+        { title: "Magic Car", col1: "#0055ff", col2: "#00ffcc", keywords: ["magic car"] },
+        { title: "ONE SHOT", col1: "#cc0000", col2: "#333333", keywords: ["one shot"] },
+        { title: "HUH?", col1: "#ffff00", col2: "#000000", keywords: ["huh"] },
+        { title: "FEAT", col1: "#ff6600", col2: "#ff0066", keywords: ["feat","F E A T"] },
+        { title: "BADLY", col1: "#440000", col2: "#ff3300", keywords: ["badly"] }
     ],
     "Q3": [
-        { title: "Too Cute", col1: "#ff99cc", col2: "#ffffff", keywords: ["too cute", "เกินต้าน","หลงเธออีกแล้ว","ก็เธอน่ารัก","จนเกินต้านขนาดนี้","จะรักคนคนนี้","ไม่ได้หรok"] },
-        { title: "PiXXeL", col1: "#ffccff", col2: "#d4a5ff", keywords: ["pixxel","พักบ้างหรือยัง","หากเธอล้มฉันจะรับ","หากเธอล้าให้เธอพัก"] },
-        { title: "DED", col1: "#00ffaa", col2: "#ffff00", keywords: ["ded", "เด็ด","miss you", "อย่าให้ดอกไม้ เดี๋ยวฉันน่ะ","Ya-ya-ya-ya-ya-ya-a-a"] },
-        { title: "Heartstopper", col1: "#ff3399", col2: "#ffccff", keywords: ["heartstopper", "มาเบล","Mabel","heart a a a a a stopper"] },
-        { title: "Into You", col1: "#cc99ff", col2: "#ffe6f2", keywords: ["into you", "Like to spend my time with me","จะเปิดให้เธอเข้ามา","Cha-cha-di-da","Alright up to you"] },
-        { title: "Boo", col1: "#99ffcc", col2: "#ffffff", keywords: ["boo","ya ya ya", "งอนนะ", "งอนแล้วนะ","งอนละ", "เธอไม่มาง้อกันสักที","ถ้าไม่มาขอโทษดีดี"] }
+        { title: "Too Cute", col1: "#ff99cc", col2: "#ffffff", keywords: ["too cute", "เกินต้าน"] },
+        { title: "PiXXeL", col1: "#ffccff", col2: "#d4a5ff", keywords: ["pixxel","พักบ้างหรือยัง"] },
+        { title: "DED", col1: "#00ffaa", col2: "#ffff00", keywords: ["ded", "เด็ด"] },
+        { title: "Heartstopper", col1: "#ff3399", col2: "#ffccff", keywords: ["heartstopper", "มาเบล"] },
+        { title: "Into You", col1: "#cc99ff", col2: "#ffe6f2", keywords: ["into you"] },
+        { title: "Boo", col1: "#99ffcc", col2: "#ffffff", keywords: ["boo","งอนนะ"] }
     ],
     "Q4": [
-        { title: "rain", col1: "#0a2a66", col2: "#44e3ff", keywords: ["rain", "ติดเธอไม่ไหว", "ไม่ไหว", "ติดฝน","เธอต้องไปรึยัง","อยากเจอเธอทุกวัน","พอเป็นไปได้ไหม","ยู่ด้วยกันก่อนได้ไหม"] },
-        { title: "Aftercry", col1: "#1a1a2e", col2: "#16213e", keywords: ["aftercry", "wohoo", "wu wu wu", "it will be better"] },
-        { title: "Deep Talk", col1: "#0f3460", col2: "#e94560", keywords: ["deep talk", "Ingkho", "อิงโกะ","อยู่คุยกันคืนนี้ข้ามผ่านยามนิทรา","มาน่าฟังกว่าใคร","บทสนทนาไม่รู้เวลา", "ฉันฟังแต่เธอ"] },
-        { title: "ไม่ได้ก็ไม่เอา (Whatever)", col1: "#ff66aa", col2: "#ffcc33", keywords: ["whatever", "ไม่ได้", "ไม่ได้ก็ไม่เอา","ฉันก็คงไม่รอแล้ว","ฉันก็คงต้องพอเสียที","ถ้าเธอไม่ใช่","ก็ไม่ต้องยื้อกันแบบนี้","เหนื่อยเต็มที","ไม่ได้ก็ไม่เอา"] }
+        { title: "rain", col1: "#0a2a66", col2: "#44e3ff", keywords: ["rain", "ติดฝน"] },
+        { title: "Aftercry", col1: "#1a1a2e", col2: "#16213e", keywords: ["aftercry", "it will be better"] },
+        { title: "Deep Talk", col1: "#0f3460", col2: "#e94560", keywords: ["deep talk", "อิงโกะ"] },
+        { title: "ไม่ได้ก็ไม่เอา", col1: "#ff66aa", col2: "#ffcc33", keywords: ["whatever", "ไม่ได้ก็ไม่เอา"] }
     ]
 };
 
@@ -196,7 +244,7 @@ let scene, camera, renderer, material;
 let uniformAmp = { value: 0.0 }, uCol1 = { value: new THREE.Color() }, uCol2 = { value: new THREE.Color() };
 let threeInitialized = false;
 
-// 2. 優化：3D 靈魂球體 (Liquid Shader + Energy Bloom)
+// WebGL 靈魂球體優化 (Perlin Noise 流體 + Fresnel 發光)
 function initThreeJS() {
     if (threeInitialized) return;
     const container = document.getElementById('webgl-container');
@@ -208,36 +256,28 @@ function initThreeJS() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(w, h);
     container.appendChild(renderer.domElement);
-    
+    
     const geo = new THREE.SphereGeometry(0.82, 128, 128);
     material = new THREE.ShaderMaterial({
         transparent: true,
         uniforms: { uTime: { value: 0 }, uAmp: uniformAmp, col1: uCol1, col2: uCol2 },
-        // Vertex Shader: Liquid Blob Morphing (柏林雜訊模擬)
         vertexShader: `
-            uniform float uTime; uniform float uAmp; varying vec3 vNormal; varying vec3 vPosition;
-            void main() { 
-                vNormal = normal; vPosition = position;
-                // 使用多重正弦波疊加模擬流體
+            uniform float uTime; uniform float uAmp; varying vec3 vNormal; 
+            void main() { 
+                vNormal = normal;
                 float noise = sin(position.x * 2.0 + uTime) * cos(position.y * 2.0 + uTime) * sin(position.z * 2.0 + uTime);
                 noise += 0.5 * sin(position.x * 4.0 - uTime * 1.5);
                 noise += 0.25 * cos(position.y * 8.0 + uTime);
-                
                 float displacement = noise * uAmp * 0.45;
-                vec3 newPos = position + normal * displacement;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0); 
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position + normal * displacement, 1.0); 
             }`,
-        // Fragment Shader: High Intensity Bloom (Fresnel Light)
         fragmentShader: `
-            uniform vec3 col1; uniform vec3 col2; uniform float uTime; varying vec3 vNormal; 
-            void main() { 
-                // 菲涅耳係數 (邊緣發光)
+            uniform vec3 col1; uniform vec3 col2; varying vec3 vNormal; 
+            void main() { 
                 float fresnel = pow(1.0 - max(dot(vNormal, vec3(0.0, 0.0, 1.0)), 0.0), 3.0);
                 vec3 baseCol = mix(col1, col2, vNormal.y * 0.5 + 0.5);
-                
-                // 能量核心感
-                vec3 glow = baseCol + (fresnel * 2.5 * baseCol); 
-                gl_FragColor = vec4(glow, 0.95); 
+                vec3 glow = baseCol + (fresnel * 2.5 * baseCol); 
+                gl_FragColor = vec4(glow, 0.95); 
             }`
     });
     scene.add(new THREE.Mesh(geo, material));
@@ -247,7 +287,6 @@ function initThreeJS() {
 }
 
 const orb = document.getElementById('recordBtn');
-// 抓取四個聲波環
 const waves = [document.querySelector('.w1'), document.querySelector('.w2'), document.querySelector('.w3'), document.querySelector('.w4')];
 
 function createParticle() {
@@ -267,11 +306,13 @@ async function startResonance(e) {
     e.preventDefault();
     orb.classList.add('recording');
     if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioCtx.createAnalyser();
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        audioCtx.createMediaStreamSource(stream).connect(analyser);
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            audioCtx.createMediaStreamSource(stream).connect(analyser);
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        } catch (err) { alert("請允許麥克風權限以進行共鳴。"); return; }
     }
     isRecording = true; audioHistory = []; recognizedText = "";
     if (recognition) { try { recognition.start(); } catch(err) {} }
@@ -285,13 +326,13 @@ function loop() {
     analyser.getByteFrequencyData(dataArray);
     let avg = dataArray.reduce((a,b)=>a+b)/dataArray.length;
     audioHistory.push(avg);
-    
-    // 多層次聲波動態處理
+    
+    // 多層聲波
     waves[0].style.transform = `scale(${0.8 + avg / 100})`; waves[0].style.opacity = 0.5 + avg/150;
     waves[1].style.transform = `scale(${1.0 + avg / 80})`; waves[1].style.opacity = 0.3 + avg/200;
     waves[2].style.transform = `scale(${1.2 + avg / 60})`; waves[2].style.opacity = 0.2 + avg/300;
     waves[3].style.transform = `scale(${1.0 + avg / 40})`; waves[3].style.opacity = (avg/255) * 0.4;
-    
+    
     uniformAmp.value = avg / 55;
 }
 
@@ -348,8 +389,8 @@ function calculateResult() {
 
 orb.addEventListener('mousedown', startResonance);
 orb.addEventListener('mouseup', endResonance);
-orb.addEventListener('touchstart', startResonance);
-orb.addEventListener('touchend', endResonance);
+orb.addEventListener('touchstart', startResonance, {passive: false});
+orb.addEventListener('touchend', endResonance, {passive: false});
 
 const card = document.getElementById('soulCard');
 const handleMove = (e) => {
@@ -362,7 +403,7 @@ const handleMove = (e) => {
     card.style.transform = `rotateY(${(px - 0.5) * 20}deg) rotateX(${(py - 0.5) * -20}deg)`;
 };
 card.addEventListener('mousemove', handleMove);
-card.addEventListener('touchmove', handleMove);
+card.addEventListener('touchmove', handleMove, {passive: true});
 </script>
 </body>
 </html>
