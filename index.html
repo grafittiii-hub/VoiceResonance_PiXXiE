@@ -69,36 +69,36 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 // --- 💿 完整歌曲清單 (嚴格依照象限分類，無刪減) ---
 const songDatabase = {
     "Q1": [
-        { title: "Shake!", col1: "#ff3300", col2: "#ffcc00", keywords: ["shake", "เชค"] },
+        { title: "Shake!", col1: "#ff3300", col2: "#ffcc00", keywords: ["shake", "เชค", "summer shake", "shake it shake it"] },
         { title: "FYI", col1: "#ff0066", col2: "#ff99cc", keywords: ["fyi"] },
-        { title: "ACHOO!", col1: "#00ccff", col2: "#00ff99", keywords: ["achoo", "ฮัดชิ้ว"] },
+        { title: "ACHOO!", col1: "#00ccff", col2: "#00ff99", keywords: ["achoo", "ฮัดชิ้ว", "พิมมา", "I'mma I'mma", "allergic to you", "Pimma"] },
         { title: "Not Bad", col1: "#333333", col2: "#00ff88", keywords: ["not bad", "ก็ไม่ได้แย่"] },
-        { title: "Game Changer", col1: "#6600ff", col2: "#00ffff", keywords: ["game changer"] }
+        { title: "Game Changer", col1: "#6600ff", col2: "#00ffff", keywords: ["game changer","hair flip", "heart flip", "ไม่ดี", "game switch"] }
     ],
     "Q2": [
-        { title: "Mutelu", col1: "#200a44", col2: "#cc33ff", keywords: ["mutelu", "มูเตลู", "mute"] },
-        { title: "Pick A Card", col1: "#ff0033", col2: "#000000", keywords: ["pick a card"] },
-        { title: "Dejayou", col1: "#330066", col2: "#ff00ff", keywords: ["dejayou", "deja"] },
-        { title: "TOXIQUE", col1: "#111111", col2: "#ff0000", keywords: ["toxique", "toxic"] },
-        { title: "Magic Car", col1: "#0055ff", col2: "#00ffcc", keywords: ["magic car"] },
-        { title: "ONE SHOT", col1: "#cc0000", col2: "#333333", keywords: ["one shot"] },
-        { title: "HUH?", col1: "#ffff00", col2: "#000000", keywords: ["huh"] },
-        { title: "FEAT", col1: "#ff6600", col2: "#ff0066", keywords: ["feat"] },
-        { title: "BADLY", col1: "#440000", col2: "#ff3300", keywords: ["badly"] }
+        { title: "Mutelu", col1: "#200a44", col2: "#cc33ff", keywords: ["mutelu", "มูเตลู", "a-ou"] },
+        { title: "Pick A Card", col1: "#ff0033", col2: "#000000", keywords: ["pick a card", "I'll tell you what to do","my baby boo"] },
+        { title: "Dejayou", col1: "#330066", col2: "#ff00ff", keywords: ["dejayou", "deja","oh boy you make me","คิดถึงเธออีกแล้ว"] },
+        { title: "TOXIQUE", col1: "#111111", col2: "#ff0000", keywords: ["toxique", "toxic", "girl you're toxic", "come a little closer now","you know it","don't ya"] },
+        { title: "Magic Car", col1: "#0055ff", col2: "#00ffcc", keywords: ["magic car","ทุกอย่างบนโลกใบนี้ช่าง","สวยงาม","ไปหมดเลย","ทุกที่ช่างดูสดใส", "แค่ร่วมทางไปกับเธอ"] },
+        { title: "ONE SHOT", col1: "#cc0000", col2: "#333333", keywords: ["one shot", "I've got"] },
+        { title: "HUH?", col1: "#ffff00", col2: "#000000", keywords: ["huh","ไม่ได้เห็น", "พูดดังดังได้ไหม"] },
+        { title: "FEAT", col1: "#ff6600", col2: "#ff0066", keywords: ["feat","F", "E","A", "T","get set go","are you a good boy","I'm a bad girl","lips"] },
+        { title: "BADLY", col1: "#440000", col2: "#ff3300", keywords: ["badly","I want you"] }
     ],
     "Q3": [
-        { title: "Too Cute", col1: "#ff99cc", col2: "#ffffff", keywords: ["too cute", "เกินต้าน"] },
-        { title: "PiXXeL", col1: "#ffccff", col2: "#d4a5ff", keywords: ["pixxel"] },
-        { title: "เด็ด (Ded)", col1: "#00ffaa", col2: "#ffff00", keywords: ["ded", "เด็ด"] },
-        { title: "Heartstopper", col1: "#ff3399", col2: "#ffccff", keywords: ["heartstopper"] },
-        { title: "Into You", col1: "#cc99ff", col2: "#ffe6f2", keywords: ["into you"] },
-        { title: "Boo", col1: "#99ffcc", col2: "#ffffff", keywords: ["boo"] }
+        { title: "Too Cute", col1: "#ff99cc", col2: "#ffffff", keywords: ["too cute", "เกินต้าน","หลงเธออีกแล้ว","ก็เธอน่ารัก","จนเกินต้านขนาดนี้","จะรักคนคนนี้","ไม่ได้หรอก"] },
+        { title: "PiXXeL", col1: "#ffccff", col2: "#d4a5ff", keywords: ["pixxel","พักบ้างหรือยัง","หากเธอล้มฉันจะรับ","หากเธอล้าให้เธอพัก"] },
+        { title: "DED", col1: "#00ffaa", col2: "#ffff00", keywords: ["ded", "เด็ด","miss you", "อย่าให้ดอกไม้ เดี๋ยวฉันน่ะ","Ya-ya-ya-ya-ya-ya-a-a"] },
+        { title: "Heartstopper", col1: "#ff3399", col2: "#ffccff", keywords: ["heartstopper", "มาเบล","Mabel","heart a a a a a stopper"] },
+        { title: "Into You", col1: "#cc99ff", col2: "#ffe6f2", keywords: ["into you", "ก็มันชอบอยู่ชอบอยู่","เธอรู้ยัง","ต้องเป็นเธอ"] },
+        { title: "Boo", col1: "#99ffcc", col2: "#ffffff", keywords: ["boo","ya ya ya", "งอนนะ", "งอนแล้วนะ","งอนละ", "เธอไม่มาง้อกันสักที","ถ้าไม่มาขอโทษดีดี"] }
     ],
     "Q4": [
-        { title: "rain", col1: "#0a2a66", col2: "#44e3ff", keywords: ["rain", "雨", "下雨", "ติดฝน"] },
-        { title: "Aftercry", col1: "#1a1a2e", col2: "#16213e", keywords: ["aftercry"] },
-        { title: "Deep Talk", col1: "#0f3460", col2: "#e94560", keywords: ["deep talk"] },
-        { title: "ไม่ได้ก็不เอา (Whatever)", col1: "#ff66aa", col2: "#ffcc33", keywords: ["whatever", "隨便", "ไม่ได้ก็ไม่เอา"] }
+        { title: "rain", col1: "#0a2a66", col2: "#44e3ff", keywords: ["rain", "ติดจะไม่ไหว", "ไม่ไหว", "ติดฝน"] },
+        { title: "Aftercry", col1: "#1a1a2e", col2: "#16213e", keywords: ["aftercry", "wohoo", "wu wu wu", “it will be better"] },
+        { title: "Deep Talk", col1: "#0f3460", col2: "#e94560", keywords: ["deep talk", "Ingkho", "อิงโกะ"] },
+        { title: "ไม่ได้ก็ไม่เอา (Whatever)", col1: "#ff66aa", col2: "#ffcc33", keywords: ["whatever", "ไม่ได้", "ไม่ได้ก็ไม่เอา"] }
     ]
 };
 
