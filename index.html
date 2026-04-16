@@ -70,13 +70,13 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 const songDatabase = {
     "Q1": [
         { title: "Shake!", col1: "#ff3300", col2: "#ffcc00", keywords: ["shake", "เชค", "summer shake", "shake it shake it"] },
-        { title: "FYI", col1: "#ff0066", col2: "#ff99cc", keywords: ["fyi"] },
+        { title: "FYI", col1: "#ff0066", col2: "#ff99cc", keywords: ["fyi","ก็มันชอบอยู่ชอบอยู่","เธอรู้ยัง","เขินอยู่", "แต่กลัวไม่ทัน","ยังโสดอยู่นะ","จีบเธอก่อนแล้วกัน"] },
         { title: "ACHOO!", col1: "#00ccff", col2: "#00ff99", keywords: ["achoo", "ฮัดชิ้ว", "พิมมา", "I'mma I'mma", "allergic to you", "Pimma"] },
         { title: "Not Bad", col1: "#333333", col2: "#00ff88", keywords: ["not bad", "ก็ไม่ได้แย่"] },
         { title: "Game Changer", col1: "#6600ff", col2: "#00ffff", keywords: ["game changer","hair flip", "heart flip", "ไม่ดี", "game switch"] }
     ],
     "Q2": [
-        { title: "Mutelu", col1: "#200a44", col2: "#cc33ff", keywords: ["mutelu", "มูเตลู", "a-ou"] },
+        { title: "Mutelu", col1: "#200a44", col2: "#cc33ff", keywords: ["mutelu", "มูเตลู", "พรหมลิขิตจะทำให้เราได้หากันเจอ", "oh ah-ah-ah-ah-ah-ah","Everything for you","cupid"] },
         { title: "Pick A Card", col1: "#ff0033", col2: "#000000", keywords: ["pick a card", "I'll tell you what to do","my baby boo"] },
         { title: "Dejayou", col1: "#330066", col2: "#ff00ff", keywords: ["dejayou", "deja","oh boy you make me","คิดถึงเธออีกแล้ว"] },
         { title: "TOXIQUE", col1: "#111111", col2: "#ff0000", keywords: ["toxique", "toxic", "girl you're toxic", "come a little closer now","you know it","don't ya"] },
@@ -91,14 +91,14 @@ const songDatabase = {
         { title: "PiXXeL", col1: "#ffccff", col2: "#d4a5ff", keywords: ["pixxel","พักบ้างหรือยัง","หากเธอล้มฉันจะรับ","หากเธอล้าให้เธอพัก"] },
         { title: "DED", col1: "#00ffaa", col2: "#ffff00", keywords: ["ded", "เด็ด","miss you", "อย่าให้ดอกไม้ เดี๋ยวฉันน่ะ","Ya-ya-ya-ya-ya-ya-a-a"] },
         { title: "Heartstopper", col1: "#ff3399", col2: "#ffccff", keywords: ["heartstopper", "มาเบล","Mabel","heart a a a a a stopper"] },
-        { title: "Into You", col1: "#cc99ff", col2: "#ffe6f2", keywords: ["into you", "ก็มันชอบอยู่ชอบอยู่","เธอรู้ยัง","ต้องเป็นเธอ"] },
+        { title: "Into You", col1: "#cc99ff", col2: "#ffe6f2", keywords: ["into you", "Like to spend my time with me","จะเปิดให้เธอเข้ามา","Cha-cha-di-da","Alright up to you"] },
         { title: "Boo", col1: "#99ffcc", col2: "#ffffff", keywords: ["boo","ya ya ya", "งอนนะ", "งอนแล้วนะ","งอนละ", "เธอไม่มาง้อกันสักที","ถ้าไม่มาขอโทษดีดี"] }
     ],
     "Q4": [
-        { title: "rain", col1: "#0a2a66", col2: "#44e3ff", keywords: ["rain", "ติดจะไม่ไหว", "ไม่ไหว", "ติดฝน"] },
-        { title: "Aftercry", col1: "#1a1a2e", col2: "#16213e", keywords: ["aftercry", "wohoo", "wu wu wu", “it will be better"] },
-        { title: "Deep Talk", col1: "#0f3460", col2: "#e94560", keywords: ["deep talk", "Ingkho", "อิงโกะ"] },
-        { title: "ไม่ได้ก็ไม่เอา (Whatever)", col1: "#ff66aa", col2: "#ffcc33", keywords: ["whatever", "ไม่ได้", "ไม่ได้ก็ไม่เอา"] }
+        { title: "rain", col1: "#0a2a66", col2: "#44e3ff", keywords: ["rain", "ติดเธอไม่ไหว", "ไม่ไหว", "ติดฝน","เธอต้องไปรึยัง","อยากเจอเธอทุกวัน","พอเป็นไปได้ไหม","ยู่ด้วยกันก่อนได้ไหม"] },
+        { title: "Aftercry", col1: "#1a1a2e", col2: "#16213e", keywords: ["aftercry", "wohoo", "wu wu wu", "it will be better"] },
+        { title: "Deep Talk", col1: "#0f3460", col2: "#e94560", keywords: ["deep talk", "Ingkho", "อิงโกะ","อยู่คุยกันคืนนี้ข้ามผ่านยามนิทรา","มาน่าฟังกว่าใคร","บทสนทนาไม่รู้เวลา", "ฉันฟังแต่เธอ"] },
+        { title: "ไม่ได้ก็ไม่เอา (Whatever)", col1: "#ff66aa", col2: "#ffcc33", keywords: ["whatever", "ไม่ได้", "ไม่ได้ก็ไม่เอา","ฉันก็คงไม่รอแล้ว","ฉันก็คงต้องพอเสียที","ถ้าเธอไม่ใช่","ก็ไม่ต้องยื้อกันแบบนี้","เหนื่อยเต็มที","ไม่ได้ก็ไม่เอา"] }
     ]
 };
 
@@ -189,9 +189,9 @@ function calculateResult() {
     let c1 = null, c2 = null, isSpecial = false;
 
     // 1. 成員與團名彩蛋 (泰語+英語)
-    if (recognizedText.includes("mabel") || recognizedText.includes("มาเบล")) { c1 = "#ff0033"; c2 = "#8800ff"; isSpecial = true; finalSong = songDatabase["Q1"][1]; }
-    else if (recognizedText.includes("ingkho") || recognizedText.includes("อิงโกะ")) { c1 = "#ffff00"; c2 = "#ff66aa"; isSpecial = true; finalSong = songDatabase["Q3"][0]; }
-    else if (recognizedText.includes("pimma") || recognizedText.includes("พิมมา")) { c1 = "#0088ff"; c2 = "#00ffaa"; isSpecial = true; finalSong = songDatabase["Q2"][0]; }
+    if (recognizedText.includes("mabel") || recognizedText.includes("มาเบล")) { c1 = "#ff0033"; c2 = "#8800ff"; isSpecial = true; finalSong = songDatabase["Q3"][4]; }
+    else if (recognizedText.includes("ingkho") || recognizedText.includes("อิงโกะ")) { c1 = "#ffff00"; c2 = "#ff66aa"; isSpecial = true; finalSong = songDatabase["Q4"][3]; }
+    else if (recognizedText.includes("pimma") || recognizedText.includes("พิมมา")) { c1 = "#0088ff"; c2 = "#00ffaa"; isSpecial = true; finalSong = songDatabase["Q1"][3]; }
     else if (recognizedText.includes("pixxie") || recognizedText.includes("พิกซี่")) { isSpecial = true; }
 
     // 2. 歌名匹配
