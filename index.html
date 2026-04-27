@@ -987,6 +987,12 @@ function calculateResult() {
     }, 1000);
 }
 
+    // 顯示結果
+    document.getElementById('intro-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    initThreeJS();
+    setTimeout(() => card.classList.add('revealed'), 200);
+}
 
 </script>
 </body>
