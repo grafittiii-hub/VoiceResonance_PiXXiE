@@ -777,109 +777,7 @@ const handleMove = (e) => {
 };
 
 
-let isPlaying = true; // 因為 calculateResult 觸發時會自動播放，所以預設為 true
 
-document.addEventListener('DOMContentLoaded', () => {
-    const musicBtn = document.getElementById('musicToggleBtn');
-
-    if (musicBtn) {
-        musicBtn.addEventListener('click', function(e) {
-            e.stopPropagation(); // 防止事件冒泡
-            
-            // 點擊動畫
-            this.classList.add('animating');
-            setTimeout(() => this.classList.remove('animating'), 600);
-
-            // 檢查 YouTube API 是否準備好
-            if (!player || typeof player.getPlayerState !== 'function') {
-                console.log("YouTube Player 尚未就緒");
-                return;
-            }
-
-            // 取得目前播放狀態：1 是播放中，2 是暫停
-            const state = player.getPlayerState();
-
-            if (state === 1) { // 正在播放，執行暫停
-                player.pauseVideo();
-                this.innerText = "♫"; // 顯示播放符號
-                isPlaying = false;
-            } else { // 正在暫停，執行播放
-                player.playVideo();
-                this.innerText = "□"; // 顯示停止符號
-                isPlaying = true;
-            }
-        });
-    }
-
-    // 修復 Retry 時也要重置音樂按鈕
-    const retryBtn = document.getElementById('retryBtn');
-    if (retryBtn) {
-        retryBtn.addEventListener('click', function() {
-            // ... 你原本的 retry 邏輯 ...
-            
-            // 重置音樂按鈕符號
-            if (musicBtn) {
-                musicBtn.innerText = "□";
-                isPlaying = true;
-            }
-        });
-    }
-});
-
-// Re-try 按鈕點擊過渡效果
-document.getElementById('retryBtn').addEventListener('click', function(e) {
-    e.preventDefault();
-    this.classList.add('animating');
-    const rect = this.getBoundingClientRect();
-    spawnDust(rect.left + rect.width / 2, rect.top + rect.height / 2, 8); // 炸出大量閃粉
-// [新增] 停止播放
-    if (player && typeof player.stopVideo === 'function') {
-        player.stopVideo();
-    }
-    
-setTimeout(() => {
-    this.classList.remove('animating');
-
-    const intro = document.getElementById('intro-screen');
-    const result = document.getElementById('result-screen');
-    const orb = document.getElementById('orb');
-    const title = document.querySelector('.title-container'); // 假設你的標題容器名稱
-
-    if (intro && result) {
-        result.style.display = 'none';
-        // 使用空字串，讓它自動回歸 CSS 裡定義的屬性（flex 或 block）
-        intro.style.display = ''; 
-        
-        // --- [關鍵] 強制重置視覺屬性 ---
-        if (orb) {
-            orb.style.opacity = "1";
-            orb.style.transform = "scale(1)";
-            orb.style.visibility = "visible";
-            orb.className = "soul-orb"; // 移除 recording 等 class
-        }
-        
-        if (title) {
-            title.style.opacity = "1";
-            title.style.transform = "translateY(0)";
-        }
-        
-        // 強制手機瀏覽器重繪 (Reflow)
-        void intro.offsetHeight; 
-    }
-
-    // 恢復背景波紋
-    if (typeof waves !== 'undefined') {
-        waves.forEach(w => {
-            w.style.opacity = "0.15";
-            w.style.transform = "scale(1)";
-        });
-    }
-
-    // 解決手機版可能產生的捲動問題
-    window.scrollTo(0, 0);
-
-}, 600);
-});
 
 // 錄音結束重置
 function endResonance(e) {
@@ -1018,7 +916,109 @@ function calculateResult() {
     setTimeout(() => card.classList.add('revealed'), 200);
 }
 
+let isPlaying = true; // 因為 calculateResult 觸發時會自動播放，所以預設為 true
 
+document.addEventListener('DOMContentLoaded', () => {
+    const musicBtn = document.getElementById('musicToggleBtn');
+
+    if (musicBtn) {
+        musicBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // 防止事件冒泡
+            
+            // 點擊動畫
+            this.classList.add('animating');
+            setTimeout(() => this.classList.remove('animating'), 600);
+
+            // 檢查 YouTube API 是否準備好
+            if (!player || typeof player.getPlayerState !== 'function') {
+                console.log("YouTube Player 尚未就緒");
+                return;
+            }
+
+            // 取得目前播放狀態：1 是播放中，2 是暫停
+            const state = player.getPlayerState();
+
+            if (state === 1) { // 正在播放，執行暫停
+                player.pauseVideo();
+                this.innerText = "♫"; // 顯示播放符號
+                isPlaying = false;
+            } else { // 正在暫停，執行播放
+                player.playVideo();
+                this.innerText = "□"; // 顯示停止符號
+                isPlaying = true;
+            }
+        });
+    }
+
+    // 修復 Retry 時也要重置音樂按鈕
+    const retryBtn = document.getElementById('retryBtn');
+    if (retryBtn) {
+        retryBtn.addEventListener('click', function() {
+            // ... 你原本的 retry 邏輯 ...
+            
+            // 重置音樂按鈕符號
+            if (musicBtn) {
+                musicBtn.innerText = "□";
+                isPlaying = true;
+            }
+        });
+    }
+});
+
+// Re-try 按鈕點擊過渡效果
+document.getElementById('retryBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    this.classList.add('animating');
+    const rect = this.getBoundingClientRect();
+    spawnDust(rect.left + rect.width / 2, rect.top + rect.height / 2, 8); // 炸出大量閃粉
+// [新增] 停止播放
+    if (player && typeof player.stopVideo === 'function') {
+        player.stopVideo();
+    }
+    
+setTimeout(() => {
+    this.classList.remove('animating');
+
+    const intro = document.getElementById('intro-screen');
+    const result = document.getElementById('result-screen');
+    const orb = document.getElementById('orb');
+    const title = document.querySelector('.title-container'); // 假設你的標題容器名稱
+
+    if (intro && result) {
+        result.style.display = 'none';
+        // 使用空字串，讓它自動回歸 CSS 裡定義的屬性（flex 或 block）
+        intro.style.display = ''; 
+        
+        // --- [關鍵] 強制重置視覺屬性 ---
+        if (orb) {
+            orb.style.opacity = "1";
+            orb.style.transform = "scale(1)";
+            orb.style.visibility = "visible";
+            orb.className = "soul-orb"; // 移除 recording 等 class
+        }
+        
+        if (title) {
+            title.style.opacity = "1";
+            title.style.transform = "translateY(0)";
+        }
+        
+        // 強制手機瀏覽器重繪 (Reflow)
+        void intro.offsetHeight; 
+    }
+
+    // 恢復背景波紋
+    if (typeof waves !== 'undefined') {
+        waves.forEach(w => {
+            w.style.opacity = "0.15";
+            w.style.transform = "scale(1)";
+        });
+    }
+
+    // 解決手機版可能產生的捲動問題
+    window.scrollTo(0, 0);
+
+}, 600);
+});
 
 </script>
 </body>
