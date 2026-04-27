@@ -23,9 +23,8 @@
     <style>
         :root { 
             --primary-fairy: #d4a5ff; 
-            --bg-dark: #2b0c38; 
-            --card-w: 320px; 
-            --card-h: 500px; 
+            --card-w: 300px; 
+            --card-h: 520px; 
             --border-width: 2px;
         }
         
@@ -38,32 +37,28 @@
         
         body { 
             margin: 0; padding: 0; 
-            background: 
-        radial-gradient(circle at 15% 50%, rgba(212, 165, 255, 0.15), transparent 40%),
-        radial-gradient(circle at 85% 30%, rgba(139, 20, 247, 0.15), transparent 50%),
-        radial-gradient(circle at 50% 80%, rgba(250, 45, 79, 0.1), transparent 50%),
-        var(--bg-dark);
-    background-size: 150% 150%; animation: nebulaDrift 15s ease-in-out infinite alternate;
-            color: #fff; 
+            background-size: 150% 150%;
+            background: linear-gradient(180deg, #441a5e 0%, #6b3c8f 40%, #441a5e 100%); color: #fff; 
             font-family: 'Montserrat', 'Prompt', sans-serif; 
             display: flex; align-items: center; justify-content: center; 
             min-height: 100vh; width: 100vw;
             overflow: hidden; touch-action: none; overscroll-behavior: none; 
         }
-	@keyframes nebulaDrift {
-    0% { background-position: 0% 0%; }
-    100% { background-position: 100% 100%; }
-}
+
 
 /* --- 動態背景：夢幻極光 --- */
 .aurora-bg {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 0; /* 確保在最底層 */
-    background: linear-gradient(180deg, #573182 0%, #c28bd9 40%, #371559 100%);
-    overflow: hidden;
+    z-index: 0; 
+    background: linear-gradient(180deg, #621d7a 0%, #e7b3fc 40%, #371559 100%);
+    overflow: hidden;animation: energy-breath 7s ease-in-out infinite;
 }
-
+@keyframes energy-breath {
+    0% { opacity: 0.9; }
+    50% { opacity: 0.66;}
+    100% { opacity: 0.9;}
+}
 
 /* 隱藏 YouTube 播放器容器 */
 #youtube-player-container {
@@ -78,7 +73,7 @@ body::before {
     content: "";
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    opacity: 0.05; pointer-events: none; z-index: 1;
+    opacity: 0.07; pointer-events: none; z-index: 1;
 }
 /* --- 2. 確保 UI 容器層級高於噪點 --- */
 #intro-screen, #result-screen {
@@ -102,13 +97,27 @@ body::before {
         .delay-1 { animation-delay: 0.2s; } 
         .delay-2 { animation-delay: 0.4s; }
         
-        #intro-screen { text-align: center; z-index: 10; width: 100%; position: relative; display: block; }
+        #intro-screen { display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* 從頂部開始排版，而非正中央 */
+    padding-top: 10vh; /* 讓內容離頂部有 10% 的距離，位置更高 */
+    text-align: center;
+    width: 100%;
+    height: 100vh; }
+
+.intro-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px; /* [關鍵] 直接控制標題與副標題的間距，越小越近 */
+}
         
         /* 修正：移除 uppercase，保留 PiXXiE 原始大小寫 */
         .main-title {
     font-family: 'Syne', sans-serif; /* 使用新的時尚字體 */
-    font-size: 3.5rem;
-    font-weight: 800;
+    font-size: clamp(2rem, 10vw, 3.5rem);
+    font-weight: 800; margin: 0;line-height: 1.1;
     letter-spacing: 3px;
     cursor: pointer;
     transition: all 0.3s;
@@ -128,12 +137,12 @@ body::before {
         }
 
    
-        .sub-title { font-size: 0.7rem; letter-spacing: 5px; color: rgba(255,255,255,0.4); margin-bottom: 60px; }
+        .sub-title { font-size: clamp(0.55rem, 6vw, 0.85rem); margin: 3vh 0 5vh 0; letter-spacing: 5px; color: rgba(255,255,255,0.4); }
         
         /* 多層次聲波環佈局 */
         .orb-container { 
-            position: relative; width: 280px; height: 280px; 
-            margin: 0 auto; display: flex; align-items: center; justify-content: center; 
+            position: relative; width: 250px; height: 250px; 
+            margin: auto; display: flex; flex:1; align-items: center; justify-content: center; max-height: 25vh;
         }
         
         .mic-wave { 
@@ -156,7 +165,7 @@ body::before {
         }
         
         .soul-orb { 
-            width: 120px; height: 120px; border-radius: 50%; 
+            width: clamp(100px, 20vh, 200px); height: clamp(100px, 20vh, 200px); border-radius: 50%; 
             background: radial-gradient(circle at 30% 30%, #fff, var(--primary-fairy)); border: 4px solid rgba(212, 165, 255, 0.4); 
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
             cursor: pointer; position: relative; z-index: 5; 
@@ -172,16 +181,6 @@ body::before {
     backface-visibility: hidden;
 }
 
-        .soul-orb.recording { animation: recording-breathe 1.5s ease-in-out infinite; transform: scale(0.9); background: rgba(212, 165, 255, 0.3); border: 2px solid #ffffff !important; box-shadow: 0 0 25px rgba(255, 255, 255, 0.8), 
-                inset 0 0 15px rgba(255, 255, 255, 0.5); }
-@keyframes breathe { 
-    0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(212, 165, 255, 0.1), inset 0 0 20px rgba(255,255,255,0.1); } 
-    50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(212, 165, 255, 0.3), inset 0 0 30px rgba(255,255,255,0.2); } 
-}
-
-        .particle { position: absolute; width: 4px; height: 4px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px var(--primary-fairy); pointer-events: none; opacity: 0; }
-        @keyframes floatUp { 0% { opacity: 0.8; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); } }
-
 /* 新增：聲控日冕（Aura）- 使用 ::before 避免衝突 */
 .soul-orb::before {
     content: '';
@@ -196,7 +195,22 @@ body::before {
     transition: transform 0.05s ease-out, opacity 0.05s ease-out;
     pointer-events: none;
 }
+        .soul-orb.recording { animation: recording-breathe 1.5s ease-in-out infinite; transform: scale(0.9); background: rgba(212, 165, 255, 0.3); border: 2px solid #ffffff !important; box-shadow: 0 0 25px rgba(255, 255, 255, 0.8), 
+                inset 0 0 15px rgba(255, 255, 255, 0.5); }
+@keyframes breathe { 
+    0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(212, 165, 255, 0.1), inset 0 0 20px rgba(255,255,255,0.1); } 
+    50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(212, 165, 255, 0.3), inset 0 0 30px rgba(255,255,255,0.2); } 
+}
+
+        .particle { position: absolute; width: 4px; height: 4px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px var(--primary-fairy); pointer-events: none; opacity: 0; }
+        @keyframes floatUp { 0% { opacity: 0.8; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); } }
+
+
         .soul-orb::after { content: 'REC'; font-size: 11px; letter-spacing: 3px; color: #bf5ee6; font-weight: 700; }
+	.soul-orb.recording::after { 
+    color: #ffffff; 
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); /* 增加白色微光，契合白色邊框 */
+}
         
         /* 升級版全局閃粉特效 (粉紅、黃、綠、水藍、粉紫) */
         .fairy-dust {
@@ -213,13 +227,13 @@ body::before {
             100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.1) rotate(180deg); }
         }
 
-        #result-screen { display: none; min-height: 100dvh; padding: 20px; overflow: hidden; perspective: 1500px; text-align: center; width: 100%; }
+        #result-screen { display: none; min-height: 100dvh; padding: 20px; overflow: hidden; perspective: 1500px; text-align: center; width: 100%; box-sizing: border-box;}
         
         /* 高級壓克力與動態流動邊框 */
         .pixxie-card { 
-            width: var(--card-w); height: var(--card-h);
+            width: var(--card-w, 85vw); height: var(--card-h);
 		aspect-ratio: 300 / 520;
-		max-height: 80dvh; 
+		max-height: 78dvh; 
             background: transparent;
             backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
             border-radius: 28px; 
@@ -423,12 +437,11 @@ body::before {
     /* 定位在左下角 */
     position: absolute;
     left: 25px;
-    bottom: 25px;
     margin-top: 2px; margin-bottom: 10px;
     border: 1px solid rgba(212,165,255,0.4);
     background: rgba(212,165,255,0.3);
     color: #fff;
-    font-size: clamp(0.4rem, 2vw, 1rem);
+    font-size: clamp(0.6rem, 2vw, 1rem);
     cursor: pointer !important;
     backdrop-filter: blur(10px);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -460,9 +473,33 @@ pointer-events: auto !important;
         }
 .music-btn.animating::after { animation: magicRipple 0.6s ease-out; }
 
+/* 1. 全螢幕過渡遮罩：魔法閃光 */
+#transition-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle, #fff, var(--primary-fairy));
+    z-index: 9999;
+    opacity: 0;visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.8s ease-in-out;visibility 0.8s;
+}
+
+/* 2. 定義結果頁元素的初始「隱藏」狀態 */
+#result-screen .pixxie-card,
+#result-screen .btn-group {
+    opacity: 0;
+    transform: translateY(30px); /* 從下方浮上來 */
+    transition: all 0.8s cubic-bezier(0.15, 0.85, 0.35, 1);
+}
+
+/* 3. 當 result-screen 獲得 .active 類別時，內部元素集體浮現 */
+#result-screen.active .pixxie-card { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+#result-screen.active .music-btn { opacity: 1; transform: translateY(0); transition-delay: 0.3s; }
+#result-screen.active .btn-group { opacity: 1; transform: translateY(0); transition-delay: 0.4s; }
     </style>
 </head>
 <body>
+<div id="transition-overlay"></div>
 <div class="aurora-bg"></div>
 <div id="youtube-player-container"><div id="player"></div></div>
     <div id="intro-screen">
@@ -475,7 +512,7 @@ pointer-events: auto !important;
             <div class="mic-wave w4"></div>
             <div class="soul-orb" id="recordBtn"></div>
         </div>
-        <p style="margin-top: 50px; font-size: 0.65rem; color: rgba(212,165,255,0.5); letter-spacing: 3px; font-weight: bold;" class="animate-item delay-2">HOLD ORB TO RESONATE</p>
+        <p style="font-size: clamp(0.4rem, 3vw, 0.6rem); color: rgba(212,165,255,0.5); letter-spacing: 3px; font-weight: bold; bottom: 3vh; display: flex;position: absolute" class="animate-item delay-2">HOLD ORB TO RESONATE</p>
     </div>
 
     <div id="result-screen" style="display:none;">
@@ -487,9 +524,10 @@ pointer-events: auto !important;
                 <div class="rank-badge">Matching</div>
             </div>
         </div>
-	<button id="musicToggleBtn" class="pixxie-btn music-btn">□</button>
+	
         <div class="btn-group">
-            <button class="btn-retry" id="retryBtn">RESONATE AGAIN</button>
+            <button id="musicToggleBtn" class="pixxie-btn music-btn">□</button>
+	<button class="btn-retry" id="retryBtn">RESONATE AGAIN</button>
         </div>
     </div>
 
@@ -634,8 +672,8 @@ let threeInitialized = false;
 function initThreeJS() {
     if (threeInitialized) return;
     const container = document.getElementById('webgl-container');
-    const w = container.clientWidth || 320; 
-    const h = container.clientHeight || 500;
+    const w = container.clientWidth || 300; 
+    const h = container.clientHeight || 520;
     scene = new THREE.Scene();
     
     // 長寬比改為動態比例
@@ -898,11 +936,20 @@ function endResonance(e) {
 
 
 function calculateResult() {
+    const overlay = document.getElementById('transition-overlay');
+    const intro = document.getElementById('intro-screen');
+    const result = document.getElementById('result-screen');
+    const card = document.getElementById('soulCard');
+    const badge = document.querySelector('.rank-badge');
+    const musicBtn = document.getElementById('musicToggleBtn'); // 確保抓到音樂按鈕
+
     const frames = audioHistory.length;
     const avgVol = audioHistory.reduce((a,b)=>a+b,0)/frames || 0;
     const allSongs = Object.values(songDatabase).flat();
-    let finalSong = null; let isMemberKey = false;
-    let category = "Q1";
+    
+    let finalSong = null; 
+    let isMemberKey = false;
+    let category = "Q1"; // 修正：恢復你原本的 category 變數定義
 
     const text = recognizedText.toLowerCase();
 
@@ -923,9 +970,6 @@ function calculateResult() {
         finalSong = songDatabase[category][Math.floor(Math.random() * songDatabase[category].length)];
     }
 
-    const card = document.getElementById('soulCard');
-    const badge = document.querySelector('.rank-badge');
-
     // 確保浮水印存在
     if (!document.querySelector('.watermark')) {
         const wm = document.createElement('div');
@@ -939,20 +983,17 @@ function calculateResult() {
     // 清空舊樣式並套用新季度背景裝飾
     card.className = "pixxie-card";
 
-    // --- 階級分類邏輯 (A, S, SS, SSS) ---
+    // --- 階級分類邏輯 ---
     const ssSpecial = ["ACHOO!", "Deep Talk", "Heartstopper"].includes(finalSong.title);
     let finalRank = "A";
 
     if (frames > 60 && avgVol > 28) {
         finalRank = "SSS";
-    } 
-    else if (ssSpecial || isMemberKey) {
+    } else if (ssSpecial || isMemberKey) {
         finalRank = "SS";
-    } 
-    else if (finalSong.bg1 || frames > 30 || avgVol > 20 ) {
+    } else if (finalSong.bg1 || frames > 30 || avgVol > 20 ) {
         finalRank = "S";
-    } 
-    else {
+    } else {
         finalRank = "A";
     }
 
@@ -969,48 +1010,81 @@ function calculateResult() {
         card.classList.add("rank-s");
         badge.innerText = "S Rank Harmony";
         badge.className = "rank-badge s-style";
-        const c1 = finalSong.bg1 || getRandomVibrantColor();
-        const c2 = finalSong.bg2 || getRandomVibrantColor();
-        card.style.setProperty('--bg-g1', c1);
-        card.style.setProperty('--bg-g2', c2);
+        card.style.setProperty('--bg-g1', finalSong.bg1 || getRandomVibrantColor());
+        card.style.setProperty('--bg-g2', finalSong.bg2 || getRandomVibrantColor());
     } else {
         card.classList.add("rank-a");
         badge.innerText = "A Rank Sync";
         badge.className = "rank-badge a-style";
-        const rankAColors = {
-            "Q1": "#701b1b",
-            "Q2": "#7a48b8",
-            "Q3": "#e66cbf",
-            "Q4": "#36add9"
-        };
+        const rankAColors = { "Q1": "#701b1b", "Q2": "#7a48b8", "Q3": "#e66cbf", "Q4": "#36add9" };
         card.style.setProperty('--bg-q-color', rankAColors[category]);
     }
 
-    // [新增] 觸發播放音樂
-    // 這裡增加了安全檢查，避免 player 尚未載入時發生錯誤
- if (player && typeof player.loadVideoById === 'function') {
-    player.loadVideoById({
-        videoId: finalSong.ytid,
-        suggestedQuality: 'small'
-    });
-    
-    // 嘗試直接播放
-    player.playVideo();
+    // ==========================================
+    // --- 魔法過渡動畫與播放邏輯 (完美解耦版) ---
+    // ==========================================
 
-    // 檢查是否被瀏覽器擋下
-    setTimeout(() => {
-        if (player.getPlayerState() !== 1) { // 1 代表正在播放
-            console.log("自動播放被攔截，等待使用者點擊音樂按鈕");
-            if(musicBtn) musicBtn.innerText = "♪"; // 提示使用者點擊播放
+    // Step 1: 啟動過渡遮罩
+    if (overlay) {
+        overlay.style.visibility = "visible";
+        overlay.style.opacity = "1";
+    }
+
+    // Step 2: 獨立處理 YouTube 播放 (不影響畫面切換)
+    if (player && typeof player.loadVideoById === 'function') {
+        try {
+            player.loadVideoById({ videoId: finalSong.ytid, suggestedQuality: 'small' });
+            player.playVideo();
+            
+            // 延遲檢查是否被瀏覽器擋下
+            setTimeout(() => {
+                if (player.getPlayerState() !== 1 && musicBtn) { 
+                    musicBtn.innerText = "♪"; // 提示使用者手動播放
+                    isPlaying = false;
+                } else if (musicBtn) {
+                    musicBtn.innerText = "□"; // 正常播放中
+                    isPlaying = true;
+                }
+            }, 1000);
+        } catch (e) {
+            console.error("YouTube Play Error:", e);
         }
-    }, 1000);
-}
+    }
 
-    // 顯示結果
-    document.getElementById('intro-screen').style.display = 'none';
+    // Step 3: 在遮罩不透明的瞬間 (0.5秒後) 偷換背景並浮現結果
+    setTimeout(() => {
+        // 1. 隱藏主頁
+        if (intro) intro.style.display = 'none';
+        
+        // 2. 顯示結果頁 (必須用 flex，並且先移除 active 確保是透明狀態)
+        if (result) {
+            result.style.display = 'flex';
+            result.classList.remove('active');
+            
+            // 強制重繪，讓瀏覽器確認已經變成 flex
+            void result.offsetHeight; 
+            
+            // 觸發進場動畫
+            result.classList.add('active');
+        }
+
+        // 3. 撤退遮罩
+        if (overlay) {
+            overlay.style.opacity = "0";
+            // 等待淡出完畢後徹底隱藏
+            setTimeout(() => { overlay.style.visibility = "hidden"; }, 500);
+        }
+
+     document.getElementById('intro-screen').style.display = 'none';
     document.getElementById('result-screen').style.display = 'block';
-    initThreeJS();
-    setTimeout(() => card.classList.add('revealed'), 200);
+  
+       // 4. 觸發 3D 渲染與卡片翻轉
+        initThreeJS();
+        setTimeout(() => {
+            if (card) card.classList.add('revealed');
+        }, 200);
+
+    }, 800); // 對應 CSS 中 overlay 的 0.8s transition
 }
 
 
