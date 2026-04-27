@@ -179,6 +179,13 @@ body::before {
             animation: breathe 3s ease-in-out infinite; 
 	--mic-vol: 0; /* 用於 JS 控制的變數 */
         }
+
+.soul-orb, .title-container {
+    will-change: transform, opacity; /* 告訴瀏覽器這些屬性會變動 */
+    -webkit-backface-visibility: hidden; /* 防止閃爍 */
+    backface-visibility: hidden;
+}
+
         .soul-orb.recording { animation: recording-breathe 1.5s ease-in-out infinite; transform: scale(0.9); background: rgba(212, 165, 255, 0.3); border: 2px solid #ffffff !important; box-shadow: 0 0 25px rgba(255, 255, 255, 0.8), 
                 inset 0 0 15px rgba(255, 255, 255, 0.5); }
 @keyframes breathe { 
@@ -831,30 +838,47 @@ document.getElementById('retryBtn').addEventListener('click', function(e) {
     }
     
 setTimeout(() => {
-        this.classList.remove('animating');
-        
-        // 隱藏結果畫面，顯示初始畫面
-        document.getElementById('result-screen').style.display = 'none';
-        document.getElementById('intro-screen').style.display = 'block';
-        
-	waves.forEach(w => {
-            if (w) {
-                w.style.opacity = "0.3";
-                w.style.transform = "scale(1)";
-            }
-        });
+    this.classList.remove('animating');
 
-	// 重置播放器
-        if (player && typeof player.stopVideo === 'function') {
-            player.stopVideo();
+    const intro = document.getElementById('intro-screen');
+    const result = document.getElementById('result-screen');
+    const orb = document.getElementById('orb');
+    const title = document.querySelector('.title-container'); // 假設你的標題容器名稱
+
+    if (intro && result) {
+        result.style.display = 'none';
+        // 使用空字串，讓它自動回歸 CSS 裡定義的屬性（flex 或 block）
+        intro.style.display = ''; 
+        
+        // --- [關鍵] 強制重置視覺屬性 ---
+        if (orb) {
+            orb.style.opacity = "1";
+            orb.style.transform = "scale(1)";
+            orb.style.visibility = "visible";
+            orb.className = "soul-orb"; // 移除 recording 等 class
         }
-
-        // 清除上一張卡片的殘留樣式
-        const card = document.getElementById('soulCard');
-	card.className = "pixxie-card";
-	card.style = "";
         
-    }, 600); // 等待動畫完成再切換
+        if (title) {
+            title.style.opacity = "1";
+            title.style.transform = "translateY(0)";
+        }
+        
+        // 強制手機瀏覽器重繪 (Reflow)
+        void intro.offsetHeight; 
+    }
+
+    // 恢復背景波紋
+    if (typeof waves !== 'undefined') {
+        waves.forEach(w => {
+            w.style.opacity = "0.15";
+            w.style.transform = "scale(1)";
+        });
+    }
+
+    // 解決手機版可能產生的捲動問題
+    window.scrollTo(0, 0);
+
+}, 600);
 });
 
 // 錄音結束重置
@@ -993,6 +1017,8 @@ function calculateResult() {
     initThreeJS();
     setTimeout(() => card.classList.add('revealed'), 200);
 }
+
+
 
 </script>
 </body>
