@@ -819,75 +819,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 將所有 Retry 邏輯整合在一個監聽器內
-document.addEventListener('DOMContentLoaded', () => {
-    const retryBtn = document.getElementById('retryBtn');
-    const musicBtn = document.getElementById('musicToggleBtn');
-
-    if (retryBtn) {
-        retryBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // 1. 動畫與閃粉
-            this.classList.add('animating');
-            const rect = this.getBoundingClientRect();
-            if (typeof spawnDust === 'function') {
-                spawnDust(rect.left + rect.width / 2, rect.top + rect.height / 2, 8);
-            }
-
-            // 2. 停止音樂並重置按鈕符號
-            if (player && typeof player.stopVideo === 'function') {
-                player.stopVideo();
-                if (musicBtn) {
-                    musicBtn.innerText = "♫"; // 回到初始播放符號
-                }
-                // 如果你有 isPlaying 變數，記得更新
-                if (typeof isPlaying !== 'undefined') isPlaying = false;
-            }
-
-            // 3. 延遲執行畫面切換
-            setTimeout(() => {
-                this.classList.remove('animating');
-
-                const resultScreen = document.getElementById('result-screen');
-                const introScreen = document.getElementById('intro-screen');
-
-                if (resultScreen && introScreen) {
-                    resultScreen.style.display = 'none';
-                    
-                    // --- 關鍵修正：不要寫 block 或 flex ---
-                    // 設定為空字串，瀏覽器會自動採用 CSS 裡定義的樣式 (例如 .screen 的 flex)
-                    introScreen.style.display = ''; 
-                }
-
-                // 4. 重置波紋 (waves)
-                if (typeof waves !== 'undefined' && waves) {
-                    waves.forEach(w => {
-                        if (w && w.style) {
-                            w.style.opacity = "0.3"; // 恢復主頁淡淡的透明度
-                            w.style.transform = "scale(1)";
-                        }
-                    });
-                }
-
-                // 5. 清除卡片殘留樣式
-                const card = document.getElementById('soulCard');
-                if (card) {
-                    card.className = "pixxie-card";
-                    card.style.transform = ""; 
-                    card.style.opacity = "";
-                }
-                
-                // 6. 確保 Orb 回復顯示 (針對手機版消失的問題)
-                const orb = document.getElementById('orb');
-                if (orb) {
-                    orb.style.opacity = "1";
-                    orb.style.display = "flex";
-                }
-
-            }, 600);
-        });
+// Re-try 按鈕點擊過渡效果
+document.getElementById('retryBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    this.classList.add('animating');
+    const rect = this.getBoundingClientRect();
+    spawnDust(rect.left + rect.width / 2, rect.top + rect.height / 2, 8); // 炸出大量閃粉
+// [新增] 停止播放
+    if (player && typeof player.stopVideo === 'function') {
+        player.stopVideo();
     }
+    
+setTimeout(() => {
+        this.classList.remove('animating');
+        
+        // 隱藏結果畫面，顯示初始畫面
+        document.getElementById('result-screen').style.display = 'none';
+        document.getElementById('intro-screen').style.display = 'block';
+        
+	waves.forEach(w => {
+            if (w) {
+                w.style.opacity = "0.3";
+                w.style.transform = "scale(1)";
+            }
+        });
+
+	// 重置播放器
+        if (player && typeof player.stopVideo === 'function') {
+            player.stopVideo();
+        }
+
+        // 清除上一張卡片的殘留樣式
+        const card = document.getElementById('soulCard');
+	card.className = "pixxie-card";
+	card.style = "";
+        
+    }, 600); // 等待動畫完成再切換
 });
 
 // 錄音結束重置
@@ -1015,18 +982,10 @@ function calculateResult() {
     setTimeout(() => {
         if (player.getPlayerState() !== 1) { // 1 代表正在播放
             console.log("自動播放被攔截，等待使用者點擊音樂按鈕");
-            if(musicBtn) musicBtn.innerText = "♫"; // 提示使用者點擊播放
+            if(musicBtn) musicBtn.innerText = "♪"; // 提示使用者點擊播放
         }
     }, 1000);
 }
-
-    // 顯示結果
-    document.getElementById('intro-screen').style.display = 'none';
-    document.getElementById('result-screen').style.display = 'block';
-    initThreeJS();
-    setTimeout(() => card.classList.add('revealed'), 200);
-}
-
 
 
 </script>
