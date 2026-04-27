@@ -3,16 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PiXXiE Soul Resonance - Ultimate Edition</title>
+    <title>Voice Resonance - PiXXiE Fairy Dust Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;700;800;900&family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+	<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+    let player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '0',
+            width: '0',
+            videoId: '',
+            playerVars: { 'autoplay': 0, 'controls': 0 }
+        });
+    }
+</script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <style>
         :root { 
             --primary-fairy: #d4a5ff; 
-            --bg-dark: #0a0b10; 
+            --bg-dark: #2b0c38; 
             --card-w: 320px; 
-            --card-h: 520px; 
+            --card-h: 500px; 
             --border-width: 2px;
         }
         
@@ -25,13 +38,75 @@
         
         body { 
             margin: 0; padding: 0; 
-            background-color: var(--bg-dark); 
+            background: 
+        radial-gradient(circle at 15% 50%, rgba(212, 165, 255, 0.15), transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(139, 20, 247, 0.15), transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(250, 45, 79, 0.1), transparent 50%),
+        var(--bg-dark);
+    background-size: 150% 150%; animation: nebulaDrift 15s ease-in-out infinite alternate;
             color: #fff; 
             font-family: 'Montserrat', 'Prompt', sans-serif; 
             display: flex; align-items: center; justify-content: center; 
             min-height: 100vh; width: 100vw;
             overflow: hidden; touch-action: none; overscroll-behavior: none; 
         }
+	@keyframes nebulaDrift {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+}
+
+/* --- 動態背景：夢幻極光 --- */
+.aurora-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0; /* 確保在最底層 */
+    background: linear-gradient(180deg, #573182 0%, #c28bd9 40%, #371559 100%);
+    overflow: hidden;
+}
+
+
+/* 隱藏 YouTube 播放器容器 */
+#youtube-player-container {
+    position: absolute;
+    width: 1px; height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 膠片噪點遮罩 */
+body::before {
+    content: "";
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.05; pointer-events: none; z-index: 1;
+}
+/* --- 2. 確保 UI 容器層級高於噪點 --- */
+#intro-screen, #result-screen {
+    position: relative;
+    z-index: 10; /* 高於噪點的 1 */
+}
+
+/* --- 標題字體升級 --- */
+#pixxieTitle {
+    font-family: 'Syne', sans-serif; /* 使用新的時尚字體 */
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 5;
+    /* 增加標題的微光質感 */
+    background: linear-gradient(to right, #fff, #f5cdfa, #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(212, 165, 255, 0.3);
+	
+}
+
+.glow-burst { 
+    text-shadow: 0 0 40px #fff; 
+    transform: scale(1.05); 
+}
 
         body::after { 
             content: ''; position: absolute; inset: 0; 
@@ -50,11 +125,21 @@
         
         #intro-screen { text-align: center; z-index: 10; width: 100%; position: relative; display: block; }
         
+        /* 修正：移除 uppercase，保留 PiXXiE 原始大小寫 */
         .main-title { 
             font-size: 2.8rem; font-weight: 200; letter-spacing: 12px; 
             background: linear-gradient(to bottom, #fff, var(--primary-fairy)); 
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-            margin-bottom: 5px; text-transform: uppercase; 
+            margin-bottom: 5px; 
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+	
+
+        /* PiXXiE 標題點擊彩蛋特效 */
+        .main-title.glow-burst {
+            text-shadow: 0 0 20px #fff, 0 0 40px var(--primary-fairy), 0 0 60px #ff99cc;
+            transform: scale(1.05);
         }
         
         .sub-title { font-size: 0.7rem; letter-spacing: 5px; color: rgba(255,255,255,0.4); margin-bottom: 60px; }
@@ -66,10 +151,14 @@
         }
         
         .mic-wave { 
-            position: absolute; border-radius: 50%; border: 1px solid var(--primary-fairy); 
-            opacity: 0; pointer-events: none; 
+            position: absolute; border-radius: 50%; border: 3px solid var(--primary-fairy); 
+            opacity: 0.3; pointer-events: none; 
             transition: transform 0.1s ease-out, opacity 0.2s; 
         }
+/* 錄音時的狀態 (JS 控制) */
+.mic-wave.active {
+    opacity: var(--wave-opacity, 0.5);
+}
         .w1 { width: 120px; height: 120px; border-width: 2px; z-index: 4; }
         .w2 { width: 160px; height: 160px; border-width: 1px; opacity: 0.4; z-index: 3; }
         .w3 { width: 210px; height: 210px; border-width: 0.5px; border-style: dashed; z-index: 2; }
@@ -82,28 +171,66 @@
         
         .soul-orb { 
             width: 120px; height: 120px; border-radius: 50%; 
-            background: rgba(212, 165, 255, 0.12); border: 1px solid rgba(212, 165, 255, 0.4); 
+            background: radial-gradient(circle at 30% 30%, #fff, var(--primary-fairy)); border: 4px solid rgba(212, 165, 255, 0.4); 
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
             cursor: pointer; position: relative; z-index: 5; 
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             display: flex; align-items: center; justify-content: center; 
             animation: breathe 3s ease-in-out infinite; 
+	--mic-vol: 0; /* 用於 JS 控制的變數 */
         }
-        .soul-orb.recording { animation: none; transform: scale(0.9); background: rgba(212, 165, 255, 0.3); border-color: #fff; box-shadow: 0 0 50px rgba(212, 165, 255, 0.5); }
-        .soul-orb::after { content: 'REC'; font-size: 11px; letter-spacing: 3px; color: #fff; font-weight: 700; }
-        
+        .soul-orb.recording { animation: recording-breathe 1.5s ease-in-out infinite; transform: scale(0.9); background: rgba(212, 165, 255, 0.3); border: 2px solid #ffffff !important; box-shadow: 0 0 25px rgba(255, 255, 255, 0.8), 
+                inset 0 0 15px rgba(255, 255, 255, 0.5); }
+@keyframes breathe { 
+    0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(212, 165, 255, 0.1), inset 0 0 20px rgba(255,255,255,0.1); } 
+    50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(212, 165, 255, 0.3), inset 0 0 30px rgba(255,255,255,0.2); } 
+}
+
         .particle { position: absolute; width: 4px; height: 4px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px var(--primary-fairy); pointer-events: none; opacity: 0; }
         @keyframes floatUp { 0% { opacity: 0.8; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); } }
 
-        #result-screen { display: none; perspective: 1500px; text-align: center; width: 100%; }
+/* 新增：聲控日冕（Aura）- 使用 ::before 避免衝突 */
+.soul-orb::before {
+    content: '';
+    position: absolute;
+    inset: -30px;
+    background: var(--primary-fairy);
+    border-radius: 50%;
+    filter: blur(25px);
+    z-index: -1;
+    opacity: calc(0.1 + var(--mic-vol) * 0.8); /* 隨音量變動透明度 */
+    transform: scale(calc(1 + var(--mic-vol) * 1.3)); /* 隨音量變動大小 */
+    transition: transform 0.05s ease-out, opacity 0.05s ease-out;
+    pointer-events: none;
+}
+        .soul-orb::after { content: 'REC'; font-size: 11px; letter-spacing: 3px; color: #bf5ee6; font-weight: 700; }
+        
+        /* 升級版全局閃粉特效 (粉紅、黃、綠、水藍、粉紫) */
+        .fairy-dust {
+            position: absolute;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            mix-blend-mode: screen;
+        }
+        @keyframes dustFall {
+            0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.1) rotate(180deg); }
+        }
+
+        #result-screen { display: none; min-height: 100dvh; padding: 20px; overflow: hidden; perspective: 1500px; text-align: center; width: 100%; }
         
         /* 高級壓克力與動態流動邊框 */
         .pixxie-card { 
-            width: var(--card-w); height: var(--card-h); 
-            background: rgba(25, 18, 35, 0.65);
+            width: var(--card-w); height: var(--card-h);
+		aspect-ratio: 300 / 520;
+		max-height: 80dvh; 
+            background: transparent;
             backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
             border-radius: 28px; 
-            position: relative; margin: 0 auto 30px auto;
+            position: relative; margin: 2vh auto 30px auto;
             transform-style: preserve-3d; 
             transition: transform 0.1s ease-out; 
             box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.05); 
@@ -111,12 +238,102 @@
             border: var(--border-width) solid transparent;
             background-clip: padding-box, border-box;
             background-image: 
-                linear-gradient(rgba(25, 18, 35, 0.95), rgba(25, 18, 35, 0.95)), 
-                conic-gradient(from calc(var(--rx, 0.5) * 360deg), var(--primary-fairy), rgba(212,165,255,0.1), #fff, var(--primary-fairy));
-            background-origin: border-box;
+                var(--card-bg-style, linear-gradient(135deg, #1a1a2e, #0d0d1a)), 
+        conic-gradient(from calc(var(--rx, 0.5) * 360deg), var(--border-grad));
+           background-origin: border-box;
             -webkit-mask-image: -webkit-radial-gradient(white, black);
+	z-index:10
         }
+ 
+/* --- A Rank: Low Lightness Single Color (Q1-Q4 based) + Fluid Light Border --- */
+.rank-a {
+    /* JS will inject --bg-q-color based on the quarter */
+    --card-bg-style: linear-gradient(135deg, var(--bg-q-color, #1a1a2e), #0d0d10);
+    /* Fluid glowing border like Picture 1 */
+    --border-grad: rgba(212, 165, 255, 0.05), rgba(212, 165, 255, 0.8), rgba(212, 165, 255, 0.05), rgba(212, 165, 255, 0.8), rgba(212, 165, 255, 0.05);
+}
+
+/* --- S Rank: Centric Gradient (Random Double Colors) + Fluid Light Border --- */
+.rank-s {
+/* 這裡使用 conic-gradient 實現塊狀分佈 */
+    /* 加入了 rgba(255,255,255,0.6) 作為你要求的一抹白色光澤 */
+    --card-bg-style: conic-gradient(
+        from 180deg at 50% 50%,
+        var(--bg-g1) 0deg,
+        var(--bg-g2) 90deg,
+        rgba(255, 255, 255, 0.7) 120deg, /* 白色光澤 */
+        var(--bg-g1) 150deg,
+        var(--bg-g2) 240deg,
+        rgba(255, 255, 255, 0.4) 300deg, /* 第二抹光澤 */
+        var(--bg-g1) 360deg
+    );
+    
+    /* 修正 Border：確保使用 ::before 渲染流動邊框 */
+    --border-grad: #ffffff, var(--primary-fairy), #ffffff;
+}
+
+/* 修正 S 級邊框消失的問題，確保有基本的 border 顯現 */
+.rank-s::before {
+    content: '';
+    position: absolute;
+    inset: calc(var(--border-width) * -1);
+    z-index: -1;
+    background: conic-gradient(from var(--border-angle), var(--border-grad));
+    border-radius: 28px;
+    animation: rotate 3s linear infinite;
+}
+
+/* --- SS Rank: White-Pink-Purple Fluid Shining Border + Holo Diamonds --- */
+.rank-ss {
+    --card-bg-style: linear-gradient(135deg, var(--bg-g1, #130521), var(--bg-g2, #3d1366));
+    /* White, Pink, Purple shining border */
+    --border-grad: #ffffff, #ffb6c1, #d4a5ff, #ffffff, #ffb6c1, #d4a5ff, #ffffff;
+    box-shadow: 0 0 30px rgba(212, 165, 255, 0.3), 0 40px 100px rgba(0,0,0,0.8);
+}
+
+/* --- SSS Rank: Linear Dark Rainbow Background + Rainbow Border + Holo Diamonds --- */
+.rank-sss {
+    /* Linear rainbow background (not too bright to keep words readable) */
+    --card-bg-style: linear-gradient(135deg, #b868e3, #68ace3, #68e397, #e3dd68, #e36868);
+    /* Picture 3's Rainbow Border */
+    --border-grad: #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff, #ff0000;
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.2), 0 40px 100px rgba(0,0,0,0.9);
+}
+
+
+	.watermark {
+            position: absolute; bottom: 15px; right: 20px;
+            font-size: 0.5rem; color: rgba(255,255,255,0.25);
+            font-weight: 600; letter-spacing: 1px; z-index: 20;
+            pointer-events: none;
+        }
+
+	/* --- 階級標籤設計 (高級感) --- */
+        .rank-badge { display: inline-block; padding: 3px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 900; margin-top: 18px; border: 1px solid rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }
         
+        /* A Rank：清冷的冰藍銀色 */
+        .a-style { color: #88ccff; border-color: rgba(136,204,255,0.5); background: rgba(136,204,255,0.1); }
+        
+        /* S Rank：高級的琥珀流金 */
+        .s-style { color: #ffcc00; border-color: #ffcc00; background: rgba(255,204,0,0.1); box-shadow: 0 0 12px rgba(255,204,0,0.2); }
+        
+        /* SS Rank：粉紫全息閃爍 (原本的) */
+        .ss-style { color: #ff75c3; border-color: #ff75c3; box-shadow: 0 0 15px rgba(255,117,195,0.3); background: rgba(255,117,195,0.1); animation: badgePulse 1.5s infinite alternate; }
+        @keyframes badgePulse { 0% { box-shadow: 0 0 10px rgba(255,255,255,0.2); } 100% { box-shadow: 0 0 25px rgba(255,117,195,0.6); } }
+	/* --- SSS Rank Badge Style --- */
+.sss-style { 
+    color: #ffffff; 
+    border-color: #ffcc00; 
+    box-shadow: 0 0 20px rgba(255,204,0,0.6); 
+    background: linear-gradient(90deg, rgba(255,0,0,0.2), rgba(0,0,255,0.2), rgba(255,0,0,0.2)); 
+    background-size: 200% 200%;
+    animation: badgePulse 1s infinite alternate, bgShift 3s linear infinite; 
+}
+@keyframes bgShift { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+
+
+
         /* SS Rank 全息膜層 */
         .pixxie-card.rank-ss::after { 
             content: ''; position: absolute; inset: 0; z-index: 10; 
@@ -145,24 +362,119 @@
         .pixxie-card.revealed::after { opacity: 1; }
         .pixxie-card.revealed.special-holo::before { opacity: 0.7; }
 
-        #webgl-container { width: 100%; height: 350px; margin-top: 10px; position: relative; z-index: 2; pointer-events: none; }
+        #webgl-container { width: 100%; height: 65%; position: relative; z-index: 2; pointer-events: none; }
 
-        /* 回復原來的文字位置 (左下) */
         .card-info { width: 85%; margin: 0 auto 35px auto; text-align: left; position: relative; z-index: 5; }
-        .song-title { font-size: 1.7rem; font-weight: 800; margin: 0; color: #fff; text-shadow: 0 0 18px var(--primary-fairy); letter-spacing: 1.5px; }
-        .lyrics { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: 12px; line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 12px; }
-        .rank-badge { display: inline-block; padding: 3px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 900; margin-top: 18px; border: 1px solid rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; }
+        .song-title { font-size: clamp(1.0rem, 4vw, 1.3rem); font-weight: 800; margin:10px 0; color: #fff; text-shadow: 0 0 18px var(--primary-fairy); letter-spacing: 1.5px; }
+        .lyrics { font-size: 0.65rem; color: rgba(255,255,255,0.7); margin-top: 12px; line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 12px; text-shadow: 0 0 18px var(--primary-fairy);}
+        .rank-badge { display: inline-block; padding: 3px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; margin-top: 18px; border: 1px solid rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; }
         .ss-style { color: #ff75c3; border-color: #ff75c3; box-shadow: 0 0 15px rgba(255,117,195,0.3); background: rgba(255,117,195,0.1); }
         
-        .btn-group { display: flex; gap: 12px; width: var(--card-w); margin: 0 auto; z-index: 20; position: relative; }
-        .btn-action { flex: 1; padding: 16px 0; border-radius: 15px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.1); color: #fff; font-weight: bold; font-size: 0.9rem; cursor: pointer; backdrop-filter: blur(10px); }
+        /* 重新設計的 Re-Try 按鈕 */
+        .btn-group { display: flex; justify-content: center; width: 100%; z-index: 990; position: relative; align-items: flex-end; pointer-events: auto;}
+        
+        .btn-retry { 
+            padding: clamp(5px, 2vh, 12px) clamp(30px, 5vw, 50px);
+		margin-top: 2px; margin-bottom: 10px; 
+            border-radius: 25px; 
+            border: 1px solid rgba(212,165,255,0.4); 
+            background: rgba(212,165,255,0.05); 
+            color: #fff; 
+            font-weight: bold; 
+            font-size:clamp(0.4rem, 2vw, 0.6rem); 
+            letter-spacing: 2px;
+            cursor: pointer; 
+            backdrop-filter: blur(10px); 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            outline: none;
+ 		width: fit-content; white-space: nowrap;cursor: pointer; z-index: 100;
+       }
+
+        /* 按鈕 Hover 效果：紫色精靈光暈與上浮 */
+        .btn-retry:hover {
+            background: rgba(212,165,255,0.2);
+            box-shadow: 0 0 20px rgba(212,165,255,0.5), inset 0 0 10px rgba(255,255,255,0.2);
+            border-color: rgba(212,165,255,0.8);
+            transform: translateY(-2px);
+        }
+
+        .btn-retry:active { transform: translateY(1px) scale(0.96); }
+
+        /* 按鈕點擊漣漪特效 */
+        .btn-retry::after {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 0; height: 0; 
+            background: radial-gradient(circle, rgba(212,165,255,0.8) 0%, transparent 70%);
+            border-radius: 50%; transform: translate(-50%, -50%);
+            opacity: 0; pointer-events: none;
+        }
+
+        @keyframes magicRipple {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 250px; height: 250px; opacity: 0; }
+        }
+        .btn-retry.animating::after { animation: magicRipple 0.6s ease-out; }
+
+/* 讓 music-btn 繼承與 retry 一樣的精靈風格 */
+.music-btn {
+    /* 基礎樣式繼承自 btn-retry */
+    padding: 0; 
+    width: 30px; 
+    height: 30px;
+    border-radius: 50%; /* 圓形按鈕 */
+    display: flex;
+    align-items: center;
+    justify-content: center;    
+    /* 定位在左下角 */
+    position: absolute;
+    left: 25px;
+    bottom: 25px;
+    margin-top: 2px; margin-bottom: 10px;
+    border: 1px solid rgba(212,165,255,0.4);
+    background: rgba(212,165,255,0.3);
+    color: #fff;
+    font-size: clamp(0.4rem, 2vw, 1rem);
+    cursor: pointer !important;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 999;
+pointer-events: auto !important;
+    overflow: hidden;
+    outline: none;
+}
+
+.music-btn:hover {
+    background: rgba(212,165,255,0.2);
+    box-shadow: 0 0 20px rgba(212,165,255,0.5), inset 0 0 10px rgba(255,255,255,0.2); border-color: rgba(212,165,255,0.8);
+    transform: translateY(-2px);
+}
+
+.music-btn:active { transform: translateY(1px) scale(0.92); }
+
+/* 音樂按鈕的漣漪動畫 */
+.music-btn::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    width: 0; height: 0;
+    background: radial-gradient(circle, rgba(212,165,255,0.8) 0%, transparent 70%);
+    border-radius: 50%; transform: translate(-50%, -50%);
+    opacity: 0; pointer-events: none;
+}
+        @keyframes magicRipple {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 250px; height: 250px; opacity: 0; }
+        }
+.music-btn.animating::after { animation: magicRipple 0.6s ease-out; }
+
     </style>
 </head>
 <body>
-
+<div class="aurora-bg"></div>
+<div id="youtube-player-container"><div id="player"></div></div>
     <div id="intro-screen">
-        <h1 class="main-title animate-item">PiXXiE</h1>
-        <p class="sub-title animate-item delay-1">SONIC SOUL RESONANCE</p>
+        <h1 class="main-title animate-item" id="pixxieTitle">PiXXiE</h1>
+        <p class="sub-title animate-item delay-1">VOICE RESONANCE</p>
         <div class="orb-container animate-item delay-2">
             <div class="mic-wave w1"></div>
             <div class="mic-wave w2"></div>
@@ -170,124 +482,129 @@
             <div class="mic-wave w4"></div>
             <div class="soul-orb" id="recordBtn"></div>
         </div>
-        <p style="margin-top: 60px; font-size: 0.65rem; color: rgba(212,165,255,0.5); letter-spacing: 3px; font-weight: bold;" class="animate-item delay-2">HOLD ORB TO RESONATE</p>
+        <p style="margin-top: 50px; font-size: 0.65rem; color: rgba(212,165,255,0.5); letter-spacing: 3px; font-weight: bold;" class="animate-item delay-2">HOLD ORB TO RESONATE</p>
     </div>
 
-    <div id="result-screen">
+    <div id="result-screen" style="display:none;">
         <div class="pixxie-card" id="soulCard">
             <div id="webgl-container"></div>
             <div class="card-info">
                 <h3 class="song-title">Resonating...</h3>
-                <p class="lyrics">Analyzing your vibration.</p>
+                <p class="lyrics">PiXXiE in your vibration.</p>
                 <div class="rank-badge">Matching</div>
             </div>
         </div>
+	<button id="musicToggleBtn" class="pixxie-btn music-btn">□</button>
         <div class="btn-group">
-            <button class="btn-action" onclick="location.reload()">RE-TRY</button>
-            <button class="btn-action" id="downloadBtn" style="background: rgba(212,165,255,0.15); border-color: rgba(212,165,255,0.3);">COLLECT</button>
+            <button class="btn-retry" id="retryBtn">RESONATE AGAIN</button>
         </div>
     </div>
 
 <script>
+// 在 <script> 開頭處新增
+let card; 
+let particleInterval;
+
+document.addEventListener('DOMContentLoaded', () => {
+    card = document.getElementById('soulCard');
+    card.addEventListener('mousemove', handleMove);
+    card.addEventListener('touchmove', handleMove, {passive: true});
+});
+
 // --- 核心資料庫 ---
 const songDatabase = {
     "Q1": [
-        { title: "Shake!", col1: "#ff3300", col2: "#ffcc00", keywords: ["shake", "เชค", "summer shake"] },
-        { title: "FYI", col1: "#ff0066", col2: "#ff99cc", keywords: ["fyi","ก็มันชอบอยู่ชอบอยู่"] },
-        { title: "ACHOO!", col1: "#00ccff", col2: "#00ff99", keywords: ["achoo", "ฮัดชิ้ว", "พิมมา"] },
-        { title: "Not Bad", col1: "#333333", col2: "#00ff88", keywords: ["not bad", "ก็ไม่ได้แย่"] },
-        { title: "Game Changer", col1: "#6600ff", col2: "#00ffff", keywords: ["game changer","hair flip"] }
+       { title: "Shake!", col1: "#ff3300", col2: "#ffcc00", bg1: "#5e2630", bg2: "#593d11", keywords: ["shake", "เชค", "summer shake", "shake it shake it"] , ytid: "GBJQAqNqQm4"},
+        { title: "FYI", col1: "#ff0066", col2: "#ff99cc", bg1: "#61b1c8", bg2: "#caf2fa", keywords: ["fyi","ก็มันชอบอยู่ชอบอยู่","เธอรู้ยัง","เขินอยู่", "แต่กลัวไม่ทัน","ยังโสดอยู่นะ","จีบเธอก่อนแล้วกัน"], ytid:"9bdUszs3E3Q" },
+        { title: "ACHOO!", col1: "#00ccff", col2: "#00ff99", keywords: ["achoo", "ฮัดชิ้ว", "พิมมา", "I'mma I'mma", "allergic to you", "Pimma"], ytid:"ykfV6cbnUkM" },
+        { title: "Not Bad", col1: "#333333", col2: "#00ff88",bg1: "#d40419", bg2: "#260308", keywords: ["not bad", "ไม่แย่", "ก็ไม่ได้แย่", "let it go", "ฉันไม่ได้มีใคร", "sorry แค่ไม่ได้มีใจ", "ก็ดีที่เธอเอาใจใส่", "เธอไม่แย่แค่ไม่ใช่นะ"], ytid:"uDfjZWUJ2P0"},
+        { title: "Game Changer", col1: "#6600ff", col2: "#00ffff",bg1: "#f5e20f", bg2: "#382c10", keywords: ["game changer","hair flip", "heart flip", "ไม่ดี", "game switch","Pantene"], ytid:"k8BBoLMCQQo"}
     ],
     "Q2": [
-        { title: "Mutelu", col1: "#200a44", col2: "#cc33ff", keywords: ["mutelu", "มูเตลู"] },
-        { title: "Pick A Card", col1: "#ff0033", col2: "#000000", keywords: ["pick a card"] },
-        { title: "Dejayou", col1: "#330066", col2: "#ff00ff", keywords: ["dejayou", "deja"] },
-        { title: "TOXIQUE", col1: "#111111", col2: "#ff0000", keywords: ["toxique", "toxic"] },
-        { title: "Magic Car", col1: "#0055ff", col2: "#00ffcc", keywords: ["magic car"] },
-        { title: "ONE SHOT", col1: "#cc0000", col2: "#333333", keywords: ["one shot"] },
-        { title: "HUH?", col1: "#ffff00", col2: "#000000", keywords: ["huh"] },
-        { title: "FEAT", col1: "#ff6600", col2: "#ff0066", keywords: ["feat","F E A T"] },
-        { title: "BADLY", col1: "#440000", col2: "#ff3300", keywords: ["badly"] }
+        { title: "MUTELU", col1: "#200a44", col2: "#cc33ff", keywords: ["mutelu", "มูเตลู", "พรหมลิขิตจะทำให้เราได้หากันเจอ", "oh ah-ah-ah","Everything for you","cupid"], ytid: "kQQAp6zfV7U" },
+        { title: "Pick A Card", col1: "#ff0033", col2: "#000000", keywords: ["pick a card", "I'll tell you", "what to do","baby boo", "card"], ytid:"GSjkPB-Pbew" },
+        { title: "DEJAYOU", col1: "#330066", col2: "#ff00ff", keywords: ["dejayou", "deja","oh boy you make me","คิดถึงเธออีกแล้ว","morning", "evening","midnight","see you every night"], ytid:"B2VpO6lPsLA" },
+        { title: "TOXIQUE", col1: "#111111", col2: "#ff0000", bg1: "#072418", bg2: "#0b473b", keywords: ["toxique", "toxic", "girl you're toxic", "come a little","closer now","you know it","don't ya", "silent"] , ytid:"D-qrzwwrz20"},
+        { title: "Magic Car", col1: "#0055ff", col2: "#00ffcc",  bg1: "#f2b19d", bg2: "#afa2e8", keywords: ["magic car","ทุกอย่างบนโลกใบนี้ช่าง","สวยงาม","ไปหมดเลย","ทุกที่ช่างดูสดใส", "แค่ร่วมทางไปกับเธอ"] , ytid:"D1lSFdA9GFY"},
+        { title: "ONE SHOT", col1: "#cc0000", col2: "#333333", keywords: ["one shot", "I've got"] , ytid:"Jz_4GoqCF1Q"},
+        { title: "HUH?", col1: "#ffff00", col2: "#000000", bg1: "#550f99", bg2: "#3d1366", keywords: ["huh","ไม่ได้เห็น", "พูดดังดังได้ไหม"],ytid:"mTHE8F4o2G0" },
+        { title: "FEAT", col1: "#949094", col2: "#395269", bg1:"#312c2a", bg2:"#ddbfb0", keywords: ["feat","F E A T","F", "E","A", "T","get set go","are you a good boy","I'm a bad girl","lips"], ytid: "1FztEbqElt0"},
+        { title: "BADLY", col1: "#440000", col2: "#ff3300", bg1:"#b1aebe", bg2:"#050505", keywords: ["badly","I want you", "keep it inside", "touch"], ytid:"yj7dBMVfe8U"}
     ],
     "Q3": [
-        { title: "Too Cute", col1: "#ff99cc", col2: "#ffffff", keywords: ["too cute", "เกินต้าน"] },
-        { title: "PiXXeL", col1: "#ffccff", col2: "#d4a5ff", keywords: ["pixxel","พักบ้างหรือยัง"] },
-        { title: "DED", col1: "#00ffaa", col2: "#ffff00", keywords: ["ded", "เด็ด"] },
-        { title: "Heartstopper", col1: "#ff3399", col2: "#ffccff", keywords: ["heartstopper", "มาเบล"] },
-        { title: "Into You", col1: "#cc99ff", col2: "#ffe6f2", keywords: ["into you"] },
-        { title: "Boo", col1: "#99ffcc", col2: "#ffffff", keywords: ["boo","งอนนะ"] }
+        { title: "Too Cute", col1: "#a2f5e6", col2: "#f1f5a2", keywords: ["too cute", "cupid", "เกินต้าน","หลงเธออีกแล้ว","ก็เธอน่ารัก","จนเกินต้านขนาดนี้","จะรักคนคนนี้","ไม่ได้หรอก"], ytid:"9zXeLZTBd80" },
+	{ title: "Way Too Cute", col1: "#ff99cc", col2: "#e8f7c6", keywords: ["narak", "ชอบเธอ", "ชอบไปหมด","cute","ชอบทุกๆ อย่าง","ชอบเธอมากกว่าใคร","สายตาและท่าทาง","รู้รึเปล่า"], ytid:"3JrrwtPrNh4" },
+        { title: "PiXXeL", col1: "#ffccff", col2: "#d4a5ff", bg1:"#c4b9a6", b2:"#a4513d", keywords: ["pixxel","พักบ้างหรือยัง","หากเธอล้มฉันจะรับ","หากเธอล้าให้เธอพัก","song for you"], ytid:"sjRLlT7i2Xc" },
+        { title: "DED", col1: "#00ffaa", col2: "#ffff00", keywords: ["ded", "เด็ด","miss you", "อย่าให้ดอกไม้ เดี๋ยวฉันน่ะ","Ya-ya-ya-ya-ya-ya-a-a"], ytid:"c-sEwGkqkEo" },
+        { title: "Heartstopper", col1: "#ff3399", col2: "#ffccff", keywords: ["heartstopper", "มาเบล","Mabel","heart","stopper"], ytid:"p1vuJa83434" },
+        { title: "Into You", col1: "#cc99ff", col2: "#ffe6f2", keywords: ["into you","Like to spend my time with me","จะเปิดให้เธอเข้ามา","Cha-cha-di-da","Alright up to you"] , ytid:"kNOrFqW2ZYA"},
+        { title: "Boo", col1: "#99ffcc", col2: "#ffffff", keywords: ["boo","งอนนะ","ya ya ya","งอนแล้วนะ","งอนละ", "เธอไม่มาง้อกันสักที","ถ้าไม่มาขอโทษดีดี"], ytid:"Etq0SPYelLs" }
     ],
     "Q4": [
-        { title: "rain", col1: "#0a2a66", col2: "#44e3ff", keywords: ["rain", "ติดฝน"] },
-        { title: "Aftercry", col1: "#1a1a2e", col2: "#16213e", keywords: ["aftercry", "it will be better"] },
-        { title: "Deep Talk", col1: "#0f3460", col2: "#e94560", keywords: ["deep talk", "อิงโกะ"] },
-        { title: "ไม่ได้ก็ไม่เอา", col1: "#ff66aa", col2: "#ffcc33", keywords: ["whatever", "ไม่ได้ก็ไม่เอา"] }
+        { title: "rain", col1: "#0a2a66", col2: "#44e3ff", keywords: ["rain", "ติดฝน","ติดเธอไม่ไหว", "ไม่ไหว", "เธอต้องไปรึยัง","อยากเจอเธอทุกวัน","พอเป็นไปได้ไหม","ยู่ด้วยกันก่อนได้ไหม"], ytid:"KhP8jEXA6MQ"},
+        { title: "Aftercry", col1: "#1a1a2e", col2: "#16213e", bg1: "#2f4c6a", bg2: "#506782",  keywords: ["aftercry", "it will be better", "tears will make you fine", "wu wu wu"], ytid:"WD9ATqvDKIY" },
+        { title: "Deep Talk", col1: "#0f3460", col2: "#f2cc33", bg1: "#dba353", bg2: "#f2f2b8", keywords: ["deep talk", "Ingkho", "อิงโกะ","อยู่คุยกันคืนนี้ข้ามผ่านยามนิทรา","มาน่าฟังกว่าใคร","บทสนทนาไม่รู้เวลา", "ฉันฟังแต่เธอ"], ytid:"Gu5_YKQ2l_k" },
+        { title: "Whatever", col1: "#ff66aa", col2: "#ffcc33", keywords: ["whatever", "ไม่ได้ก็ไม่เอา", "ไม่ได้","ฉันก็คงไม่รอแล้ว","ฉันก็คงต้องพอเสียที","ถ้าเธอไม่ใช่","ก็ไม่ต้องยื้อกันแบบนี้","เหนื่อยเต็มที","ไม่ได้ก็ไม่เอา"],ytid:"B7riGDoRpR8" }
     ]
 };
 
-let audioCtx, analyser, dataArray, isRecording = false, audioHistory = [];
-let recognizedText = "";
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recognition;
-let particleInterval;
+// --- 精靈粉塵特效系統 ---
+const dustColors = ['#fa2d4f','#ff99cc', '#ffffba', '#baffc9', '#bae1ff', '#68f787','#d4a5ff','#af5cfa','#8b14f7','#59d8ff'];
 
-if (SpeechRecognition) {
-    recognition = new SpeechRecognition();
-    recognition.lang = 'th-TH'; recognition.continuous = true; recognition.interimResults = true;
-    recognition.onresult = (e) => {
-        recognizedText = "";
-        for (let i = 0; i < e.results.length; i++) { recognizedText += e.results[i][0].transcript.toLowerCase(); }
-    };
+function spawnDust(x, y, intensity = 1) {
+    const amount = Math.floor(Math.random() * 3) + (intensity * 2);
+    for(let i=0; i<amount; i++) {
+        const dust = document.createElement('div');
+        dust.className = 'fairy-dust';
+        dust.style.background = dustColors[Math.floor(Math.random() * dustColors.length)];
+        dust.style.left = x + 'px';
+        dust.style.top = y + 'px';
+        
+        const angle = Math.random() * Math.PI * 2;
+        const distance = (20 + Math.random() * 10) * intensity;
+        dust.style.setProperty('--dx', `${Math.cos(angle) * distance}px`);
+        dust.style.setProperty('--dy', `${Math.sin(angle) * distance + 30}px`); // 發光感
+        dust.style.boxShadow = `0 0 12px ${dust.style.background}`;
+        // 隨機旋轉與下墜時間
+        dust.style.animation = `dustFall ${0.8 + Math.random() * 1.0}s cubic-bezier(0.25, 1, 0.5, 1) forwards`;
+
+        dust.style.animation = `dustFall ${0.6 + Math.random() * 0.6}s cubic-bezier(0.25, 1, 0.5, 1) forwards`;
+        document.body.appendChild(dust);
+        setTimeout(() => dust.remove(), 1500);
+    }
 }
 
-let scene, camera, renderer, material;
-let uniformAmp = { value: 0.0 }, uCol1 = { value: new THREE.Color() }, uCol2 = { value: new THREE.Color() };
-let threeInitialized = false;
+// 綁定全局滑動與點擊閃粉
+document.addEventListener('pointermove', (e) => {
+    if (Math.random() > 0.45 && !e.target.closest('.soul-orb') && !e.target.closest('.btn-retry')) {
+        spawnDust(e.clientX, e.clientY, 1.5);
+    }
+});
 
-// WebGL 靈魂球體優化 (Perlin Noise 流體 + Fresnel 發光)
-function initThreeJS() {
-    if (threeInitialized) return;
-    const container = document.getElementById('webgl-container');
-    const w = 320; const h = 350;
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-    camera.position.z = 2.8;
-    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(w, h);
-    container.appendChild(renderer.domElement);
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.soul-orb') && !e.target.closest('.btn-retry') && !e.target.closest('#pixxieTitle')) {
+        spawnDust(e.clientX, e.clientY, 3);
+    }
+});
+
+// PiXXiE 標題專屬點擊彩蛋
+const titleEl = document.getElementById('pixxieTitle');
+titleEl.addEventListener('click', () => {
+    titleEl.classList.add('glow-burst');
+    const rect = titleEl.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
     
-    const geo = new THREE.SphereGeometry(0.82, 128, 128);
-    material = new THREE.ShaderMaterial({
-        transparent: true,
-        uniforms: { uTime: { value: 0 }, uAmp: uniformAmp, col1: uCol1, col2: uCol2 },
-        vertexShader: `
-            uniform float uTime; uniform float uAmp; varying vec3 vNormal; 
-            void main() { 
-                vNormal = normal;
-                float noise = sin(position.x * 2.0 + uTime) * cos(position.y * 2.0 + uTime) * sin(position.z * 2.0 + uTime);
-                noise += 0.5 * sin(position.x * 4.0 - uTime * 1.5);
-                noise += 0.25 * cos(position.y * 8.0 + uTime);
-                float displacement = noise * uAmp * 0.45;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position + normal * displacement, 1.0); 
-            }`,
-        fragmentShader: `
-            uniform vec3 col1; uniform vec3 col2; varying vec3 vNormal; 
-            void main() { 
-                float fresnel = pow(1.0 - max(dot(vNormal, vec3(0.0, 0.0, 1.0)), 0.0), 3.0);
-                vec3 baseCol = mix(col1, col2, vNormal.y * 0.5 + 0.5);
-                vec3 glow = baseCol + (fresnel * 2.5 * baseCol); 
-                gl_FragColor = vec4(glow, 0.95); 
-            }`
-    });
-    scene.add(new THREE.Mesh(geo, material));
-    const anim = () => { requestAnimationFrame(anim); material.uniforms.uTime.value += 0.012; renderer.render(scene, camera); };
-    anim();
-    threeInitialized = true;
-}
+    // 連續爆發特效
+    let burstCount = 0;
+    const burstInterval = setInterval(() => {
+        spawnDust(cx + (Math.random()-0.5)*100, cy + (Math.random()-0.5)*40, 5);
+        burstCount++;
+        if(burstCount > 8) clearInterval(burstInterval);
+    }, 50);
 
-const orb = document.getElementById('recordBtn');
-const waves = [document.querySelector('.w1'), document.querySelector('.w2'), document.querySelector('.w3'), document.querySelector('.w4')];
+    setTimeout(() => titleEl.classList.remove('glow-burst'), 800);
+});
 
 function createParticle() {
     const p = document.createElement('div');
@@ -302,9 +619,95 @@ function createParticle() {
     setTimeout(() => p.remove(), 1000);
 }
 
+// --- 音頻與 Three.js 核心邏輯 ---
+let audioCtx, analyser, dataArray, isRecording = false, audioHistory = [];
+let recognizedText = "";
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition;
+
+if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'th-TH'; recognition.continuous = true; recognition.interimResults = true;
+    recognition.onresult = (e) => {
+        recognizedText = "";
+        for (let i = 0; i < e.results.length; i++) { recognizedText += e.results[i][0].transcript.toLowerCase(); }
+    };
+}
+
+let scene, camera, renderer, material;
+let uniformAmp = { value: 0.0 }, uCol1 = { value: new THREE.Color() }, uCol2 = { value: new THREE.Color() };
+let threeInitialized = false;
+
+function initThreeJS() {
+    if (threeInitialized) return;
+    const container = document.getElementById('webgl-container');
+    const w = container.clientWidth || 320; 
+    const h = container.clientHeight || 500;
+    scene = new THREE.Scene();
+    
+    // 長寬比改為動態比例
+    camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+    camera.position.z = 2.8;
+    
+    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(w, h);
+    container.appendChild(renderer.domElement);
+    
+    const geo = new THREE.SphereGeometry(0.82, 128, 128);
+    const colorBright = new THREE.Color('#f8e8fa');
+    const colorShadow = new THREE.Color('#f5cdfa');
+
+    material = new THREE.ShaderMaterial({
+        transparent: true,
+        uniforms: { 
+            uTime: { value: 0 }, 
+            uAmp: uniformAmp, 
+            colBright: { value: colorBright }, 
+            colShadow: { value: colorShadow } 
+        },
+        vertexShader: `
+            uniform float uTime; uniform float uAmp; varying vec3 vNormal; varying float vDisplacement;
+            void main() { 
+                vNormal = normal;
+                float noise = sin(position.x * 2.0 + uTime) * cos(position.y * 2.0 + uTime) * sin(position.z * 2.0 + uTime);
+                noise += 0.5 * sin(position.x * 4.0 - uTime * 1.5);
+                float displacement = noise * uAmp * 0.45;
+                vDisplacement = displacement;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position + normal * displacement, 1.0); 
+            }`,
+        fragmentShader: `
+            uniform vec3 colBright; uniform vec3 colShadow; varying vec3 vNormal; varying float vDisplacement;
+            void main() { 
+                float fresnel = pow(1.0 - max(dot(vNormal, vec3(0.0, 0.0, 1.0)), 0.0), 2.5);
+                vec3 baseCol = mix(colShadow, colBright, vNormal.y * 0.5 + 0.5 + vDisplacement);
+                vec3 finalCol = baseCol + (fresnel * 0.3 * colBright); 
+                gl_FragColor = vec4(finalCol, 0.95); 
+            }`
+    });
+
+    scene.add(new THREE.Mesh(geo, material));
+
+    const anim = () => { 
+        requestAnimationFrame(anim); 
+        material.uniforms.uTime.value += 0.012; 
+        renderer.render(scene, camera); 
+    };
+    anim();
+    threeInitialized = true;
+}
+
+const orb = document.getElementById('recordBtn');
+const waves = [document.querySelector('.w1'), document.querySelector('.w2'), document.querySelector('.w3'), document.querySelector('.w4')];
+
 async function startResonance(e) {
     e.preventDefault();
     orb.classList.add('recording');
+    
+    // 點擊球體時噴發閃粉
+    const rect = orb.getBoundingClientRect();
+    spawnDust(rect.left + rect.width/2, rect.top + rect.height/2, 4);
+
     if (!audioCtx) {
         try {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -316,7 +719,7 @@ async function startResonance(e) {
     }
     isRecording = true; audioHistory = []; recognizedText = "";
     if (recognition) { try { recognition.start(); } catch(err) {} }
-    particleInterval = setInterval(createParticle, 100);
+	    particleInterval = setInterval(createParticle, 100);
     loop();
 }
 
@@ -325,66 +728,29 @@ function loop() {
     requestAnimationFrame(loop);
     analyser.getByteFrequencyData(dataArray);
     let avg = dataArray.reduce((a,b)=>a+b)/dataArray.length;
-    audioHistory.push(avg);
+    audioHistory.push(avg);uniformAmp.value = avg / 55;
     
-    // 多層聲波
-    waves[0].style.transform = `scale(${0.8 + avg / 100})`; waves[0].style.opacity = 0.5 + avg/150;
-    waves[1].style.transform = `scale(${1.0 + avg / 80})`; waves[1].style.opacity = 0.3 + avg/200;
-    waves[2].style.transform = `scale(${1.2 + avg / 60})`; waves[2].style.opacity = 0.2 + avg/300;
-    waves[3].style.transform = `scale(${1.0 + avg / 40})`; waves[3].style.opacity = (avg/255) * 0.4;
-    
-    uniformAmp.value = avg / 55;
+// 2. 更新你原本的 4 道 Wave 邏輯
+    waves.forEach((w, i) => {
+        if (!w) return;
+        let scale = 1 + (avg / (120 - i * 20));
+        w.style.transform = `scale(${scale})`;
+        w.style.opacity = Math.max(0.15, Math.min(avg / 80, 0.7));
+    });
+
+// 3. 更新日冕 (Aura) 效果
+    // 將平均音量轉換為 0~1 的比例
+    let normalizedVol = Math.min(avg / 80, 1);
+    orb.style.setProperty('--mic-vol', normalizedVol);
 }
 
-function endResonance(e) {
-    e.preventDefault();
-    if (!isRecording) return;
-    isRecording = false;
-    orb.classList.remove('recording');
-    clearInterval(particleInterval);
-    waves.forEach(w => w.style.opacity = 0);
-    if (recognition) { try { recognition.stop(); } catch(err) {} }
-    setTimeout(calculateResult, 600);
-}
 
-function calculateResult() {
-    const frames = audioHistory.length;
-    const avgVol = audioHistory.reduce((a,b)=>a+b,0)/frames || 0;
-    const allSongs = Object.values(songDatabase).flat();
-    let finalSong = null; let c1, c2, isSpecial = false;
-
-    if (recognizedText.includes("mabel") || recognizedText.includes("มาเบล")) { c1 = "#ff0033"; c2 = "#8800ff"; isSpecial = true; finalSong = songDatabase["Q3"][3]; }
-    else if (recognizedText.includes("ingkho") || recognizedText.includes("อิงโกะ")) { c1 = "#ffff00"; c2 = "#ff66aa"; isSpecial = true; finalSong = songDatabase["Q4"][2]; }
-    else if (recognizedText.includes("pimma") || recognizedText.includes("พิมมา")) { c1 = "#0088ff"; c2 = "#00ffaa"; isSpecial = true; finalSong = songDatabase["Q1"][2]; }
-
-    if (!finalSong) finalSong = allSongs.find(s => s.keywords.some(k => recognizedText.includes(k)));
-    if (!finalSong) {
-        const targetCat = ["Q1", "Q2", "Q3", "Q4"][Math.floor(avgVol) % 4];
-        finalSong = songDatabase[targetCat][Math.floor(Math.random() * songDatabase[targetCat].length)];
-    }
-
-    uCol1.value.set(c1 || finalSong.col1);
-    uCol2.value.set(c2 || finalSong.col2);
-    document.querySelector('.song-title').innerText = finalSong.title;
-
-    const card = document.getElementById('soulCard');
-    const badge = document.querySelector('.rank-badge');
-    if (frames > 150 || isSpecial) {
-        card.className = "pixxie-card rank-ss";
-        badge.innerText = "SS Rank Resonance";
-        badge.className = "rank-badge ss-style";
-    } else {
-        card.className = "pixxie-card";
-        badge.innerText = "S Rank Harmony";
-        badge.className = "rank-badge";
-    }
-
-    if (["ACHOO!", "Deep Talk", "Heartstopper"].includes(finalSong.title)) card.classList.add('special-holo');
-
-    document.getElementById('intro-screen').style.display = 'none';
-    document.getElementById('result-screen').style.display = 'block';
-    initThreeJS();
-    setTimeout(() => card.classList.add('revealed'), 200);
+// 新增：限制明度 (Lightness) 在 35%-55% 之間，避免產生純白 (100%)，確保文字清晰
+function getRandomVibrantColor() {
+    const h = Math.floor(Math.random() * 360);
+    const s = 70 + Math.random() * 30; // 70%-100% 飽和度
+    const l = 35 + Math.random() * 20; // 35%-55% 明度 (No pure white)
+    return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
 orb.addEventListener('mousedown', startResonance);
@@ -392,8 +758,8 @@ orb.addEventListener('mouseup', endResonance);
 orb.addEventListener('touchstart', startResonance, {passive: false});
 orb.addEventListener('touchend', endResonance, {passive: false});
 
-const card = document.getElementById('soulCard');
 const handleMove = (e) => {
+    if(!card) return;
     const rect = card.getBoundingClientRect();
     const x = e.touches ? e.touches[0].clientX : e.clientX;
     const y = e.touches ? e.touches[0].clientY : e.clientY;
@@ -402,8 +768,234 @@ const handleMove = (e) => {
     card.style.setProperty('--rx', px); card.style.setProperty('--ry', py);
     card.style.transform = `rotateY(${(px - 0.5) * 20}deg) rotateX(${(py - 0.5) * -20}deg)`;
 };
-card.addEventListener('mousemove', handleMove);
-card.addEventListener('touchmove', handleMove, {passive: true});
+
+
+let isPlaying = true; // 因為 calculateResult 觸發時會自動播放，所以預設為 true
+
+document.addEventListener('DOMContentLoaded', () => {
+    const musicBtn = document.getElementById('musicToggleBtn');
+
+    if (musicBtn) {
+        musicBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // 防止事件冒泡
+            
+            // 點擊動畫
+            this.classList.add('animating');
+            setTimeout(() => this.classList.remove('animating'), 600);
+
+            // 檢查 YouTube API 是否準備好
+            if (!player || typeof player.getPlayerState !== 'function') {
+                console.log("YouTube Player 尚未就緒");
+                return;
+            }
+
+            // 取得目前播放狀態：1 是播放中，2 是暫停
+            const state = player.getPlayerState();
+
+            if (state === 1) { // 正在播放，執行暫停
+                player.pauseVideo();
+                this.innerText = "♫"; // 顯示播放符號
+                isPlaying = false;
+            } else { // 正在暫停，執行播放
+                player.playVideo();
+                this.innerText = "□"; // 顯示停止符號
+                isPlaying = true;
+            }
+        });
+    }
+
+    // 修復 Retry 時也要重置音樂按鈕
+    const retryBtn = document.getElementById('retryBtn');
+    if (retryBtn) {
+        retryBtn.addEventListener('click', function() {
+            // ... 你原本的 retry 邏輯 ...
+            
+            // 重置音樂按鈕符號
+            if (musicBtn) {
+                musicBtn.innerText = "□";
+                isPlaying = true;
+            }
+        });
+    }
+});
+
+// Re-try 按鈕點擊過渡效果
+document.getElementById('retryBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    this.classList.add('animating');
+    const rect = this.getBoundingClientRect();
+    spawnDust(rect.left + rect.width / 2, rect.top + rect.height / 2, 8); // 炸出大量閃粉
+// [新增] 停止播放
+    if (player && typeof player.stopVideo === 'function') {
+        player.stopVideo();
+    }
+    
+setTimeout(() => {
+        this.classList.remove('animating');
+        
+        // 隱藏結果畫面，顯示初始畫面
+        document.getElementById('result-screen').style.display = 'none';
+        document.getElementById('intro-screen').style.display = 'block';
+        
+	waves.forEach(w => {
+            if (w) {
+                w.style.opacity = "0.3";
+                w.style.transform = "scale(1)";
+            }
+        });
+
+	// 重置播放器
+        if (player && typeof player.stopVideo === 'function') {
+            player.stopVideo();
+        }
+
+        // 清除上一張卡片的殘留樣式
+        const card = document.getElementById('soulCard');
+	card.className = "pixxie-card";
+	card.style = "";
+        
+    }, 600); // 等待動畫完成再切換
+});
+
+// 錄音結束重置
+function endResonance(e) {
+    if (e) e.preventDefault();
+    if (!isRecording) return;
+    isRecording = false;
+    orb.classList.remove('recording');
+	clearInterval(particleInterval);
+
+    
+    // 重置所有視覺效果
+    orb.style.setProperty('--mic-vol', 0);
+    waves.forEach(w => {
+        if (w) {
+            w.style.opacity = "0.3"; 
+            w.style.transform = "scale(1)";}
+    });
+    
+    setTimeout(calculateResult, 600);
+}
+
+
+function calculateResult() {
+    const frames = audioHistory.length;
+    const avgVol = audioHistory.reduce((a,b)=>a+b,0)/frames || 0;
+    const allSongs = Object.values(songDatabase).flat();
+    let finalSong = null; let isMemberKey = false;
+    let category = "Q1";
+
+    const text = recognizedText.toLowerCase();
+
+    // 1. 識別關鍵字
+    if (text.includes("mabel") || text.includes("มาเบล")) { isMemberKey = true; finalSong = songDatabase["Q3"][3]; category = "Q3"; }
+    else if (text.includes("ingkho") || text.includes("อิงโกะ")) { isMemberKey = true; finalSong = songDatabase["Q4"][2]; category = "Q4"; }
+    else if (text.includes("pimma") || text.includes("พิมมา")) { isMemberKey = true; finalSong = songDatabase["Q1"][2]; category = "Q1"; }
+
+    if (!finalSong) {
+        for (const [key, songs] of Object.entries(songDatabase)) {
+            const found = songs.find(s => s.keywords.some(k => text.includes(k)));
+            if (found) { finalSong = found; category = key; break; }
+        }
+    }
+
+    if (!finalSong) {
+        category = ["Q1", "Q2", "Q3", "Q4"][Math.floor(avgVol) % 4];
+        finalSong = songDatabase[category][Math.floor(Math.random() * songDatabase[category].length)];
+    }
+
+    const card = document.getElementById('soulCard');
+    const badge = document.querySelector('.rank-badge');
+
+    // 確保浮水印存在
+    if (!document.querySelector('.watermark')) {
+        const wm = document.createElement('div');
+        wm.className = 'watermark';
+        wm.innerText = 'by Grafittiii';
+        card.appendChild(wm);
+    }
+
+    document.querySelector('.song-title').innerText = finalSong.title;
+
+    // 清空舊樣式並套用新季度背景裝飾
+    card.className = "pixxie-card";
+
+    // --- 階級分類邏輯 (A, S, SS, SSS) ---
+    const ssSpecial = ["ACHOO!", "Deep Talk", "Heartstopper"].includes(finalSong.title);
+    let finalRank = "A";
+
+    if (frames > 60 && avgVol > 28) {
+        finalRank = "SSS";
+    } 
+    else if (ssSpecial || isMemberKey) {
+        finalRank = "SS";
+    } 
+    else if (finalSong.bg1 || frames > 30 || avgVol > 20 ) {
+        finalRank = "S";
+    } 
+    else {
+        finalRank = "A";
+    }
+
+    // --- 套用 Rank 專屬視覺 ---
+    if (finalRank === "SSS") {
+        card.classList.add("rank-sss", "special-holo");
+        badge.innerText = "SSS Rank Resonance";
+        badge.className = "rank-badge sss-style";
+    } else if (finalRank === "SS") {
+        card.classList.add("rank-ss", "special-holo");
+        badge.innerText = "SS Rank Harmony";
+        badge.className = "rank-badge ss-style";
+    } else if (finalRank === "S") {
+        card.classList.add("rank-s");
+        badge.innerText = "S Rank Harmony";
+        badge.className = "rank-badge s-style";
+        const c1 = finalSong.bg1 || getRandomVibrantColor();
+        const c2 = finalSong.bg2 || getRandomVibrantColor();
+        card.style.setProperty('--bg-g1', c1);
+        card.style.setProperty('--bg-g2', c2);
+    } else {
+        card.classList.add("rank-a");
+        badge.innerText = "A Rank Sync";
+        badge.className = "rank-badge a-style";
+        const rankAColors = {
+            "Q1": "#701b1b",
+            "Q2": "#7a48b8",
+            "Q3": "#e66cbf",
+            "Q4": "#36add9"
+        };
+        card.style.setProperty('--bg-q-color', rankAColors[category]);
+    }
+
+    // [新增] 觸發播放音樂
+    // 這裡增加了安全檢查，避免 player 尚未載入時發生錯誤
+ if (player && typeof player.loadVideoById === 'function') {
+    player.loadVideoById({
+        videoId: finalSong.ytid,
+        suggestedQuality: 'small'
+    });
+    
+    // 嘗試直接播放
+    player.playVideo();
+
+    // 檢查是否被瀏覽器擋下
+    setTimeout(() => {
+        if (player.getPlayerState() !== 1) { // 1 代表正在播放
+            console.log("自動播放被攔截，等待使用者點擊音樂按鈕");
+            if(musicBtn) musicBtn.innerText = "♪"; // 提示使用者點擊播放
+        }
+    }, 1000);
+}
+
+    // 顯示結果
+    document.getElementById('intro-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    initThreeJS();
+    setTimeout(() => card.classList.add('revealed'), 200);
+}
+
+
+
 </script>
 </body>
 </html>
