@@ -98,7 +98,7 @@ body::before {
             100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } 
         }
         
-        .animate-item { opacity: 0; animation: fairyIn 1s cubic-bezier(0.15, 0.85, 0.35, 1) forwards; }
+        .animate-item { opacity: 0; animation: fairyIn 1s cubic-bezier(0.15, 0.85, 0.35, 1) forwards; will-change: opacity, transform; }
         .delay-1 { animation-delay: 0.2s; } 
         .delay-2 { animation-delay: 0.4s; }
         
@@ -830,7 +830,6 @@ setTimeout(() => {
     const result = document.getElementById('result-screen');
     const orb = document.getElementById('orb');
     const title = document.querySelector('.main-title', '.sub-title'); // 假設你的標題容器名稱
-	const anim =  document.getElementById('animate-item');
 
     if (intro && result) {
         result.style.display = 'none';
@@ -850,13 +849,17 @@ setTimeout(() => {
             title.style.transform = "translateY(0)";
         }
         
-	if (anim) {
-            anim.style.opacity = "1";
+	const animItems = intro.querySelectorAll('.animate-item');
+        animItems.forEach(item => {
+            // 先移除動畫，讓它回到 opacity: 0
+            item.style.animation = 'none';
             
-        }
-
-        // 強制手機瀏覽器重繪 (Reflow)
-        void intro.offsetHeight; 
+            // 觸發重繪 (Reflow)，這行是為了讓手機瀏覽器意識到動畫被清空了
+            void item.offsetWidth;
+            
+            // 重新加上動畫，讓它再次執行 fairyIn
+            item.style.animation = ''; 
+        });
     }
 
     // 恢復背景波紋
