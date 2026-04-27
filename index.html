@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Voice Resonance - PiXXiE Fairy Dust Edition</title>
+    <title>Voice Resonance - PiXXiE</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;700;800;900&family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
 	<script src="https://www.youtube.com/iframe_api"></script>
 <script>
@@ -86,27 +86,6 @@ body::before {
     z-index: 10; /* 高於噪點的 1 */
 }
 
-/* --- 標題字體升級 --- */
-#pixxieTitle {
-    font-family: 'Syne', sans-serif; /* 使用新的時尚字體 */
-    font-size: 3.5rem;
-    font-weight: 800;
-    letter-spacing: 3px;
-    cursor: pointer;
-    transition: all 0.3s;
-    z-index: 5;
-    /* 增加標題的微光質感 */
-    background: linear-gradient(to right, #fff, #f5cdfa, #fff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 20px rgba(212, 165, 255, 0.3);
-	
-}
-
-.glow-burst { 
-    text-shadow: 0 0 40px #fff; 
-    transform: scale(1.05); 
-}
 
         body::after { 
             content: ''; position: absolute; inset: 0; 
@@ -126,22 +105,29 @@ body::before {
         #intro-screen { text-align: center; z-index: 10; width: 100%; position: relative; display: block; }
         
         /* 修正：移除 uppercase，保留 PiXXiE 原始大小寫 */
-        .main-title { 
-            font-size: 2.8rem; font-weight: 200; letter-spacing: 12px; 
-            background: linear-gradient(to bottom, #fff, var(--primary-fairy)); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-            margin-bottom: 5px; 
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+        .main-title {
+    font-family: 'Syne', sans-serif; /* 使用新的時尚字體 */
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 5;
+    /* 增加標題的微光質感 */
+    background: linear-gradient(to right, #fff, #f5cdfa, #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(212, 165, 255, 0.3);
 	
-
+}
+	
         /* PiXXiE 標題點擊彩蛋特效 */
         .main-title.glow-burst {
             text-shadow: 0 0 20px #fff, 0 0 40px var(--primary-fairy), 0 0 60px #ff99cc;
             transform: scale(1.05);
         }
-        
+
+   
         .sub-title { font-size: 0.7rem; letter-spacing: 5px; color: rgba(255,255,255,0.4); margin-bottom: 60px; }
         
         /* 多層次聲波環佈局 */
@@ -180,7 +166,7 @@ body::before {
 	--mic-vol: 0; /* 用於 JS 控制的變數 */
         }
 
-.soul-orb, .title-container {
+.soul-orb, .main-title, .sub-title {
     will-change: transform, opacity; /* 告訴瀏覽器這些屬性會變動 */
     -webkit-backface-visibility: hidden; /* 防止閃爍 */
     backface-visibility: hidden;
@@ -843,7 +829,8 @@ setTimeout(() => {
     const intro = document.getElementById('intro-screen');
     const result = document.getElementById('result-screen');
     const orb = document.getElementById('orb');
-    const title = document.querySelector('.title-container'); // 假設你的標題容器名稱
+    const title = document.querySelector('.main-title', '.sub-title'); // 假設你的標題容器名稱
+	const anim =  document.getElementById('animate-item');
 
     if (intro && result) {
         result.style.display = 'none';
@@ -863,6 +850,11 @@ setTimeout(() => {
             title.style.transform = "translateY(0)";
         }
         
+	if (anim) {
+            anim.style.opacity = "1";
+            
+        }
+
         // 強制手機瀏覽器重繪 (Reflow)
         void intro.offsetHeight; 
     }
@@ -1017,6 +1009,8 @@ function calculateResult() {
     initThreeJS();
     setTimeout(() => card.classList.add('revealed'), 200);
 }
+
+
 
 </script>
 </body>
