@@ -38,7 +38,7 @@
         body { 
             margin: 0; padding: 0; 
             background-size: 150% 150%;
-            background: linear-gradient(180deg, #441a5e 0%, #6b3c8f 40%, #441a5e 100%); color: #fff; 
+            background: linear-gradient(180deg, #ed7ee9 0%, #feffed 39%, #93549e 100%); color: #fff; 
             font-family: 'Montserrat', 'Prompt', sans-serif; 
             display: flex; align-items: center; justify-content: center; 
             min-height: 100vh; width: 100vw;
@@ -56,7 +56,7 @@
 }
 @keyframes energy-breath {
     0% { opacity: 0.9; }
-    50% { opacity: 0.66;}
+    50% { opacity: 0.5;}
     100% { opacity: 0.9;}
 }
 
@@ -116,8 +116,8 @@ body::before {
         /* 修正：移除 uppercase，保留 PiXXiE 原始大小寫 */
         .main-title {
     font-family: 'Syne', sans-serif; /* 使用新的時尚字體 */
-    font-size: clamp(2rem, 10vw, 3.5rem);
-    font-weight: 800; margin: 0;line-height: 1.1;
+    font-size: clamp(2rem, 15vw, 3.5rem);
+    font-weight: 800; margin: 0; top: 5vh; line-height: 1;
     letter-spacing: 3px;
     cursor: pointer;
     transition: all 0.3s;
@@ -188,7 +188,7 @@ body::before {
     inset: -30px;
     background: var(--primary-fairy);
     border-radius: 50%;
-    filter: blur(25px);
+    filter: blur(30px);
     z-index: -1;
     opacity: calc(0.1 + var(--mic-vol) * 0.8); /* 隨音量變動透明度 */
     transform: scale(calc(1 + var(--mic-vol) * 1.3)); /* 隨音量變動大小 */
@@ -292,7 +292,7 @@ body::before {
 
 /* --- SS Rank: White-Pink-Purple Fluid Shining Border + Holo Diamonds --- */
 .rank-ss {
-    --card-bg-style: linear-gradient(135deg, var(--bg-g1, #130521), var(--bg-g2, #3d1366));
+    --card-bg-style: linear-gradient(135deg, #d6a4f5,var(--bg-g1), var(--bg-g2), #55157d);
     /* White, Pink, Purple shining border */
     --border-grad: #ffffff, #ffb6c1, #d4a5ff, #ffffff, #ffb6c1, #d4a5ff, #ffffff;
     box-shadow: 0 0 30px rgba(212, 165, 255, 0.3), 0 40px 100px rgba(0,0,0,0.8);
@@ -496,6 +496,33 @@ pointer-events: auto !important;
 #result-screen.active .pixxie-card { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
 #result-screen.active .music-btn { opacity: 1; transform: translateY(0); transition-delay: 0.3s; }
 #result-screen.active .btn-group { opacity: 1; transform: translateY(0); transition-delay: 0.4s; }
+
+/* --- 新增：音樂啟動文字提示框 --- */
+.music-hint {
+    position: absolute;
+    bottom: 110%; /* 位於按鈕上方 */
+    left: 25px;
+    background: rgba(43, 12, 56, 0.85); /* 深紫色半透明 */
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    white-space: nowrap;
+    border: 1px solid var(--primary-fairy);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    z-index: 100;
+}
+
+/* 提示框顯示狀態 */
+.music-hint.active {
+    opacity: 1;
+    transform: translateY(-5px);
+}
+
+
     </style>
 </head>
 <body>
@@ -526,6 +553,7 @@ pointer-events: auto !important;
         </div>
 	
         <div class="btn-group">
+		<div id="musicHint" class="music-hint">Toggle for ad-skipping & song-playing ♫</div>
             <button id="musicToggleBtn" class="pixxie-btn music-btn">□</button>
 	<button class="btn-retry" id="retryBtn">RESONATE AGAIN</button>
         </div>
@@ -545,37 +573,37 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- 核心資料庫 ---
 const songDatabase = {
     "Q1": [
-       { title: "Shake!", col1: "#ff3300", col2: "#ffcc00", bg1: "#5e2630", bg2: "#593d11", keywords: ["shake", "เชค", "summer shake", "shake it shake it"] , ytid: "GBJQAqNqQm4"},
+       { title: "Shake!", col1: "#ff3300", col2: "#ffcc00", bg1: "#bd9531", bg2: "#de992a", keywords: ["shake", "เชค", "summer shake", "shake it shake it"] , ytid: "GBJQAqNqQm4"},
         { title: "FYI", col1: "#ff0066", col2: "#ff99cc", bg1: "#61b1c8", bg2: "#caf2fa", keywords: ["fyi","ก็มันชอบอยู่ชอบอยู่","เธอรู้ยัง","เขินอยู่", "แต่กลัวไม่ทัน","ยังโสดอยู่นะ","จีบเธอก่อนแล้วกัน"], ytid:"9bdUszs3E3Q" },
-        { title: "ACHOO!", col1: "#00ccff", col2: "#00ff99", keywords: ["achoo", "ฮัดชิ้ว", "พิมมา", "I'mma I'mma", "allergic to you", "Pimma"], ytid:"ykfV6cbnUkM" },
-        { title: "Not Bad", col1: "#333333", col2: "#00ff88",bg1: "#d40419", bg2: "#260308", keywords: ["not bad", "ไม่แย่", "ก็ไม่ได้แย่", "let it go", "ฉันไม่ได้มีใคร", "sorry แค่ไม่ได้มีใจ", "ก็ดีที่เธอเอาใจใส่", "เธอไม่แย่แค่ไม่ใช่นะ"], ytid:"uDfjZWUJ2P0"},
-        { title: "Game Changer", col1: "#6600ff", col2: "#00ffff",bg1: "#f5e20f", bg2: "#382c10", keywords: ["game changer","hair flip", "heart flip", "ไม่ดี", "game switch","Pantene"], ytid:"k8BBoLMCQQo"}
+        { title: "ACHOO!", col1: "#00ccff", col2: "#00ff99", bg1: "#00ccff", bg2: "#00ff99", keywords: ["achoo", "ฮัดชิ้ว", "พิมมา", "I'mma I'mma", "allergic", "allergic to you", "Pimma"], ytid:"ykfV6cbnUkM" },
+        { title: "Not Bad", col1: "#333333", col2: "#d40419",bg1: "#d40419", bg2: "#260308", keywords: ["not bad", "ไม่แย่", "ก็ไม่ได้แย่", "let it go", "ฉันไม่ได้มีใคร", "sorry แค่ไม่ได้มีใจ", "ก็ดีที่เธอเอาใจใส่", "เธอไม่แย่แค่ไม่ใช่นะ"], ytid:"uDfjZWUJ2P0"},
+        { title: "Game Changer", col1: "#382c10", col2: "#f5e20f",bg1: "#f5e20f", bg2: "#382c10", keywords: ["game changer","hair flip", "heart flip", "ไม่ดี", "game switch","Pantene"], ytid:"k8BBoLMCQQo"}
     ],
     "Q2": [
-        { title: "MUTELU", col1: "#200a44", col2: "#cc33ff", keywords: ["mutelu", "มูเตลู", "พรหมลิขิตจะทำให้เราได้หากันเจอ", "oh ah-ah-ah","Everything for you","cupid"], ytid: "kQQAp6zfV7U" },
-        { title: "Pick A Card", col1: "#ff0033", col2: "#000000", keywords: ["pick a card", "I'll tell you", "what to do","baby boo", "card"], ytid:"GSjkPB-Pbew" },
-        { title: "DEJAYOU", col1: "#330066", col2: "#ff00ff", keywords: ["dejayou", "deja","oh boy you make me","คิดถึงเธออีกแล้ว","morning", "evening","midnight","see you every night"], ytid:"B2VpO6lPsLA" },
+        { title: "MUTELU", col1: "#a78bfc", col2: "#55157d", keywords: ["mutelu", "มูเตลู", "พรหมลิขิตจะทำให้เราได้หากันเจอ", "oh ah-ah-ah","Everything for you","cupid"], ytid: "kQQAp6zfV7U" },
+        { title: "Pick A Card", col1: "#302501", col2: "#f2d880", bg1: "#302501", bg2: "#f2d880", keywords: ["pick a card", "I'll tell you", "what to do","baby boo", "card"], ytid:"GSjkPB-Pbew" },
+        { title: "DEJAYOU", col1: "#2ce88a", col2: "#102e1f", bg1: "#2ce88a", bg2: "#102e1f", keywords: ["dejayou", "deja","oh boy you make me","คิดถึงเธออีกแล้ว","morning", "evening","midnight","see you every night"], ytid:"B2VpO6lPsLA" },
         { title: "TOXIQUE", col1: "#111111", col2: "#ff0000", bg1: "#072418", bg2: "#0b473b", keywords: ["toxique", "toxic", "girl you're toxic", "come a little","closer now","you know it","don't ya", "silent"] , ytid:"D-qrzwwrz20"},
         { title: "Magic Car", col1: "#0055ff", col2: "#00ffcc",  bg1: "#f2b19d", bg2: "#afa2e8", keywords: ["magic car","ทุกอย่างบนโลกใบนี้ช่าง","สวยงาม","ไปหมดเลย","ทุกที่ช่างดูสดใส", "แค่ร่วมทางไปกับเธอ"] , ytid:"D1lSFdA9GFY"},
-        { title: "ONE SHOT", col1: "#cc0000", col2: "#333333", keywords: ["one shot", "I've got"] , ytid:"Jz_4GoqCF1Q"},
+        { title: "ONE SHOT", col1: "#f2e80e", col2: "#8fd2d8", keywords: ["one shot", "I've got"] , ytid:"Jz_4GoqCF1Q"},
         { title: "HUH?", col1: "#ffff00", col2: "#000000", bg1: "#550f99", bg2: "#3d1366", keywords: ["huh","ไม่ได้เห็น", "พูดดังดังได้ไหม"],ytid:"mTHE8F4o2G0" },
         { title: "FEAT", col1: "#949094", col2: "#395269", bg1:"#312c2a", bg2:"#ddbfb0", keywords: ["feat","F E A T","F", "E","A", "T","get set go","are you a good boy","I'm a bad girl","lips"], ytid: "1FztEbqElt0"},
         { title: "BADLY", col1: "#440000", col2: "#ff3300", bg1:"#b1aebe", bg2:"#050505", keywords: ["badly","I want you", "keep it inside", "touch"], ytid:"yj7dBMVfe8U"}
     ],
     "Q3": [
-        { title: "Too Cute", col1: "#a2f5e6", col2: "#f1f5a2", keywords: ["too cute", "cupid", "เกินต้าน","หลงเธออีกแล้ว","ก็เธอน่ารัก","จนเกินต้านขนาดนี้","จะรักคนคนนี้","ไม่ได้หรอก"], ytid:"9zXeLZTBd80" },
-	{ title: "Way Too Cute", col1: "#ff99cc", col2: "#e8f7c6", keywords: ["narak", "ชอบเธอ", "ชอบไปหมด","cute","ชอบทุกๆ อย่าง","ชอบเธอมากกว่าใคร","สายตาและท่าทาง","รู้รึเปล่า"], ytid:"3JrrwtPrNh4" },
-        { title: "PiXXeL", col1: "#ffccff", col2: "#d4a5ff", bg1:"#c4b9a6", b2:"#a4513d", keywords: ["pixxel","พักบ้างหรือยัง","หากเธอล้มฉันจะรับ","หากเธอล้าให้เธอพัก","song for you"], ytid:"sjRLlT7i2Xc" },
-        { title: "DED", col1: "#00ffaa", col2: "#ffff00", keywords: ["ded", "เด็ด","miss you", "อย่าให้ดอกไม้ เดี๋ยวฉันน่ะ","Ya-ya-ya-ya-ya-ya-a-a"], ytid:"c-sEwGkqkEo" },
-        { title: "Heartstopper", col1: "#ff3399", col2: "#ffccff", keywords: ["heartstopper", "มาเบล","Mabel","heart","stopper"], ytid:"p1vuJa83434" },
+        { title: "Too Cute", col1: "#90e8d8", col2: "#f1f5a2", bg1: "#90e8d8", bg2: "#f1f5a2", keywords: ["too cute", "cupid", "เกินต้าน","หลงเธออีกแล้ว","ก็เธอน่ารัก","จนเกินต้านขนาดนี้","จะรักคนคนนี้","ไม่ได้หรอก"], ytid:"9zXeLZTBd80" },
+	{ title: "Way Too Cute", col1: "#ff99cc", col2: "#fae3f7", bg1: "#ff99cc", bg2: "#fae3f7", keywords: ["narak", "ชอบเธอ", "ชอบไปหมด","cute","ชอบทุกๆ อย่าง","ชอบเธอมากกว่าใคร","สายตาและท่าทาง","รู้รึเปล่า"], ytid:"3JrrwtPrNh4" },
+        { title: "PiXXeL", col1: "#ffccff", col2: "#d4a5ff", bg1:"#a4513d", bg2:"#c4b9a6", keywords: ["pixxel","พักบ้างหรือยัง","หากเธอล้มฉันจะรับ","หากเธอล้าให้เธอพัก","song for you"], ytid:"sjRLlT7i2Xc" },
+        { title: "DED", col1: "#f9befa", col2: "#eaacfa", bg1: "#f9befa", bg2: "#e298f5", keywords: ["ded", "เด็ด","miss you", "อย่าให้ดอกไม้ เดี๋ยวฉันน่ะ","Ya-ya-ya-ya-ya-ya-a-a"], ytid:"c-sEwGkqkEo" },
+        { title: "Heartstopper", col1: "#4d0b1c", col2: "#9e082d", bg1: "#4d0b1c", bg2: "#9e082d", keywords: ["heartstopper", "มาเบล","Mabel","heart","stopper"], ytid:"p1vuJa83434" },
         { title: "Into You", col1: "#cc99ff", col2: "#ffe6f2", keywords: ["into you","Like to spend my time with me","จะเปิดให้เธอเข้ามา","Cha-cha-di-da","Alright up to you"] , ytid:"kNOrFqW2ZYA"},
-        { title: "Boo", col1: "#99ffcc", col2: "#ffffff", keywords: ["boo","งอนนะ","ya ya ya","งอนแล้วนะ","งอนละ", "เธอไม่มาง้อกันสักที","ถ้าไม่มาขอโทษดีดี"], ytid:"Etq0SPYelLs" }
+        { title: "Boo", col1: "#fac3fa", col2: "#ffffff", keywords: ["boo","งอนนะ","ya ya ya","งอนแล้วนะ","งอนละ", "เธอไม่มาง้อกันสักที","ถ้าไม่มาขอโทษดีดี"], ytid:"Etq0SPYelLs" }
     ],
     "Q4": [
-        { title: "rain", col1: "#0a2a66", col2: "#44e3ff", keywords: ["rain", "ติดฝน","ติดเธอไม่ไหว", "ไม่ไหว", "เธอต้องไปรึยัง","อยากเจอเธอทุกวัน","พอเป็นไปได้ไหม","ยู่ด้วยกันก่อนได้ไหม"], ytid:"KhP8jEXA6MQ"},
+        { title: "rain", col1: "#0a2a66", col2: "#5abfd1", bg1: "#0a2a66", bg2: "#5abfd1", keywords: ["rain", "ติดฝน","ติดเธอไม่ไหว", "ไม่ไหว", "เธอต้องไปรึยัง","อยากเจอเธอทุกวัน","พอเป็นไปได้ไหม","ยู่ด้วยกันก่อนได้ไหม"], ytid:"KhP8jEXA6MQ"},
         { title: "Aftercry", col1: "#1a1a2e", col2: "#16213e", bg1: "#2f4c6a", bg2: "#506782",  keywords: ["aftercry", "it will be better", "tears will make you fine", "wu wu wu"], ytid:"WD9ATqvDKIY" },
         { title: "Deep Talk", col1: "#0f3460", col2: "#f2cc33", bg1: "#dba353", bg2: "#f2f2b8", keywords: ["deep talk", "Ingkho", "อิงโกะ","อยู่คุยกันคืนนี้ข้ามผ่านยามนิทรา","มาน่าฟังกว่าใคร","บทสนทนาไม่รู้เวลา", "ฉันฟังแต่เธอ"], ytid:"Gu5_YKQ2l_k" },
-        { title: "Whatever", col1: "#ff66aa", col2: "#ffcc33", keywords: ["whatever", "ไม่ได้ก็ไม่เอา", "ไม่ได้","ฉันก็คงไม่รอแล้ว","ฉันก็คงต้องพอเสียที","ถ้าเธอไม่ใช่","ก็ไม่ต้องยื้อกันแบบนี้","เหนื่อยเต็มที","ไม่ได้ก็ไม่เอา"],ytid:"B7riGDoRpR8" }
+        { title: "Whatever", col1: "#ff66aa", col2: "#5f67f5", bg1:"#c27dfa", bg2:"#5f67f5", keywords: ["whatever", "ไม่ได้ก็ไม่เอา", "ไม่ได้","ฉันก็คงไม่รอแล้ว","ฉันก็คงต้องพอเสียที","ถ้าเธอไม่ใช่","ก็ไม่ต้องยื้อกันแบบนี้","เหนื่อยเต็มที","ไม่ได้ก็ไม่เอา"],ytid:"B7riGDoRpR8" }
     ]
 };
 
@@ -686,13 +714,14 @@ function initThreeJS() {
     container.appendChild(renderer.domElement);
     
     const geo = new THREE.SphereGeometry(0.82, 128, 128);
-    const colorBright = new THREE.Color('#f8e8fa');
-    const colorShadow = new THREE.Color('#f5cdfa');
+    const colorBright = new THREE.Color('#fbedfc');
+    const colorShadow = new THREE.Color('#c57acf');
 
     material = new THREE.ShaderMaterial({
         transparent: true,
         uniforms: { 
             uTime: { value: 0 }, 
+            uRatio: { value: 0.3 },
             uAmp: uniformAmp, 
             colBright: { value: colorBright }, 
             colShadow: { value: colorShadow } 
@@ -708,10 +737,11 @@ function initThreeJS() {
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(position + normal * displacement, 1.0); 
             }`,
         fragmentShader: `
-            uniform vec3 colBright; uniform vec3 colShadow; varying vec3 vNormal; varying float vDisplacement;
+            uniform vec3 colBright; uniform vec3 colShadow; uniform float uRatio; varying vec3 vNormal; varying float vDisplacement;
             void main() { 
                 float fresnel = pow(1.0 - max(dot(vNormal, vec3(0.0, 0.0, 1.0)), 0.0), 2.5);
-                vec3 baseCol = mix(colShadow, colBright, vNormal.y * 0.5 + 0.5 + vDisplacement);
+                float factor = vNormal.y * 0.5 + (1.0 - uRatio) + vDisplacement;
+                vec3 baseCol = mix(colShadow, colBright, vNormal.y * 0.5 + 0.8 + vDisplacement);
                 vec3 finalCol = baseCol + (fresnel * 0.3 * colBright); 
                 gl_FragColor = vec4(finalCol, 0.95); 
             }`
@@ -728,15 +758,15 @@ function initThreeJS() {
     threeInitialized = true;
 }
 
-const orb = document.getElementById('recordBtn');
+const orbBtn = document.getElementById('recordBtn');
 const waves = [document.querySelector('.w1'), document.querySelector('.w2'), document.querySelector('.w3'), document.querySelector('.w4')];
 
 async function startResonance(e) {
     e.preventDefault();
-    orb.classList.add('recording');
+    orbBtn.classList.add('recording');
     
     // 點擊球體時噴發閃粉
-    const rect = orb.getBoundingClientRect();
+    const rect = orbBtn.getBoundingClientRect();
     spawnDust(rect.left + rect.width/2, rect.top + rect.height/2, 4);
 
     if (!audioCtx) {
@@ -772,7 +802,7 @@ function loop() {
 // 3. 更新日冕 (Aura) 效果
     // 將平均音量轉換為 0~1 的比例
     let normalizedVol = Math.min(avg / 80, 1);
-    orb.style.setProperty('--mic-vol', normalizedVol);
+    orbBtn.style.setProperty('--mic-vol', normalizedVol);
 }
 
 
@@ -784,10 +814,10 @@ function getRandomVibrantColor() {
     return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
-orb.addEventListener('mousedown', startResonance);
-orb.addEventListener('mouseup', endResonance);
-orb.addEventListener('touchstart', startResonance, {passive: false});
-orb.addEventListener('touchend', endResonance, {passive: false});
+orbBtn.addEventListener('mousedown', startResonance);
+orbBtn.addEventListener('mouseup', endResonance);
+orbBtn.addEventListener('touchstart', startResonance, {passive: false});
+orbBtn.addEventListener('touchend', endResonance, {passive: false});
 
 const handleMove = (e) => {
     if(!card) return;
@@ -866,7 +896,7 @@ setTimeout(() => {
 
     const intro = document.getElementById('intro-screen');
     const result = document.getElementById('result-screen');
-    const orb = document.getElementById('orb');
+	const orbBtn = document.getElementById('recordBtn');
     const title = document.querySelector('.main-title', '.sub-title'); // 假設你的標題容器名稱
 
     if (intro && result) {
@@ -874,13 +904,20 @@ setTimeout(() => {
         // 使用空字串，讓它自動回歸 CSS 裡定義的屬性（flex 或 block）
         intro.style.display = ''; 
         
-        // --- [關鍵] 強制重置視覺屬性 ---
-        if (orb) {
-            orb.style.opacity = "1";
-            orb.style.transform = "scale(1)";
-            orb.style.visibility = "visible";
-            orb.className = "soul-orb"; // 移除 recording 等 class
-        }
+        if (orbBtn) {
+                // --- [徹底重置狀態] ---
+                orbBtn.style.pointerEvents = "auto"; // 恢復可點擊狀態
+                orbBtn.style.visibility = "visible";
+                orbBtn.style.opacity = "1";
+                orbBtn.style.animation = "";        // 恢復 CSS breathe 動畫
+                orbBtn.style.transform = "scale(1)";
+                orbBtn.className = "soul-orb";      // 清除 recording class
+                
+                // --- [徹底清理粒子殘留] ---
+                clearInterval(particleInterval); 
+                const oldParticles = document.querySelectorAll('.particle');
+                oldParticles.forEach(p => p.remove());
+            }
         
         if (title) {
             title.style.opacity = "1";
@@ -903,7 +940,7 @@ setTimeout(() => {
     // 恢復背景波紋
     if (typeof waves !== 'undefined') {
         waves.forEach(w => {
-            w.style.opacity = "0.15";
+            w.style.opacity = "0.3";
             w.style.transform = "scale(1)";
         });
     }
@@ -919,12 +956,13 @@ function endResonance(e) {
     if (e) e.preventDefault();
     if (!isRecording) return;
     isRecording = false;
-    orb.classList.remove('recording');
+    orbBtn.classList.remove('recording');
 	clearInterval(particleInterval);
+
 
     
     // 重置所有視覺效果
-    orb.style.setProperty('--mic-vol', 0);
+    orbBtn.style.setProperty('--mic-vol', 0);
     waves.forEach(w => {
         if (w) {
             w.style.opacity = "0.3"; 
@@ -950,6 +988,18 @@ function calculateResult() {
     let finalSong = null; 
     let isMemberKey = false;
     let category = "Q1"; // 修正：恢復你原本的 category 變數定義
+
+// --- [關鍵修正：立刻鎖定 UI] ---
+    if (orbBtn) {
+        orbBtn.style.pointerEvents = 'none'; // 防止在動畫過渡期間重複點擊
+    }
+
+    // 讓遮罩從出現瞬間就攔截所有點擊 (z-index 9999)
+    if (overlay) {
+        overlay.style.visibility = "visible";
+        overlay.style.opacity = "1";
+        overlay.style.pointerEvents = "auto"; // 遮罩接管，下面點不到了
+    }
 
     const text = recognizedText.toLowerCase();
 
@@ -987,11 +1037,11 @@ function calculateResult() {
     const ssSpecial = ["ACHOO!", "Deep Talk", "Heartstopper"].includes(finalSong.title);
     let finalRank = "A";
 
-    if (frames > 60 && avgVol > 28) {
+    if (frames > 80 && avgVol > 35) {
         finalRank = "SSS";
     } else if (ssSpecial || isMemberKey) {
         finalRank = "SS";
-    } else if (finalSong.bg1 || frames > 30 || avgVol > 20 ) {
+    } else if (finalSong.bg1 || frames > 60 || avgVol > 30 ) {
         finalRank = "S";
     } else {
         finalRank = "A";
@@ -1006,12 +1056,14 @@ function calculateResult() {
         card.classList.add("rank-ss", "special-holo");
         badge.innerText = "SS Rank Harmony";
         badge.className = "rank-badge ss-style";
+	card.style.setProperty('--bg-g1', finalSong.bg1); 
+	card.style.setProperty('--bg-g2', finalSong.bg2);
     } else if (finalRank === "S") {
         card.classList.add("rank-s");
         badge.innerText = "S Rank Harmony";
         badge.className = "rank-badge s-style";
-        card.style.setProperty('--bg-g1', finalSong.bg1 || getRandomVibrantColor());
-        card.style.setProperty('--bg-g2', finalSong.bg2 || getRandomVibrantColor());
+        card.style.setProperty('--bg-g1', finalSong.bg1 || finalSong.col1 || getRandomVibrantColor());
+        card.style.setProperty('--bg-g2', finalSong.bg2 || finalSong.col2 || getRandomVibrantColor());
     } else {
         card.classList.add("rank-a");
         badge.innerText = "A Rank Sync";
@@ -1020,7 +1072,21 @@ function calculateResult() {
         card.style.setProperty('--bg-q-color', rankAColors[category]);
     }
 
-    // ==========================================
+ // [新增] 文字提示框邏輯
+    const hint = document.getElementById('musicHint');
+    if (hint) {
+        // 在結果頁面顯示後（延遲一點點，配合過渡動畫）顯示提示
+        setTimeout(() => {
+            hint.classList.add('active');
+            
+            // 3秒後自動移除
+            setTimeout(() => {
+                hint.classList.remove('active');
+            }, 3000);
+        }, 800); // 0.8秒後浮現
+    }
+
+   // ==========================================
     // --- 魔法過渡動畫與播放邏輯 (完美解耦版) ---
     // ==========================================
 
@@ -1039,7 +1105,7 @@ function calculateResult() {
             // 延遲檢查是否被瀏覽器擋下
             setTimeout(() => {
                 if (player.getPlayerState() !== 1 && musicBtn) { 
-                    musicBtn.innerText = "♪"; // 提示使用者手動播放
+                    musicBtn.innerText = "♫"; // 提示使用者手動播放
                     isPlaying = false;
                 } else if (musicBtn) {
                     musicBtn.innerText = "□"; // 正常播放中
@@ -1072,7 +1138,7 @@ function calculateResult() {
         if (overlay) {
             overlay.style.opacity = "0";
             // 等待淡出完畢後徹底隱藏
-            setTimeout(() => { overlay.style.visibility = "hidden"; }, 500);
+            setTimeout(() => { overlay.style.visibility = "hidden"; overlay.style.pointerEvents = "none";}, 500);
         }
 
      document.getElementById('intro-screen').style.display = 'none';
@@ -1080,6 +1146,20 @@ function calculateResult() {
   
        // 4. 觸發 3D 渲染與卡片翻轉
         initThreeJS();
+	// ======= [新增] 根據 Rank 動態變更 WebGL 顏色 =======
+        if (material) {
+            if (finalRank === "A"|| finalRank === "SS") {
+                // Rank A：讀取當前歌曲資料庫中的 col1 與 col2
+                material.uniforms.colBright.value.set(finalSong.col2);
+                material.uniforms.colShadow.value.set(finalSong.col1);
+   		material.uniforms.uRatio.value = 0.7;
+         } else {
+                // 其他 Rank：沿用原始固定的預設色彩
+                material.uniforms.colBright.value.set('#f8e8fa');
+                material.uniforms.colShadow.value.set('#f5cdfa');
+		material.uniforms.uRatio.value = 0.5;
+            }
+        }
         setTimeout(() => {
             if (card) card.classList.add('revealed');
         }, 200);
