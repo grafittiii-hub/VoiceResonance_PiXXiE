@@ -800,7 +800,15 @@ pointer-events: auto !important;
     from { opacity: 0; transform: translate(-50%, -40%); }
     to { opacity: 1; transform: translate(-50%, -50%); }
 }
-
+/* 當瀏覽器是 Chrome 時 (使用 @supports 判斷) */
+@supports (-webkit-touch-callout: none) and (not (overflow: -webkit-marquee)) {
+    .your-container-class {
+        /* 在這裡針對 Chrome 修正高度 */
+        height: calc(100vh - 56px); /* 56px 是預估網址列高度，可微調 */
+		height: 100vh; /* 備用 */
+    height: calc(var(--vh, 1vh) * 100); /* 強制使用 JavaScript 算出的正確高度 *
+    }
+}
 </style>
 </head>
 <body>
@@ -908,7 +916,16 @@ if (orbBtn) {
         }
     });
 }
+function setCorrectHeight() {
+    // 獲取瀏覽器視窗真正的內部高度
+    let vh = window.innerHeight * 0.01;
+    // 設定一個 CSS 變數 --vh
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
 
+// 監聽視窗變化（例如手機橫豎屏轉換）
+window.addEventListener('resize', setCorrectHeight);
+setCorrectHeight();
 
 // --- 核心資料庫 ---
 const songDatabase = {
