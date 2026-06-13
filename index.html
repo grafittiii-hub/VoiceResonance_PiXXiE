@@ -5,17 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Voice Resonance - PiXXiE</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;700;800;900&family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
-	<script src="https://www.youtube.com/iframe_api"></script>
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://voice-resonance-pixxie.vercel.app/">
+<meta property="og:title" content="PiXXiE Voice Resonance">
+<meta property="og:description" content="Hold the orb, resonate your voice, and discover which PiXXiE song matches your soul. Reveal your rank now!">
+<meta property="og:image" content="https://i.ibb.co/s9JSn73S/pixxie-og-pic.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://voice-resonance-pixxie.vercel.app/">
+<meta name="twitter:title" content="PiXXiE Voice Resonance">
+<meta name="twitter:description" content="Hold the orb, resonate your voice, and discover which PiXXiE song matches your soul.">
+<meta name="twitter:image" content="https://i.ibb.co/s9JSn73S/pixxie-og-pic.png"><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
 <script>
     let player;
     function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-            height: '0',
-            width: '0',
-            videoId: '',
-            playerVars: { 'autoplay': 0, 'controls': 0 }
-        });
+    player = new YT.Player('player', {
+        height: '0',
+        width: '0',
+        videoId: '',
+        playerVars: { 'autoplay': 0, 'controls': 0 },
+        events: {
+            'onReady': onPlayerReady
+        }
+    });
+}
+
+function onPlayerReady(event) {
+    const loader = document.getElementById('global-loader');
+    const loaderContent = loader ? loader.querySelector('.loader-content') : null;
+    
+    if (loader && loaderContent) {
+        // 1. 讓文字加上爆發發光樣式
+        loaderContent.classList.add('bursting');
+        
+        // 2. 取得目前文字在畫面的中心點，複製你的彩蛋邏輯，來一場粒子大爆發！
+        const rect = loaderContent.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        
+        let burstCount = 0;
+        const burstInterval = setInterval(() => {
+            // 在文字中心周圍 150x60 的範圍內噴發閃粉微粒
+            if (typeof spawnDust === 'function') {
+                spawnDust(cx + (Math.random() - 0.5) * 150, cy + (Math.random() - 0.5) * 60, 4);
+            }
+            burstCount++;
+            if (burstCount > 10) clearInterval(burstInterval);
+        }, 40);
+
+        // 3. 稍微延遲 150ms 後，讓整個星空背景優雅地向外推開、淡出
+        setTimeout(() => {
+            loader.classList.add('fade-out');
+        }, 150);
+
+        // 4. 動畫完全結束後，徹底移除 DOM
+        setTimeout(() => {
+            loader.remove();
+        }, 1350); // 150ms 延遲 + 1200ms 的 CSS transition
     }
+}
+
+// 讓 Loading 畫面也有閃粉互動
+document.getElementById('global-loader')?.addEventListener('pointermove', (e) => {
+    if (Math.random() > 0.6) spawnDust(e.clientX, e.clientY, 1);
+});
 </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -42,9 +97,14 @@
             font-family: 'Montserrat', 'Prompt', sans-serif; 
             display: flex; align-items: center; justify-content: center; 
             min-height: 100vh; width: 100vw;
-            overflow: hidden; touch-action: none; overscroll-behavior: none; 
+            overflow: hidden; touch-action: none; overscroll-behavior: none; -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Safari */
+    -khtml-user-select: none;    /* Konqueror HTML */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;           /* Non-prefixed version */
         }
-
+img, svg { pointer-events: none; } /* 防止拖曳圖片 */
 
 /* --- 動態背景：夢幻極光 --- */
 .aurora-bg {
@@ -59,6 +119,31 @@
     50% { opacity: 0.5;}
     100% { opacity: 0.9;}
 }
+
+/* 主背景微光粒子：完全獨立的漂浮層，不干涉 blob 排版 */
+.aurora-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* 使用雙層放射漸層，模擬出空氣中有些地方粒子密集（聚）、有些地方稀疏（散）的星塵效果 */
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.18) 1px, transparent 150px),
+        radial-gradient(circle at 75% 65%, rgba(255, 255, 255, 0.15) 1.5px, transparent 200px),
+        radial-gradient(circle at 50% 85%, rgba(255, 255, 255, 0.12) 1px, transparent 120px);
+    background-size: 100% 100%;
+    pointer-events: none;
+    z-index: 1;
+    animation: nebulaMist 12s ease-in-out infinite alternate;
+}
+
+/* 讓粒子產生「有聚有散」的呼吸律動 */
+@keyframes nebulaMist {
+    0% { opacity: 0.2; transform: scale(0.98) translate(0, 0); filter: blur(1px); }
+    50% { opacity: 0.6; transform: scale(1.05) translate(10px, -15px); filter: blur(0px); }
+    100% { opacity: 0.3; transform: scale(0.95) translate(-5px, 10px); filter: blur(1.5px); }
+}
+
+
 
 /* 隱藏 YouTube 播放器容器 */
 #youtube-player-container {
@@ -154,16 +239,39 @@ body::before {
 .mic-wave.active {
     opacity: var(--wave-opacity, 0.5);
 }
-        .w1 { width: 120px; height: 120px; border-width: 2px; z-index: 4; }
-        .w2 { width: 160px; height: 160px; border-width: 1px; opacity: 0.4; z-index: 3; }
-        .w3 { width: 210px; height: 210px; border-width: 0.5px; border-style: dashed; z-index: 2; }
-        .w4 { width: 260px; height: 260px; border-width: 8px; filter: blur(15px); opacity: 0; z-index: 1; }
+.w1 { 
+    width: 120px; height: 120px; border-width: 2px; z-index: 4; 
+}
+.mic-wave.active.w1 { animation: orbWaveSpread 2s infinite linear; animation-delay: 0s; }
 
-        @keyframes breathe { 
-            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(212, 165, 255, 0.1), inset 0 0 20px rgba(255,255,255,0.1); } 
-            50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(212, 165, 255, 0.3), inset 0 0 30px rgba(255,255,255,0.2); } 
-        }
-        
+.w2 { 
+    width: 160px; height: 160px; border-width: 1px; opacity: 0.4; z-index: 3; 
+}
+.mic-wave.active.w2 { animation: orbWaveSpread 2s infinite linear; animation-delay: 0.5s; }
+
+.w3 { 
+    width: 210px; height: 210px; border-width: 0.5px; border-style: dashed; z-index: 2; 
+}
+.mic-wave.active.w3 { animation: orbWaveSpread 2s infinite linear; animation-delay: 1s; }
+
+.w4 { 
+    width: 260px; height: 260px; border-width: 8px; filter: blur(15px); opacity: 0; z-index: 1; 
+}
+/* 第 4 道因為你有設定特殊的強烈模糊(blur(15px))，這裡單獨為它做一個專屬的柔和淡出動畫，維持精靈感 */
+.mic-wave.active.w4 { animation: orbBlurSpread 2s infinite linear; animation-delay: 1.5s; }
+
+@keyframes orbWaveSpread {
+    0% { transform: scale(0.8); opacity: 0; border-color: rgba(255, 255, 255, 0.6); }
+    50% { opacity: var(--wave-opacity, 0.5); border-color: rgba(212, 165, 255, 0.5); }
+    100% { transform: scale(1.4); opacity: 0; border-color: rgba(255, 255, 255, 0); }
+}
+
+@keyframes orbBlurSpread {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { opacity: 0.3; }
+    100% { transform: scale(1.3); opacity: 0; }
+}
+
         .soul-orb { 
             width: clamp(100px, 20vh, 200px); height: clamp(100px, 20vh, 200px); border-radius: 50%; 
             background: radial-gradient(circle at 30% 30%, #fff, var(--primary-fairy)); border: 4px solid rgba(212, 165, 255, 0.4); 
@@ -174,6 +282,11 @@ body::before {
             animation: breathe 3s ease-in-out infinite; 
 	--mic-vol: 0; /* 用於 JS 控制的變數 */
         }
+        @keyframes breathe { 
+            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(212, 165, 255, 0.1), inset 0 0 20px rgba(255,255,255,0.1); } 
+            50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(212, 165, 255, 0.3), inset 0 0 30px rgba(255,255,255,0.2); } 
+        }
+
 
 .soul-orb, .main-title, .sub-title {
     will-change: transform, opacity; /* 告訴瀏覽器這些屬性會變動 */
@@ -227,7 +340,7 @@ body::before {
             100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.1) rotate(180deg); }
         }
 
-        #result-screen { display: none; min-height: 100dvh; padding: 20px; overflow: hidden; perspective: 1500px; text-align: center; width: 100%; box-sizing: border-box;}
+        #result-screen { display: none; min-height: 100dvh; padding: 20px; overflow: hidden; perspective: 1500px; text-align: center; width: 100%; box-sizing: border-box; justify-content: center; flex-direction: column; align-items: center;}
         
         /* 高級壓克力與動態流動邊框 */
         .pixxie-card { 
@@ -378,11 +491,11 @@ body::before {
         .ss-style { color: #ff75c3; border-color: #ff75c3; box-shadow: 0 0 15px rgba(255,117,195,0.3); background: rgba(255,117,195,0.1); }
         
         /* 重新設計的 Re-Try 按鈕 */
-        .btn-group { display: flex; justify-content: center; width: 100%; z-index: 990; position: relative; align-items: flex-end; pointer-events: auto;}
+        .btn-group { display: flex; justify-content: center; width: 100%; z-index: 990; position: relative; align-items: flex-end; pointer-events: auto; flex-wrap: wrap;}
         
         .btn-retry { 
             padding: clamp(5px, 2vh, 12px) clamp(30px, 5vw, 50px);
-		margin-top: 2px; margin-bottom: 10px; 
+		margin-top: 2px; margin-bottom: 15px; 
             border-radius: 25px; 
             border: 1px solid rgba(212,165,255,0.4); 
             background: rgba(212,165,255,0.05); 
@@ -396,7 +509,7 @@ body::before {
             position: relative;
             overflow: hidden;
             outline: none;
- 		width: fit-content; white-space: nowrap;cursor: pointer; z-index: 100;
+ 		width: fit-content; white-space: nowrap;cursor: pointer; z-index: 100; 
        }
 
         /* 按鈕 Hover 效果：紫色精靈光暈與上浮 */
@@ -437,7 +550,7 @@ body::before {
     /* 定位在左下角 */
     position: absolute;
     left: 25px;
-    margin-top: 2px; margin-bottom: 10px;
+    margin-top: 2px; margin-bottom: 15px;
     border: 1px solid rgba(212,165,255,0.4);
     background: rgba(212,165,255,0.3);
     color: #fff;
@@ -493,6 +606,8 @@ pointer-events: auto !important;
 }
 
 /* 3. 當 result-screen 獲得 .active 類別時，內部元素集體浮現 */
+#result-screen.active {
+    display: flex;}
 #result-screen.active .pixxie-card { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
 #result-screen.active .music-btn { opacity: 1; transform: translateY(0); transition-delay: 0.3s; }
 #result-screen.active .btn-group { opacity: 1; transform: translateY(0); transition-delay: 0.4s; }
@@ -522,47 +637,255 @@ pointer-events: auto !important;
     transform: translateY(-5px);
 }
 
+/* Loading 畫面樣式 */
+#global-loader {
+    position: fixed; inset: 0; z-index: 100000;width:100%; height:100dvh;
+    background: linear-gradient(180deg, #371559 0%, #1a0b2e 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                visibility 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+    overflow: hidden; /* 防止星點超出邊界 */
+}
 
-    </style>
+/* 使用 ::before 和 ::after 製作兩層漂浮星點 */
+#global-loader::before,
+#global-loader::after {
+    content: '';
+    position: absolute;
+    inset: -50%; 
+    z-index: -1;
+    pointer-events: none;
+    
+    /* 【核心修改】救回星星：全部改成 transparent！ */
+    /* 同時隨機拿掉原本的幾顆星星，拉開坐標距離，製造出「聚散不均勻」的星空感 */
+    background-image: 
+        radial-gradient(1.5px 1.5px at 15px 45px, #fff, transparent),
+        radial-gradient(3px 3px at 85px 140px, rgba(212, 165, 255, 0.7), transparent),
+        /* 故意空出大段坐標，不放星星 */
+        radial-gradient(1.5px 1.5px at 240px 90px, #fff, transparent),
+        radial-gradient(2px 2px at 130px 280px, rgba(100, 200, 255, 0.6), transparent);
+
+    background-repeat: repeat;
+    background-size: 300px 300px; /* 放大重覆尺寸（原為200px），讓星星分佈得更稀疏、更有聚散聚落感 */
+    animation: drift 40s linear infinite; /* 放慢漂浮速度，更顯大氣與寧靜 */
+    opacity: 0.9;
+}
+
+#global-loader::after {
+    /* 第二層使用不同的坐標與較大的尺寸，兩層交錯重疊後，棋盤感完全消失，形成極其自然的星空聚散 */
+    background-image: 
+        radial-gradient(1.5px 1.5px at 50px 120px, #fff, transparent),
+        radial-gradient(3px 3px at 180px 40px, rgba(212, 165, 255, 0.5), transparent),
+        radial-gradient(2px 2px at 320px 220px, #fff, transparent);
+        
+    background-size: 450px 450px; /* 兩層尺寸不同，永遠不會同步重疊 */
+    animation: drift 55s linear infinite reverse; /* 反向、不同速慢速漂浮 */
+    opacity: 0.6;
+    transform: scale(1.3) rotate(25deg);
+}
+
+/* 溫和的漂浮動畫 */
+@keyframes drift {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-100%); }
+}
+
+/* 當激活淡出時的華麗效果 */
+#global-loader.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* 核心技巧：Loader 淡出時，讓內部的背景星星向外擴散放大，製造穿梭進去（Tunnel）的空間感 */
+#global-loader.fade-out::before {
+    transform: scale(2) rotate(15deg);
+    transition: transform 1.2s ease-in;
+    opacity: 0;
+}
+#global-loader.fade-out::after {
+    transform: scale(2.5) rotate(-15deg);
+    transition: transform 1.2s ease-in;
+    opacity: 0;
+}
+
+/* 載入內容文字爆發時的發光 */
+.loader-content.bursting {
+    animation: loaderGlowBurst 0.6s ease-out forwards;
+}
+
+@keyframes loaderGlowBurst {
+    0% { filter: drop-shadow(0 0 5px #fff); opacity: 1; }
+    50% { filter: drop-shadow(0 0 30px rgba(212, 165, 255, 1)); opacity: 0.8; }
+    100% { transform: scale(1.1); filter: drop-shadow(0 0 0px transparent); opacity: 0; }
+}
+/* 讓 Loading 文字也有一點呼吸感 */
+.loader-content {
+    background: transparent !important; /* 確保徹底移除任何討厭的灰色背景 */
+    border: none !important;            /* 確保沒有外框 */
+    box-shadow: none !important;        /* 確保沒有陰影造成的方塊感 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; animation: breathe 3s ease-in-out infinite; 
+}
+/* 專屬的微弱呼吸動畫：只動透明度，絕不放大縮小、不變色 */
+@keyframes loaderBreathe {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+/* --- 自訂彈窗樣式 --- */
+#custom-alert { 
+    position: fixed; inset: 0; 
+    background: rgba(13, 13, 26, 0.85); 
+    z-index: 100000; display: flex; align-items: center; justify-content: center; 
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    opacity: 1; transition: opacity 0.4s ease, visibility 0.4s;
+}
+#custom-alert.hidden { 
+    opacity: 0; visibility: hidden; pointer-events: none; 
+}
+
+.alert-box { 
+    position: relative;
+    background: linear-gradient(135deg, #1a0b2e, #2a0845); 
+    padding: 30px 40px; border-radius: 24px; text-align: center; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(212, 165, 255, 0.1); 
+    transform: scale(1); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-width: 80vw;
+}
+#custom-alert.hidden .alert-box { transform: scale(0.9); }
+
+/* 雷射流動邊框特效 */
+.alert-border-glow {
+    position: absolute; inset: -2px; border-radius: 26px; z-index: -1;
+    background: conic-gradient(from 0deg, rgba(212, 165, 255, 0.1), var(--primary-fairy), rgba(255, 255, 255, 0.8), var(--primary-fairy), rgba(212, 165, 255, 0.1));
+    animation: rotate 4s linear infinite;
+}
+
+.alert-box button { 
+    margin-top: 20px; background: rgba(212,165,255,0.15); 
+    border: 1px solid rgba(212,165,255,0.5); color: #fff; 
+    padding: 8px 30px; border-radius: 20px; cursor: pointer; 
+    font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: bold; letter-spacing: 2px;
+    transition: all 0.3s;
+}
+.alert-box button:hover {
+    background: rgba(212,165,255,0.3);
+    box-shadow: 0 0 15px rgba(212,165,255,0.4);
+}
+
+/* 懸浮通知樣式 (參考你現有的 music-hint 但改為固定置中) */
+.download-hint {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999; /* 確保浮在最上層 */
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 20px;
+    font-family: 'Prompt', sans-serif;
+    pointer-events: none; /* 讓點擊穿透，不會擋到其他按鈕 */
+    animation: fadeInOut 0.5s ease;
+}
+
+.download-hint.hidden {
+    display: none;
+}
+
+@keyframes fadeInOut {
+    from { opacity: 0; transform: translate(-50%, -40%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+</style>
 </head>
 <body>
-<div id="transition-overlay"></div>
-<div class="aurora-bg"></div>
-<div id="youtube-player-container"><div id="player"></div></div>
-    <div id="intro-screen">
-        <h1 class="main-title animate-item" id="pixxieTitle">PiXXiE</h1>
+<div id="global-loader">
+    <div class="loader-content">
+        <h2 class="main-title" style="font-size: 2rem; margin-bottom: 20px; cursor: default;">Uncovering...</h2>
+        <p class="sub-title">TO PIXXIE's VIBRATION</p>
+    </div>
+</div>
+<div id="custom-alert" class="hidden">
+    <div class="alert-box">
+        <h3 style="margin:0 0 10px 0; color: #d4a5ff;">Resonance Failed</h3>
+        <p id="alert-msg" style="font-size: 0.8rem; color: #ccc;">Please allow microphone access.</p>
+        <button onclick="document.getElementById('custom-alert').classList.add('hidden')">CLOSE</button>
+    </div>
+</div>
+<div id="a11y-announcer" class="sr-only" aria-live="assertive" aria-atomic="true" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;"></div>
+
+    <div id="transition-overlay"></div>
+    <div class="aurora-bg"></div>
+    <div id="youtube-player-container"><div id="player"></div></div>
+    
+    <main id="intro-screen">
+        <h1 class="main-title animate-item" id="pixxieTitle" tabindex="0" role="button" aria-label="PiXXiE Title">PiXXiE</h1>
         <p class="sub-title animate-item delay-1">VOICE RESONANCE</p>
         <div class="orb-container animate-item delay-2">
             <div class="mic-wave w1"></div>
             <div class="mic-wave w2"></div>
             <div class="mic-wave w3"></div>
             <div class="mic-wave w4"></div>
-            <div class="soul-orb" id="recordBtn"></div>
+            <div class="soul-orb" id="recordBtn" role="button" tabindex="0" aria-label="Hold to resonate your voice" aria-pressed="false"></div>
         </div>
-        <p style="font-size: clamp(0.4rem, 3vw, 0.6rem); color: rgba(212,165,255,0.5); letter-spacing: 3px; font-weight: bold; bottom: 3vh; display: flex;position: absolute" class="animate-item delay-2">HOLD ORB TO RESONATE</p>
-    </div>
+        <p style="font-size: clamp(0.4rem, 3vw, 0.6rem); color: rgba(212,165,255,0.5); letter-spacing: 3px; font-weight: bold; bottom: 3vh; display: flex; position: absolute" class="animate-item delay-2">HOLD ORB TO RESONATE</p>
+    </main>
 
-    <div id="result-screen" style="display:none;">
-        <div class="pixxie-card" id="soulCard">
+    <div id="result-screen" aria-hidden="true">
+        <div class="pixxie-card" id="soulCard" tabindex="0" aria-label="Your PiXXiE Resonance Card Results">
             <div id="webgl-container"></div>
             <div class="card-info">
-                <h3 class="song-title">Resonating...</h3>
+                <h2 class="song-title">Resonating...</h2>
                 <p class="lyrics">PiXXiE in your vibration.</p>
-                <div class="rank-badge">Matching</div>
+                <div class="rank-badge" aria-live="polite">Matching</div>
             </div>
         </div>
-	
+	<div id="downloadNotice" class="download-hint hidden" role="status">下載中</div>
         <div class="btn-group">
-		<div id="musicHint" class="music-hint">Toggle for ad-skipping & song-playing ♫</div>
-            <button id="musicToggleBtn" class="pixxie-btn music-btn">□</button>
-	<button class="btn-retry" id="retryBtn">RESONATE AGAIN</button>
+            <div id="musicHint" class="music-hint" role="tooltip">Toggle for ad-skipping & song-playing ♫</div>
+            <button id="musicToggleBtn" class="music-btn" aria-label="Toggle Music Playback">□</button>
+            <button class="btn-retry" id="retryBtn">AGAIN</button>
+            <button class="btn-retry" id="shareBtn" style="margin-left: 10px; padding-left: 15px; padding-right: 15px;">🔗</button>
+            <button class="btn-retry" id="downloadBtn"  style="margin-left: 10px; padding-left: 15px; padding-right: 15px;">⤓</button>
         </div>
     </div>
 
+<div id="custom-alert" class="hidden">
+    <div class="alert-box">
+        <div class="alert-border-glow"></div>
+        <h3 style="margin: 0 0 10px 0; color: #fff; text-shadow: 0 0 10px var(--primary-fairy); letter-spacing: 2px;">Resonance Failed</h3>
+        <p id="alert-msg" style="font-size: 0.75rem; color: rgba(255,255,255,0.8); line-height: 1.5; letter-spacing: 1px;">Please allow microphone access.</p>
+        <button id="alert-close-btn">CLOSE</button>
+    </div>
+</div>
 <script>
 // 在 <script> 開頭處新增
+// --- 變數宣告與初始化 ---
+let finalSong = null;
+let finalRank = null;
 let card; 
 let particleInterval;
+
+// 1. 將 orbBtn 提前宣告，確保後續綁定事件時可以抓取到元素
+const orbBtn = document.getElementById('recordBtn');
+
+// 2. 將 handleMove 改為標準的 function 宣告，利用提升(Hoisting)特性，避免 Cannot access 錯誤
+function handleMove(e) {
+    if(!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.touches ? e.touches[0].clientX : e.clientX;
+    const y = e.touches ? e.touches[0].clientY : e.clientY;
+    const px = (x - rect.left) / rect.width;
+    const py = (y - rect.top) / rect.height;
+    card.style.setProperty('--rx', px); 
+    card.style.setProperty('--ry', py);
+    card.style.transform = `rotateY(${(px - 0.5) * 20}deg) rotateX(${(py - 0.5) * -20}deg)`;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     card = document.getElementById('soulCard');
@@ -570,12 +893,29 @@ document.addEventListener('DOMContentLoaded', () => {
     card.addEventListener('touchmove', handleMove, {passive: true});
 });
 
+// 3. 現在 orbBtn 已經被正確定義，這裡綁定無障礙鍵盤事件就不會報錯了
+if (orbBtn) {
+    orbBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (!isRecording) startResonance(e);
+        }
+    });
+    orbBtn.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            endResonance(e);
+        }
+    });
+}
+
+
 // --- 核心資料庫 ---
 const songDatabase = {
     "Q1": [
        { title: "Shake!", col1: "#ff3300", col2: "#ffcc00", bg1: "#bd9531", bg2: "#de992a", keywords: ["shake", "เชค", "summer shake", "shake it shake it"] , ytid: "GBJQAqNqQm4"},
         { title: "FYI", col1: "#ff0066", col2: "#ff99cc", bg1: "#61b1c8", bg2: "#caf2fa", keywords: ["fyi","ก็มันชอบอยู่ชอบอยู่","เธอรู้ยัง","เขินอยู่", "แต่กลัวไม่ทัน","ยังโสดอยู่นะ","จีบเธอก่อนแล้วกัน"], ytid:"9bdUszs3E3Q" },
-        { title: "ACHOO!", col1: "#00ccff", col2: "#00ff99", bg1: "#00ccff", bg2: "#00ff99", keywords: ["achoo", "ฮัดชิ้ว", "พิมมา", "I'mma I'mma", "allergic", "allergic to you", "Pimma"], ytid:"ykfV6cbnUkM" },
+        { title: "ACHOO!", col1: "#00ccff", col2: "#00ff99", bg1: "#ea0808", bg2: "#00ff99", keywords: ["achoo", "ฮัดชิ้ว", "พิมมา", "I'mma I'mma", "allergic", "allergic to you", "Pimma"], ytid:"ykfV6cbnUkM" },
         { title: "Not Bad", col1: "#333333", col2: "#d40419",bg1: "#d40419", bg2: "#260308", keywords: ["not bad", "ไม่แย่", "ก็ไม่ได้แย่", "let it go", "ฉันไม่ได้มีใคร", "sorry แค่ไม่ได้มีใจ", "ก็ดีที่เธอเอาใจใส่", "เธอไม่แย่แค่ไม่ใช่นะ"], ytid:"uDfjZWUJ2P0"},
         { title: "Game Changer", col1: "#382c10", col2: "#f5e20f",bg1: "#f5e20f", bg2: "#382c10", keywords: ["game changer","hair flip", "heart flip", "ไม่ดี", "game switch","Pantene"], ytid:"k8BBoLMCQQo"}
     ],
@@ -595,14 +935,14 @@ const songDatabase = {
 	{ title: "Way Too Cute", col1: "#ff99cc", col2: "#fae3f7", bg1: "#ff99cc", bg2: "#fae3f7", keywords: ["narak", "ชอบเธอ", "ชอบไปหมด","cute","ชอบทุกๆ อย่าง","ชอบเธอมากกว่าใคร","สายตาและท่าทาง","รู้รึเปล่า"], ytid:"3JrrwtPrNh4" },
         { title: "PiXXeL", col1: "#ffccff", col2: "#d4a5ff", bg1:"#a4513d", bg2:"#c4b9a6", keywords: ["pixxel","พักบ้างหรือยัง","หากเธอล้มฉันจะรับ","หากเธอล้าให้เธอพัก","song for you"], ytid:"sjRLlT7i2Xc" },
         { title: "DED", col1: "#f9befa", col2: "#eaacfa", bg1: "#f9befa", bg2: "#e298f5", keywords: ["ded", "เด็ด","miss you", "อย่าให้ดอกไม้ เดี๋ยวฉันน่ะ","Ya-ya-ya-ya-ya-ya-a-a"], ytid:"c-sEwGkqkEo" },
-        { title: "Heartstopper", col1: "#4d0b1c", col2: "#9e082d", bg1: "#4d0b1c", bg2: "#9e082d", keywords: ["heartstopper", "มาเบล","Mabel","heart","stopper"], ytid:"p1vuJa83434" },
+        { title: "Heartstopper", col1: "#4d0b1c", col2: "#f8dc2c", bg1: "#4d0b1c", bg2: "#9e082d", keywords: ["heartstopper", "มาเบล","Mabel","heart","stopper"], ytid:"p1vuJa83434" },
         { title: "Into You", col1: "#cc99ff", col2: "#ffe6f2", keywords: ["into you","Like to spend my time with me","จะเปิดให้เธอเข้ามา","Cha-cha-di-da","Alright up to you"] , ytid:"kNOrFqW2ZYA"},
         { title: "Boo", col1: "#fac3fa", col2: "#ffffff", keywords: ["boo","งอนนะ","ya ya ya","งอนแล้วนะ","งอนละ", "เธอไม่มาง้อกันสักที","ถ้าไม่มาขอโทษดีดี"], ytid:"Etq0SPYelLs" }
     ],
     "Q4": [
         { title: "rain", col1: "#0a2a66", col2: "#5abfd1", bg1: "#0a2a66", bg2: "#5abfd1", keywords: ["rain", "ติดฝน","ติดเธอไม่ไหว", "ไม่ไหว", "เธอต้องไปรึยัง","อยากเจอเธอทุกวัน","พอเป็นไปได้ไหม","ยู่ด้วยกันก่อนได้ไหม"], ytid:"KhP8jEXA6MQ"},
         { title: "Aftercry", col1: "#1a1a2e", col2: "#16213e", bg1: "#2f4c6a", bg2: "#506782",  keywords: ["aftercry", "it will be better", "tears will make you fine", "wu wu wu"], ytid:"WD9ATqvDKIY" },
-        { title: "Deep Talk", col1: "#0f3460", col2: "#f2cc33", bg1: "#dba353", bg2: "#f2f2b8", keywords: ["deep talk", "Ingkho", "อิงโกะ","อยู่คุยกันคืนนี้ข้ามผ่านยามนิทรา","มาน่าฟังกว่าใคร","บทสนทนาไม่รู้เวลา", "ฉันฟังแต่เธอ"], ytid:"Gu5_YKQ2l_k" },
+        { title: "Deep Talk", col1: "#337ff2", col2: "#f2cc33", bg1: "#f2f2b8", bg2: "#dba353", keywords: ["deep talk", "Ingkho", "อิงโกะ","อยู่คุยกันคืนนี้ข้ามผ่านยามนิทรา","มาน่าฟังกว่าใคร","บทสนทนาไม่รู้เวลา", "ฉันฟังแต่เธอ"], ytid:"Gu5_YKQ2l_k" },
         { title: "Whatever", col1: "#ff66aa", col2: "#5f67f5", bg1:"#c27dfa", bg2:"#5f67f5", keywords: ["whatever", "ไม่ได้ก็ไม่เอา", "ไม่ได้","ฉันก็คงไม่รอแล้ว","ฉันก็คงต้องพอเสียที","ถ้าเธอไม่ใช่","ก็ไม่ต้องยื้อกันแบบนี้","เหนื่อยเต็มที","ไม่ได้ก็ไม่เอา"],ytid:"B7riGDoRpR8" }
     ]
 };
@@ -681,6 +1021,7 @@ function createParticle() {
 // --- 音頻與 Three.js 核心邏輯 ---
 let audioCtx, analyser, dataArray, isRecording = false, audioHistory = [];
 let recognizedText = "";
+let hasMicrophonePermission = false;
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition;
 
@@ -708,9 +1049,13 @@ function initThreeJS() {
     camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
     camera.position.z = 2.8;
     
-    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(w, h);
+// ===== 尋找 initThreeJS 內部並替換這段 WebGL 初始化 =====
+    renderer = new THREE.WebGLRenderer({ 
+        alpha: true, 
+        antialias: true,
+        preserveDrawingBuffer: true
+    });
+    renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
     
     const geo = new THREE.SphereGeometry(0.82, 128, 128);
@@ -749,44 +1094,106 @@ function initThreeJS() {
 
     scene.add(new THREE.Mesh(geo, material));
 
-    const anim = () => { 
-        requestAnimationFrame(anim); 
-        material.uniforms.uTime.value += 0.012; 
-        renderer.render(scene, camera); 
-    };
-    anim();
+const anim = () => {
+    requestAnimationFrame(anim);
+    
+    // 只有當結果頁面 active 時才進行渲染
+    if (document.getElementById('result-screen').classList.contains('active')) {
+        material.uniforms.uTime.value += 0.012;
+        
+        // 【核心修正：本機測試/無音訊防護機制】
+        // 如果在 C Drive 或是沒錄到音（uAmp 為 0），我們給予一個夢幻的波動底值，使其不會只是死板的圓形
+        if (!material.uniforms.uAmp.value || material.uniforms.uAmp.value < 0.01) {
+            // 結合時間的正弦波，讓晶體自主產生不規則的多邊形優雅起伏
+            material.uniforms.uAmp.value = 0.15 + Math.sin(material.uniforms.uTime.value * 2.0) * 0.1;
+        }
+
+        renderer.render(scene, camera);
+    }
+};
+anim();
     threeInitialized = true;
 }
 
-const orbBtn = document.getElementById('recordBtn');
 const waves = [document.querySelector('.w1'), document.querySelector('.w2'), document.querySelector('.w3'), document.querySelector('.w4')];
 
+// 在 script 頂部或 DOMContentLoaded 中加入關閉彈窗的事件
+document.getElementById('alert-close-btn')?.addEventListener('click', () => {
+    document.getElementById('custom-alert').classList.add('hidden');
+});
+
 async function startResonance(e) {
-    e.preventDefault();
+if (e && e.preventDefault) e.preventDefault();
+    
+    // 【電腦版修復核心】：鎖定指標，防止滑鼠微小移動或拖曳導致判定離開
+    if (e && e.pointerId && typeof orbBtn.setPointerCapture === 'function') {
+        orbBtn.setPointerCapture(e.pointerId);
+    }
+
     orbBtn.classList.add('recording');
     
-    // 點擊球體時噴發閃粉
     const rect = orbBtn.getBoundingClientRect();
-    spawnDust(rect.left + rect.width/2, rect.top + rect.height/2, 4);
+    if (typeof spawnDust === 'function') spawnDust(rect.left + rect.width/2, rect.top + rect.height/2, 4);
 
-    if (!audioCtx) {
+    // 【權限鎖邏輯】：只有未獲取權限，或是 audioCtx 丟失時才執行 getUserMedia
+    if (!hasMicrophonePermission || !audioCtx) {
         try {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioCtx.createAnalyser();
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            
+            // 權限獲取成功，上鎖！
+            hasMicrophonePermission = true;
+
+            waves.forEach(w => {
+                if (w) w.classList.add('active');
+            });
             audioCtx.createMediaStreamSource(stream).connect(analyser);
             dataArray = new Uint8Array(analyser.frequencyBinCount);
-        } catch (err) { alert("請允許麥克風權限以進行共鳴。"); return; }
+        } catch (err) { 
+            const alertMsg = document.getElementById('alert-msg');
+            const customAlert = document.getElementById('custom-alert');
+            if (alertMsg) alertMsg.innerText = "Please allow microphone access to resonate with PiXXiE.";
+            if (customAlert) customAlert.classList.remove('hidden');
+            orbBtn.classList.remove('recording');
+
+            waves.forEach(w => {
+                if (w) w.classList.remove('active');
+            });
+            return; 
+        }
+    } else {
+        // 如果音訊已存在且授權過（非首次點擊），直接亮起波紋
+        waves.forEach(w => {
+            if (w) w.classList.add('active');
+        });
     }
-    isRecording = true; audioHistory = []; recognizedText = "";
+
+    // 強制喚醒被瀏覽器阻擋的 AudioContext
+    if (audioCtx && audioCtx.state === 'suspended') {
+        await audioCtx.resume();
+    }
+
+    isRecording = true; 
+    audioHistory = []; 
+    recognizedText = "";
     if (recognition) { try { recognition.start(); } catch(err) {} }
-	    particleInterval = setInterval(createParticle, 100);
+    
+    // 避免重複設定 interval 導致粒子暴增
+    if (typeof particleInterval !== 'undefined') clearInterval(particleInterval);
+    particleInterval = setInterval(createParticle, 100);
+    
     loop();
 }
+// 替換原本的事件綁定，改用 pointer 事件更精準
+orbBtn.addEventListener('pointerdown', startResonance);
+orbBtn.addEventListener('pointerup', endResonance);
+orbBtn.addEventListener('pointerleave', endResonance); // 防止滑鼠移出球體卡在錄音狀態
 
 function loop() {
     if (!isRecording) return;
     requestAnimationFrame(loop);
+if (analyser && dataArray && dataArray.length > 0) {
     analyser.getByteFrequencyData(dataArray);
     let avg = dataArray.reduce((a,b)=>a+b)/dataArray.length;
     audioHistory.push(avg);uniformAmp.value = avg / 55;
@@ -804,7 +1211,7 @@ function loop() {
     let normalizedVol = Math.min(avg / 80, 1);
     orbBtn.style.setProperty('--mic-vol', normalizedVol);
 }
-
+}
 
 // 新增：限制明度 (Lightness) 在 35%-55% 之間，避免產生純白 (100%)，確保文字清晰
 function getRandomVibrantColor() {
@@ -814,21 +1221,10 @@ function getRandomVibrantColor() {
     return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
-orbBtn.addEventListener('mousedown', startResonance);
-orbBtn.addEventListener('mouseup', endResonance);
-orbBtn.addEventListener('touchstart', startResonance, {passive: false});
-orbBtn.addEventListener('touchend', endResonance, {passive: false});
+orbBtn.addEventListener('pointerdown', startResonance);
+orbBtn.addEventListener('pointerup', endResonance);
+orbBtn.addEventListener('pointercancel', endResonance); // 當系統打斷(如來電)時釋放
 
-const handleMove = (e) => {
-    if(!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = e.touches ? e.touches[0].clientX : e.clientX;
-    const y = e.touches ? e.touches[0].clientY : e.clientY;
-    const px = (x - rect.left) / rect.width;
-    const py = (y - rect.top) / rect.height;
-    card.style.setProperty('--rx', px); card.style.setProperty('--ry', py);
-    card.style.transform = `rotateY(${(px - 0.5) * 20}deg) rotateX(${(py - 0.5) * -20}deg)`;
-};
 
 
 let isPlaying = true; // 因為 calculateResult 觸發時會自動播放，所以預設為 true
@@ -900,6 +1296,7 @@ setTimeout(() => {
     const title = document.querySelector('.main-title', '.sub-title'); // 假設你的標題容器名稱
 
     if (intro && result) {
+        result.classList.remove('active'); // 務必移除 active 動態類
         result.style.display = 'none';
         // 使用空字串，讓它自動回歸 CSS 裡定義的屬性（flex 或 block）
         intro.style.display = ''; 
@@ -924,6 +1321,12 @@ setTimeout(() => {
             title.style.transform = "translateY(0)";
         }
         
+if (result) {
+    result.classList.remove('active');
+    result.style.display = 'none';
+    result.setAttribute('aria-hidden', 'true');  // 👈 退場時重新設為隱藏
+}
+
 	const animItems = intro.querySelectorAll('.animate-item');
         animItems.forEach(item => {
             // 先移除動畫，讓它回到 opacity: 0
@@ -951,29 +1354,413 @@ setTimeout(() => {
 }, 600);
 });
 
+// --- 分享按鈕邏輯 (Web Share API) ---
+const shareBtn = document.getElementById('shareBtn');
+if (shareBtn) {
+    shareBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        // 現在這裡可以安全地讀取到已經被賦值的全域變數
+    if (!finalSong) {
+        console.log("結果尚未生成");
+        return;
+    }
+        // 分享時帶上的文字/當前網址
+	const shareUrl = 'https://voice-resonance-pixxie.vercel.app/';
+        const shareData = {
+            title: 'PiXXiE Voice Resonance',
+            text: `I just resonated with PiXXiE and matched with "${finalSong.title}" at Rank ${finalRank}! Find out your match:`,
+            url: shareUrl
+        };
+
+        try {
+            // 檢查裝置是否支援原生分享選單 (通常手機瀏覽器支援)
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                // 如果不支援 (如電腦版)，則複製網址到剪貼簿
+                await navigator.clipboard.writeText(`${shareData.text} ${shareUrl}`);
+                const alertBox = document.getElementById('custom-alert');
+            const alertMsg = document.getElementById('alert-msg');
+            if (alertBox && alertMsg) {
+                document.querySelector('#custom-alert h3').innerText = "Link Copied!";
+                alertMsg.innerText = "The official link has been copied to your clipboard. Share it with friends!";
+                alertBox.classList.remove('hidden');
+            }
+                // 暫時改變按鈕文字提示已複製
+                const originalText = shareBtn.innerText;
+                shareBtn.innerText = "COPIED!";
+                setTimeout(() => { shareBtn.innerText = originalText; }, 2000);
+            }
+        } catch (err) {
+            console.error('Share failed:', err);
+        }
+    });
+}
+
+// ===== 尋找並完整替換 downloadBtn 的點擊事件 =====
+const downloadBtn = document.getElementById('downloadBtn');
+
+function drawHoloDiamonds(ctx, x, y, w, h) {
+    ctx.save();
+    
+    // 1. 設定混色模式為與網頁完全一致的 overlay，透明度設定為強效的 0.7
+    ctx.globalCompositeOperation = 'overlay';
+    ctx.globalAlpha = 0.7;
+
+    // 2. 建立平鋪網格 (對應 CSS 的 background-size: 120px 120px)
+    // 這樣可以確保不論卡片多大，全息碎鑽幾何塊的大小都能完美收細、維持最佳視覺印刷比例
+    const size = 120; 
+
+    // 計算在卡片範圍內，需要橫向和縱向平鋪多少個 120x120 的碎鑽單元
+    const cols = Math.ceil(w / size);
+    const rows = Math.ceil(h / size);
+
+    // 3. 仿照 CSS 建立三個 conic-gradient
+    // 注意：CSS 的 deg 轉為 Canvas 的弧度公式為：(角度 * Math.PI) / 180
+    // 原點坐標依照百分比換算 (例如 50% 50% 即為 size * 0.5)
+
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            // 計算當前這一格碎鑽單元的左上角起點
+            const cellX = x + c * size;
+            const cellY = y + r * size;
+
+            ctx.save();
+            // 裁剪繪製區域，確保漸層只會乖乖待在當前這格 120x120 的單元裡，形成幾何分塊感
+            ctx.beginPath();
+            ctx.rect(cellX, cellY, size, size);
+            ctx.clip();
+
+            // --- 🎯 第一層：conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0.12) 0deg, transparent 60deg) ---
+            const cX1 = cellX + size * 0.5;
+            const cY1 = cellY + size * 0.5;
+            const g1 = ctx.createConicGradient(0, cX1, cY1);
+            g1.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
+            g1.addColorStop(60 / 360, 'transparent');
+            g1.addColorStop(1, 'transparent');
+            ctx.fillStyle = g1;
+            ctx.fillRect(cellX, cellY, size, size);
+
+            // --- 🎯 第二層：conic-gradient(from 120deg at 30% 40%, rgba(212,165,255,0.2) 0deg, transparent 80deg) ---
+            const cX2 = cellX + size * 0.3;
+            const cY2 = cellY + size * 0.4;
+            const startAngle2 = (120 * Math.PI) / 180; // 換算 120deg 轉向
+            const g2 = ctx.createConicGradient(startAngle2, cX2, cY2);
+            g2.addColorStop(0, 'rgba(212, 165, 255, 0.2)');
+            g2.addColorStop(80 / 360, 'transparent');
+            g2.addColorStop(1, 'transparent');
+            ctx.fillStyle = g2;
+            ctx.fillRect(cellX, cellY, size, size);
+
+            // --- 🎯 第三層：conic-gradient(from 240deg at 70% 60%, rgba(68,227,255,0.15) 0deg, transparent 100deg) ---
+            const cX3 = cellX + size * 0.7;
+            const cY3 = cellY + size * 0.6;
+            const startAngle3 = (240 * Math.PI) / 180; // 換算 240deg 轉向
+            const g3 = ctx.createConicGradient(startAngle3, cX3, cY3);
+            g3.addColorStop(0, 'rgba(68, 227, 255, 0.15)');
+            g3.addColorStop(100 / 360, 'transparent');
+            g3.addColorStop(1, 'transparent');
+            ctx.fillStyle = g3;
+            ctx.fillRect(cellX, cellY, size, size);
+
+            ctx.restore();
+        }
+    }
+
+    ctx.restore();
+}
+
+if (downloadBtn) {
+    downloadBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+const notice = document.getElementById('downloadNotice');
+    
+    // 1. 顯示告示文字，並暫時禁用按鈕防止重複點擊
+    if (notice) notice.classList.remove('hidden');
+    downloadBtn.style.pointerEvents = 'none';
+
+    // 延遲一小個 frame 確保瀏覽器畫面順利渲染出文字
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+
+        const cardTarget = document.getElementById('soulCard');
+        if (!cardTarget || !renderer || !scene || !camera) {
+            console.error("下載所需元件未就緒");
+            return;
+        }
+
+        // 轉換按鈕狀態
+        const originalText = downloadBtn.innerText;
+        downloadBtn.innerText = "💜";
+        downloadBtn.style.pointerEvents = "none";
+
+
+	// 定義 finalCanvas 在這裡，確保整個 try 區塊都能存取
+    let finalCanvas; 
+
+    try {
+        const bgImage = new Image();
+        bgImage.crossOrigin = "anonymous";
+        bgImage.src = "https://raw.githubusercontent.com/grafittiii-hub/VoiceResonance_PiXXiE/main/design.png";
+
+        await new Promise((resolve, reject) => {
+            bgImage.onload = resolve;
+            bgImage.onerror = () => reject(new Error("Image load failed"));
+        });
+	
+            // 2. 強制讓 Three.js 渲染最新一幀並擷取
+            renderer.render(scene, camera);
+            const webglCanvas = renderer.domElement;
+
+            // 3. 使用 html2canvas 擷取文字與 rank badge，並剝離原本的背景
+            const domCanvas = await html2canvas(cardTarget, {
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: null, 
+                scale: 2, // 保持高解析度
+                onclone: (clonedDoc) => {
+                    const clonedCanvas = clonedDoc.querySelector('#webgl-container canvas') || clonedDoc.querySelector('canvas');
+                    if (clonedCanvas && webglCanvas) {
+                        const clonedCtx = clonedCanvas.getContext('2d');
+                        if (clonedCtx) {
+                            clonedCtx.drawImage(webglCanvas, 0, 0);
+                        }
+                    }
+                    // 拔除原本卡牌的背景與陰影，只留下內容以融合新底色
+                    const clonedCard = clonedDoc.getElementById('soulCard');
+                    if (clonedCard) {
+                        clonedCard.style.background = "transparent";
+                        clonedCard.style.backgroundImage = "none";
+                        clonedCard.style.boxShadow = "none";
+                        clonedCard.style.border = "none";
+                        clonedCard.style.backdropFilter = "none";
+                        clonedCard.style.webkitBackdropFilter = "none";
+                    }
+                }
+            });
+
+            // 4. 創建最終輸出畫布 (嚴格遵循 design.png 的原圖尺寸)
+            const finalCanvas = document.createElement('canvas');
+            finalCanvas.width = 1080;
+            finalCanvas.height = 1920; 
+            const ctx = finalCanvas.getContext('2d');
+
+            // 5. 繪製設計圖底圖 (100% 還原所有裝飾、排版與漸層)
+            ctx.drawImage(bgImage, 0, 0, finalCanvas.width, finalCanvas.height);
+
+            // 6. 計算覆蓋目標卡牌的精確位置與尺寸
+            const targetCardW = 760;
+            const targetCardH = 1064;
+            const targetCardX = 160; // 95
+            const targetCardY = 180; 
+            const cornerRadius = 28; // 還原設計圖卡牌圓角
+
+            // 7. 建立卡牌圓角裁剪區域
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(targetCardX + cornerRadius, targetCardY);
+            ctx.lineTo(targetCardX + targetCardW - cornerRadius, targetCardY);
+            ctx.quadraticCurveTo(targetCardX + targetCardW, targetCardY, targetCardX + targetCardW, targetCardY + cornerRadius);
+            ctx.lineTo(targetCardX + targetCardW, targetCardY + targetCardH - cornerRadius);
+            ctx.quadraticCurveTo(targetCardX + targetCardW, targetCardY + targetCardH, targetCardX + targetCardW - cornerRadius, targetCardY + targetCardH);
+            ctx.lineTo(targetCardX + cornerRadius, targetCardY + targetCardH);
+            ctx.quadraticCurveTo(targetCardX, targetCardY + targetCardH, targetCardX, targetCardY + targetCardH - cornerRadius);
+            ctx.lineTo(targetCardX, targetCardY + cornerRadius);
+            ctx.quadraticCurveTo(targetCardX, targetCardY, targetCardX + cornerRadius, targetCardY);
+            ctx.closePath();
+            ctx.clip(); // 接下來的繪製都會限制在此圓角卡牌內
+
+// ========================================================
+// 7.5 繪製 YouTube QR Code (精確固定於歌名上方、ThreeJS 水晶物體正中間)
+// ========================================================
+const qrSize = 100;
+
+// 【精確垂直與水平居中計算】：
+// 水平：維持卡牌橫向的正中央
+const qrX = targetCardX + (targetCardW - qrSize) / 2;
+
+// 垂直：因為歌名與文字都在卡牌下半部，ThreeJS 物件主要集中在卡牌上半部。
+// 我們將 Y 軸設定在卡牌頂端往下大約 35% 的位置（完美避開下方的歌名文字），讓它正好壓在水晶球核心上。
+const qrY = targetCardY + (targetCardH * 0.35) - (qrSize / 2);
+
+// 使用 Google Chart API 生成 QR Code
+const ytUrl = `https://www.youtube.com/watch?v=${finalSong.ytid}`;
+// 將 QR Code 底色設為 white，前景色設為紫色 (#a55bb8)
+const qrApiUrl = `https://chart.googleapis.com/chart?chs=${qrSize}x${qrSize}&cht=qr&chl=${encodeURIComponent(ytUrl)}&choe=UTF-8&chcolor=a55bb8,ffffff`;
+
+const qrImg = new Image();
+qrImg.crossOrigin = "anonymous";
+qrImg.src = qrApiUrl;
+
+await new Promise((resolve) => {
+    qrImg.onload = () => {
+        ctx.save();
+        
+        // 重置所有陰影與發光效果，確保 QR Code 邊框乾淨俐落
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = "transparent";
+
+        // 1. 繪製背景圓角方塊 (白色襯底)
+        ctx.fillStyle = "white";
+        // 往外擴展 5px 作為安全白邊保護區
+        ctx.fillRect(qrX - 5, qrY - 5, qrSize + 10, qrSize + 10);
+        
+        // 2. 繪製 YouTube QR Code 本體
+        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+        
+        ctx.restore();
+        resolve();
+    };
+    qrImg.onerror = resolve; // 即使載入失敗也不阻斷使用者下載整張卡牌
+});
+
+
+            // 8. 根據當前隨機到的 Rank 級別，動態繪製對應的卡牌背景色
+            const currentRank = typeof finalRank !== 'undefined' ? finalRank : "A";
+            const computedStyle = getComputedStyle(cardTarget);
+            let bgG1 = computedStyle.getPropertyValue('--bg-g1').trim() || "#bd9531";
+            let bgG2 = computedStyle.getPropertyValue('--bg-g2').trim() || "#de992a";
+            let bgQColor = computedStyle.getPropertyValue('--bg-q-color').trim() || "#701b1b";
+            let primaryFairy = computedStyle.getPropertyValue('--primary-fairy').trim() || "#44e3ff";
+
+            if (currentRank === "SSS") {
+                const grad = ctx.createLinearGradient(targetCardX, targetCardY, targetCardX + targetCardW, targetCardY + targetCardH);
+                grad.addColorStop(0, "#b868e3"); grad.addColorStop(0.25, "#68ace3");
+                grad.addColorStop(0.5, "#68e397"); grad.addColorStop(0.75, "#e3dd68"); grad.addColorStop(1, "#e36868");
+                ctx.fillStyle = grad;
+                ctx.fillRect(targetCardX, targetCardY, targetCardW, targetCardH);
+            } else if (currentRank === "SS") {
+                const grad = ctx.createLinearGradient(targetCardX, targetCardY, targetCardX + targetCardW, targetCardY + targetCardH);
+                grad.addColorStop(0, "#d6a4f5"); grad.addColorStop(0.35, bgG1);
+                grad.addColorStop(0.65, bgG2); grad.addColorStop(1, "#55157d");
+                ctx.fillStyle = grad;
+                ctx.fillRect(targetCardX, targetCardY, targetCardW, targetCardH);
+            } else if (currentRank === "S") {
+                const grad = ctx.createConicGradient(Math.PI / 2, targetCardX + targetCardW / 2, targetCardY + targetCardH / 2);
+                grad.addColorStop(0, bgG1); grad.addColorStop(90/360, bgG2);
+                grad.addColorStop(120/360, "rgba(255, 255, 255, 0.7)");
+                grad.addColorStop(150/360, bgG1); grad.addColorStop(240/360, bgG2);
+                grad.addColorStop(300/360, "rgba(255, 255, 255, 0.4)");
+                grad.addColorStop(1, bgG1);
+                ctx.fillStyle = grad;
+                ctx.fillRect(targetCardX, targetCardY, targetCardW, targetCardH);
+            } else {
+                const grad = ctx.createLinearGradient(targetCardX, targetCardY, targetCardX + targetCardW, targetCardY + targetCardH);
+                grad.addColorStop(0, bgQColor); grad.addColorStop(1, "#0d0d10");
+                ctx.fillStyle = grad;
+                ctx.fillRect(targetCardX, targetCardY, targetCardW, targetCardH);
+            }
+
+            // SSS 特效疊加
+            if (currentRank === "SSS") {
+                ctx.save();
+                ctx.globalCompositeOperation = "overlay";
+                ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+                ctx.fillRect(targetCardX, targetCardY, targetCardW, targetCardH);
+                ctx.restore();
+            }
+
+if (currentRank === "SS" || currentRank === "SSS") {
+            drawHoloDiamonds(ctx, targetCardX, targetCardY, targetCardW, targetCardH);
+        }
+
+            // 9. 將當前應用的文字、Rank 標籤和 3D 水晶體完美疊加到卡牌位置
+            ctx.drawImage(domCanvas, targetCardX, targetCardY, targetCardW, targetCardH);
+
+
+            // 10. 繪製動態卡牌邊框線
+            ctx.restore(); // 先解除 clip 裁剪，以便繪製邊框
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(targetCardX + cornerRadius, targetCardY);
+            ctx.lineTo(targetCardX + targetCardW - cornerRadius, targetCardY);
+            ctx.quadraticCurveTo(targetCardX + targetCardW, targetCardY, targetCardX + targetCardW, targetCardY + cornerRadius);
+            ctx.lineTo(targetCardX + targetCardW, targetCardY + targetCardH - cornerRadius);
+            ctx.quadraticCurveTo(targetCardX + targetCardW, targetCardY + targetCardH, targetCardX + targetCardW - cornerRadius, targetCardY + targetCardH);
+            ctx.lineTo(targetCardX + cornerRadius, targetCardY + targetCardH);
+            ctx.quadraticCurveTo(targetCardX, targetCardY + targetCardH, targetCardX, targetCardY + targetCardH - cornerRadius);
+            ctx.lineTo(targetCardX, targetCardY + cornerRadius);
+            ctx.quadraticCurveTo(targetCardX, targetCardY, targetCardX + cornerRadius, targetCardY);
+            ctx.closePath();
+
+            ctx.lineWidth = 6;
+            let borderGrad;
+            if (currentRank === "SSS") {
+                ctx.shadowColor = "rgba(255, 255, 255, 0.3)"; ctx.shadowBlur = 30;
+                borderGrad = ctx.createConicGradient(0, targetCardX + targetCardW / 2, targetCardY + targetCardH / 2);
+                ["#ff0000", "#ff7f00", "#ffff00", "#00ff00", "#0000ff", "#4b0082", "#8b00ff", "#ff0000"].forEach((c, i) => borderGrad.addColorStop(i / 7, c));
+            } else if (currentRank === "SS") {
+                ctx.shadowColor = "rgba(212, 165, 255, 0.4)"; ctx.shadowBlur = 30;
+                borderGrad = ctx.createConicGradient(0, targetCardX + targetCardW / 2, targetCardY + targetCardH / 2);
+                ["#ffffff", "#ffb6c1", "#d4a5ff", "#ffffff", "#ffb6c1", "#d4a5ff", "#ffffff"].forEach((c, i) => borderGrad.addColorStop(i / 6, c));
+            } else if (currentRank === "S") {
+                borderGrad = ctx.createConicGradient(0, targetCardX + targetCardW / 2, targetCardY + targetCardH / 2);
+                borderGrad.addColorStop(0, "#ffffff"); borderGrad.addColorStop(0.5, primaryFairy); borderGrad.addColorStop(1, "#ffffff");
+            } else {
+                borderGrad = ctx.createConicGradient(0, targetCardX + targetCardW / 2, targetCardY + targetCardH / 2);
+                borderGrad.addColorStop(0, "rgba(212, 165, 255, 0.05)"); borderGrad.addColorStop(0.25, "rgba(212, 165, 255, 0.8)");
+                borderGrad.addColorStop(0.5, "rgba(212, 165, 255, 0.05)"); borderGrad.addColorStop(0.75, "rgba(212, 165, 255, 0.8)");
+                borderGrad.addColorStop(1, "rgba(212, 165, 255, 0.05)");
+            }
+            ctx.strokeStyle = borderGrad;
+            ctx.stroke();
+            ctx.restore();
+
+            // 11. 導出並觸發圖片下載
+            const link = document.createElement('a');
+            const songName = typeof finalSong !== 'undefined' && finalSong ? finalSong.title : 'Resonance';
+            link.download = `PiXXiE-${songName}-Card.png`;
+            link.href = finalCanvas.toDataURL('image/png', 1.0);
+            link.click();
+
+        } catch (err) {
+            console.error("下載圖檔失敗:", err);
+        } finally {
+            // 恢復按鈕狀態
+            if (notice) notice.classList.add('hidden');
+            downloadBtn.innerText = originalText;
+            downloadBtn.style.pointerEvents = "auto";
+        }
+    });
+}
+
 // 錄音結束重置
 function endResonance(e) {
-    if (e) e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
+
+// 釋放指標鎖定
+    if (e && e.pointerId && typeof orbBtn.releasePointerCapture === 'function') {
+        try { orbBtn.releasePointerCapture(e.pointerId); } catch(err) {}
+    }
+
     if (!isRecording) return;
     isRecording = false;
     orbBtn.classList.remove('recording');
 	clearInterval(particleInterval);
 
-
+// ─── 【優雅退場】錄音結束時，立刻清除 active 動畫類別 ───
+    waves.forEach(w => {
+        if (w) {
+            w.classList.remove('active'); 
+            w.style.transform = `scale(1)`;
+            w.style.opacity = "0.3"; // 還原未錄音時的預設透明度
+        }
+    });
     
     // 重置所有視覺效果
     orbBtn.style.setProperty('--mic-vol', 0);
-    waves.forEach(w => {
-        if (w) {
-            w.style.opacity = "0.3"; 
-            w.style.transform = "scale(1)";}
-    });
     
+if (recognition) { try { recognition.stop(); } catch(err) {} }
+
+    if (typeof particleInterval !== 'undefined') clearInterval(particleInterval);
+   
     setTimeout(calculateResult, 600);
 }
 
 
 function calculateResult() {
+    console.log("計算結果開始..."); // 檢查是否觸發
     const overlay = document.getElementById('transition-overlay');
     const intro = document.getElementById('intro-screen');
     const result = document.getElementById('result-screen');
@@ -982,31 +1769,29 @@ function calculateResult() {
     const musicBtn = document.getElementById('musicToggleBtn'); // 確保抓到音樂按鈕
 
     const frames = audioHistory.length;
-    const avgVol = audioHistory.reduce((a,b)=>a+b,0)/frames || 0;
+    const avgVol = frames > 0 ? (audioHistory.reduce((a, b) => a + b, 0) / frames) : 0;
     const allSongs = Object.values(songDatabase).flat();
     
-    let finalSong = null; 
-    let isMemberKey = false;
-    let category = "Q1"; // 修正：恢復你原本的 category 變數定義
+    finalSong = null
+    finalRank = null;
 
-// --- [關鍵修正：立刻鎖定 UI] ---
+    const text = recognizedText.toLowerCase();
+    let isMemberKey = false;
+    let category = null; 
+
+    // --- [關鍵修正：立刻鎖定 UI] ---
     if (orbBtn) {
         orbBtn.style.pointerEvents = 'none'; // 防止在動畫過渡期間重複點擊
     }
 
-    // 讓遮罩從出現瞬間就攔截所有點擊 (z-index 9999)
-    if (overlay) {
-        overlay.style.visibility = "visible";
-        overlay.style.opacity = "1";
-        overlay.style.pointerEvents = "auto"; // 遮罩接管，下面點不到了
-    }
-
-    const text = recognizedText.toLowerCase();
-
     // 1. 識別關鍵字
-    if (text.includes("mabel") || text.includes("มาเบล")) { isMemberKey = true; finalSong = songDatabase["Q3"][3]; category = "Q3"; }
-    else if (text.includes("ingkho") || text.includes("อิงโกะ")) { isMemberKey = true; finalSong = songDatabase["Q4"][2]; category = "Q4"; }
-    else if (text.includes("pimma") || text.includes("พิมมา")) { isMemberKey = true; finalSong = songDatabase["Q1"][2]; category = "Q1"; }
+    if (text.includes("mabel") || text.includes("มาเบล")) { 
+        isMemberKey = true; finalSong = songDatabase["Q3"][3]; category = "Q3"; 
+    } else if (text.includes("ingkho") || text.includes("อิงโกะ")) { 
+        isMemberKey = true; finalSong = songDatabase["Q4"][2]; category = "Q4"; 
+    } else if (text.includes("pimma") || text.includes("พิมมา")) { 
+        isMemberKey = true; finalSong = songDatabase["Q1"][2]; category = "Q1"; 
+    }
 
     if (!finalSong) {
         for (const [key, songs] of Object.entries(songDatabase)) {
@@ -1016,77 +1801,95 @@ function calculateResult() {
     }
 
     if (!finalSong) {
-        category = ["Q1", "Q2", "Q3", "Q4"][Math.floor(avgVol) % 4];
-        finalSong = songDatabase[category][Math.floor(Math.random() * songDatabase[category].length)];
+        let quarterIndex;
+
+	// 【核心修正】：如果完全沒有音量 (avgVol 為 0)，或者是 NaN，給予真正的隨機抽卡！
+        if (!avgVol || avgVol === 0 || isNaN(avgVol)) {
+            quarterIndex = Math.floor(Math.random() * 4);
+        } else {
+            // 若有實際收音，則根據音量數值的隨機性來決定季度
+            quarterIndex = Math.floor(avgVol) % 4;
+        }
+        
+        const categories = ["Q1", "Q2", "Q3", "Q4"];
+        category = categories[quarterIndex];
+        const songs = songDatabase[category];
+        // 隨機從該季度抽一首歌
+        finalSong = songs[Math.floor(Math.random() * songs.length)];
     }
 
+    // 更新標題
+    const songTitleEl = document.querySelector('.song-title');
+    if (songTitleEl) songTitleEl.innerText = finalSong.title;
+
     // 確保浮水印存在
-    if (!document.querySelector('.watermark')) {
+    if (card && !document.querySelector('.watermark')) {
         const wm = document.createElement('div');
         wm.className = 'watermark';
         wm.innerText = 'by Grafittiii';
         card.appendChild(wm);
     }
 
-    document.querySelector('.song-title').innerText = finalSong.title;
-
     // 清空舊樣式並套用新季度背景裝飾
-    card.className = "pixxie-card";
+    if (card) card.className = "pixxie-card";
 
     // --- 階級分類邏輯 ---
     const ssSpecial = ["ACHOO!", "Deep Talk", "Heartstopper"].includes(finalSong.title);
-    let finalRank = "A";
 
     if (frames > 80 && avgVol > 35) {
         finalRank = "SSS";
     } else if (ssSpecial || isMemberKey) {
         finalRank = "SS";
-    } else if (finalSong.bg1 || frames > 60 || avgVol > 30 ) {
+    } else if (finalSong.bg1 || frames > 60 || avgVol > 30) {
         finalRank = "S";
     } else {
         finalRank = "A";
     }
 
     // --- 套用 Rank 專屬視覺 ---
-    if (finalRank === "SSS") {
-        card.classList.add("rank-sss", "special-holo");
-        badge.innerText = "SSS Rank Resonance";
-        badge.className = "rank-badge sss-style";
-    } else if (finalRank === "SS") {
-        card.classList.add("rank-ss", "special-holo");
-        badge.innerText = "SS Rank Harmony";
-        badge.className = "rank-badge ss-style";
-	card.style.setProperty('--bg-g1', finalSong.bg1); 
-	card.style.setProperty('--bg-g2', finalSong.bg2);
-    } else if (finalRank === "S") {
-        card.classList.add("rank-s");
-        badge.innerText = "S Rank Harmony";
-        badge.className = "rank-badge s-style";
-        card.style.setProperty('--bg-g1', finalSong.bg1 || finalSong.col1 || getRandomVibrantColor());
-        card.style.setProperty('--bg-g2', finalSong.bg2 || finalSong.col2 || getRandomVibrantColor());
-    } else {
-        card.classList.add("rank-a");
-        badge.innerText = "A Rank Sync";
-        badge.className = "rank-badge a-style";
-        const rankAColors = { "Q1": "#701b1b", "Q2": "#7a48b8", "Q3": "#e66cbf", "Q4": "#36add9" };
-        card.style.setProperty('--bg-q-color', rankAColors[category]);
+    if (card && badge) {
+        if (finalRank === "SSS") {
+            card.classList.add("rank-sss", "special-holo");
+            badge.innerText = "SSS Rank Resonance";
+            badge.className = "rank-badge sss-style";
+        } else if (finalRank === "SS") {
+            card.classList.add("rank-ss", "special-holo");
+            badge.innerText = "SS Rank Harmony";
+            badge.className = "rank-badge ss-style";
+            card.style.setProperty('--bg-g1', finalSong.bg1); 
+            card.style.setProperty('--bg-g2', finalSong.bg2);
+        } else if (finalRank === "S") {
+            card.classList.add("rank-s");
+            badge.innerText = "S Rank Harmony";
+            badge.className = "rank-badge s-style";
+            card.style.setProperty('--bg-g1', finalSong.bg1 || finalSong.col1 || getRandomVibrantColor());
+            card.style.setProperty('--bg-g2', finalSong.bg2 || finalSong.col2 || getRandomVibrantColor());
+        } else {
+            card.classList.add("rank-a");
+            badge.innerText = "A Rank Sync";
+            badge.className = "rank-badge a-style";
+            const rankAColors = { "Q1": "#701b1b", "Q2": "#7a48b8", "Q3": "#e66cbf", "Q4": "#36add9" };
+            card.style.setProperty('--bg-q-color', rankAColors[category]);
+        }
     }
 
- // [新增] 文字提示框邏輯
+    const announcer = document.getElementById('a11y-announcer');
+    if (announcer) {
+        announcer.textContent = `Resonance complete. Song matched: ${finalSong.title}. Rank achieved: ${finalRank}`;
+    }
+
+    // 文字提示框邏輯
     const hint = document.getElementById('musicHint');
     if (hint) {
-        // 在結果頁面顯示後（延遲一點點，配合過渡動畫）顯示提示
         setTimeout(() => {
             hint.classList.add('active');
-            
-            // 3秒後自動移除
             setTimeout(() => {
                 hint.classList.remove('active');
             }, 3000);
-        }, 800); // 0.8秒後浮現
+        }, 800); 
     }
 
-   // ==========================================
+    // ==========================================
     // --- 魔法過渡動畫與播放邏輯 (完美解耦版) ---
     // ==========================================
 
@@ -1096,19 +1899,18 @@ function calculateResult() {
         overlay.style.opacity = "1";
     }
 
-    // Step 2: 獨立處理 YouTube 播放 (不影響畫面切換)
+    // Step 2: 獨立處理 YouTube 播放
     if (player && typeof player.loadVideoById === 'function') {
         try {
             player.loadVideoById({ videoId: finalSong.ytid, suggestedQuality: 'small' });
             player.playVideo();
             
-            // 延遲檢查是否被瀏覽器擋下
             setTimeout(() => {
                 if (player.getPlayerState() !== 1 && musicBtn) { 
-                    musicBtn.innerText = "♫"; // 提示使用者手動播放
+                    musicBtn.innerText = "♫"; 
                     isPlaying = false;
                 } else if (musicBtn) {
-                    musicBtn.innerText = "□"; // 正常播放中
+                    musicBtn.innerText = "□"; 
                     isPlaying = true;
                 }
             }, 1000);
@@ -1117,58 +1919,87 @@ function calculateResult() {
         }
     }
 
-    // Step 3: 在遮罩不透明的瞬間 (0.5秒後) 偷換背景並浮現結果
+    // Step 3: 在遮罩完全不透明時 (500ms ~ 800ms 間) 切換面板與觸發 WebGL 渲染
     setTimeout(() => {
-        // 1. 隱藏主頁
+        console.log("遮罩半透明點：開始隱藏主頁，切換結果頁樣式...");
+
+        // 1. 隱藏主頁面
         if (intro) intro.style.display = 'none';
         
-        // 2. 顯示結果頁 (必須用 flex，並且先移除 active 確保是透明狀態)
+        // 2. 顯示結果頁 (精準排版時序控管)
         if (result) {
-            result.style.display = 'flex';
-            result.classList.remove('active');
+            result.style.display = 'flex';   // 先改為 flex
+            result.classList.remove('active'); // 確保起點是透明無動畫狀態
             
-            // 強制重繪，讓瀏覽器確認已經變成 flex
-            void result.offsetHeight; 
+            void result.offsetHeight;         // 強制重繪 (Reflow)，讓瀏覽器捕捉到 display 的轉變
             
-            // 觸發進場動畫
-            result.classList.add('active');
+            result.classList.add('active');    // 掛載 active 類，觸發完美的 CSS Opacity 與 Blur 漸變
+            result.setAttribute('aria-hidden', 'false');
+            console.log("嘗試顯示結果面板... 成功掛載 active 動態類");
         }
 
-        // 3. 撤退遮罩
+        // 3. 撤退遮罩面罩
         if (overlay) {
             overlay.style.opacity = "0";
-            // 等待淡出完畢後徹底隱藏
-            setTimeout(() => { overlay.style.visibility = "hidden"; overlay.style.pointerEvents = "none";}, 500);
+            setTimeout(() => { 
+                overlay.style.visibility = "hidden"; 
+                overlay.style.pointerEvents = "none";
+            }, 500);
         }
 
-     document.getElementById('intro-screen').style.display = 'none';
-    document.getElementById('result-screen').style.display = 'block';
-  
-       // 4. 觸發 3D 渲染與卡片翻轉
-        initThreeJS();
-	// ======= [新增] 根據 Rank 動態變更 WebGL 顏色 =======
-        if (material) {
-            if (finalRank === "A"|| finalRank === "SS") {
-                // Rank A：讀取當前歌曲資料庫中的 col1 與 col2
-                material.uniforms.colBright.value.set(finalSong.col2);
-                material.uniforms.colShadow.value.set(finalSong.col1);
-   		material.uniforms.uRatio.value = 0.7;
-         } else {
-                // 其他 Rank：沿用原始固定的預設色彩
+        // 4. 觸發 3D 渲染與卡片翻轉
+        if (typeof initThreeJS === 'function') {
+            initThreeJS();
+        }
+
+        // 根據 Rank 動態變更 WebGL Orb 顏色
+        if (material && material.uniforms) {
+            if (finalRank === "A" || finalRank === "SS") {
+                if (finalSong.col2) material.uniforms.colBright.value.set(finalSong.col2);
+                if (finalSong.col1) material.uniforms.colShadow.value.set(finalSong.col1);
+                material.uniforms.uRatio.value = 0.7;
+            } else {
                 material.uniforms.colBright.value.set('#f8e8fa');
                 material.uniforms.colShadow.value.set('#f5cdfa');
-		material.uniforms.uRatio.value = 0.5;
+                material.uniforms.uRatio.value = 0.5;
             }
         }
+
+        // 最後讓壓克力卡片以優雅的翻轉動畫浮現
         setTimeout(() => {
             if (card) card.classList.add('revealed');
         }, 200);
 
-    }, 800); // 對應 CSS 中 overlay 的 0.8s transition
+    }, 600); // 調整為 600ms，在 0.8s 遮罩淡入的中後段完成偷偷切換，視覺最平滑
 }
 
 
+// 1. 禁用右鍵選單
+document.addEventListener('contextmenu', event => event.preventDefault());
 
+// 2. 禁用常見的開發者工具快捷鍵
+document.addEventListener('keydown', event => {
+    if (event.key === 'F12' || event.keyCode === 123) { event.preventDefault(); return false; }
+    // 阻擋 Ctrl+Shift+I (Windows) / Cmd+Option+I (Mac)
+    if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'I') {
+        event.preventDefault();
+    }
+    // 阻擋 Ctrl+Shift+J (Windows) / Cmd+Option+J (Mac)
+    if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'J') {
+        event.preventDefault();
+    }
+    // 阻擋 Ctrl+Shift+C (Windows) / Cmd+Option+C (Mac)
+    if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'C') {
+        event.preventDefault();
+    }
+    // 阻擋 Ctrl+U (檢視原始碼)
+    if ((event.ctrlKey || event.metaKey) && event.key === 'U') {
+        event.preventDefault();
+    }
+});
+
+// 3. 禁用拖曳文本或元素
+document.addEventListener('dragstart', event => event.preventDefault());
 </script>
 </body>
 </html>
