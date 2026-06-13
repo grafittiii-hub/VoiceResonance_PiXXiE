@@ -232,12 +232,12 @@ body::before {
         
         .mic-wave { 
             position: absolute; border-radius: 50%; border: 3px solid var(--primary-fairy); 
-            opacity: 0.3; pointer-events: none; 
+            opacity: 0.4; pointer-events: none; 
             transition: transform 0.1s ease-out, opacity 0.2s; 
         }
 /* 錄音時的狀態 (JS 控制) */
 .mic-wave.active {
-    opacity: var(--wave-opacity, 0.5);
+    opacity: var(--wave-opacity, 0.6);
 }
 .w1 { 
     width: 120px; height: 120px; border-width: 2px; z-index: 4; 
@@ -841,7 +841,7 @@ pointer-events: auto !important;
             <div class="mic-wave w4"></div>
             <div class="soul-orb" id="recordBtn" role="button" tabindex="0" aria-label="Hold to resonate your voice" aria-pressed="false"></div>
         </div>
-        <p style="font-size: clamp(0.4rem, 3vw, 0.6rem); color: rgba(212,165,255,0.5); letter-spacing: 3px; font-weight: bold; bottom: 3vh; display: flex; position: absolute" class="animate-item delay-2">HOLD ORB TO RESONATE</p>
+        <p style="font-size: clamp(0.4rem, 3vw, 0.6rem); color: rgba(212,165,255,0.5); letter-spacing: 3px; font-weight: bold; bottom: 5dvh; display: flex; position: absolute" class="animate-item delay-2">HOLD ORB TO RESONATE</p>
     </main>
 
     <div id="result-screen" aria-hidden="true">
