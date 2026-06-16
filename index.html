@@ -468,7 +468,7 @@ body::before {
                 conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0.12) 0deg, transparent 60deg),
                 conic-gradient(from 120deg at 30% 40%, rgba(212,165,255,0.2) 0deg, transparent 80deg),
                 conic-gradient(from 240deg at 70% 60%, rgba(68,227,255,0.15) 0deg, transparent 100deg);
-            background-size: 150px 150px;
+            background-size: 120px 120px;
             mix-blend-mode: overlay; 
             opacity: 0; pointer-events: none;
             background-position: calc(var(--rx, 0.5) * 60px) calc(var(--ry, 0.5) * 60px);
@@ -1466,7 +1466,7 @@ if (downloadBtn) {
 
         // 轉換按鈕狀態
         const originalText = downloadBtn.innerText;
-        downloadBtn.innerText = "💜";
+        downloadBtn.innerText = "💟";
 
         let finalCanvas; 
 
@@ -1577,7 +1577,7 @@ if (downloadBtn) {
             }
             ctx.fillRect(targetCardX, targetCardY, targetCardW, targetCardH);
 
-// 1. 定義一個函數來繪製全息紋理
+// 1. 定義一個函數來繪製全息紋理 (已完美等比例放大 2.533 倍至 760px 畫布尺寸)
 function drawHoloEffect(ctx, x, y, width, height) {
     ctx.save();
     
@@ -1585,40 +1585,57 @@ function drawHoloEffect(ctx, x, y, width, height) {
     ctx.globalCompositeOperation = 'overlay';
     ctx.globalAlpha = 0.7; // 對應 CSS 的 opacity: 0.7
 
-    // 建立一個 120x120 的暫存畫布來製作重複紋理
+    // 【等比例放大計算】：120px * (760 / 300) = 大約 304px 的平鋪網格大小
+    // 這樣可以確保下載圖中的三角形大小、視覺比例與網頁端一模一樣
+    const scaledSize = 304; 
+    
+    // 建立一個 304x304 的暫存畫布來製作高解析度重複紋理
     const patternCanvas = document.createElement('canvas');
-    patternCanvas.width = 120;
-    patternCanvas.height = 120;
+    patternCanvas.width = scaledSize;
+    patternCanvas.height = scaledSize;
     const pCtx = patternCanvas.getContext('2d');
 
-    // --- 繪製三個 Conic Gradients ---
-    // 1. 白色層
-    let grad1 = pCtx.createConicGradient(0, 60, 60);
+    // --- 繪製三個 Conic Gradients (中心點位置全部等比例乘以 2.533) ---
+    
+    // 1. 白色層 (原 50% 50% -> 60, 60 放大至 152, 152)
+    const cX1 = scaledSize * 0.5; // 152
+    const cY1 = scaledSize * 0.5; // 152
+    let grad1 = pCtx.createConicGradient(0, cX1, cY1);
     grad1.addColorStop(0, "rgba(255,255,255,0.12)");
     grad1.addColorStop(60/360, "transparent");
     pCtx.fillStyle = grad1;
-    pCtx.fillRect(0, 0, 120, 120);
+    pCtx.fillRect(0, 0, scaledSize, scaledSize);
 
-    // 2. 紫色層 (偏移 120deg)
-    let grad2 = pCtx.createConicGradient((120 * Math.PI) / 180, 36, 48); // 30% 40% -> x=36, y=48
+    // 2. 紫色層 (原 120deg at 30% 40% -> 原 36, 48 放大至 91.2, 121.6)
+    const cX2 = scaledSize * 0.3; // 91.2
+    const cY2 = scaledSize * 0.4; // 121.6
+    let grad2 = pCtx.createConicGradient((120 * Math.PI) / 180, cX2, cY2);
     grad2.addColorStop(0, "rgba(212,165,255,0.2)");
     grad2.addColorStop(80/360, "transparent");
     pCtx.fillStyle = grad2;
-    pCtx.fillRect(0, 0, 120, 120);
+    pCtx.fillRect(0, 0, scaledSize, scaledSize);
 
-    // 3. 藍色層 (偏移 240deg)
-    let grad3 = pCtx.createConicGradient((240 * Math.PI) / 180, 84, 72); // 70% 60% -> x=84, y=72
+    // 3. 藍色層 (原 240deg at 70% 60% -> 原 84, 72 放大至 212.8, 182.4)
+    const cX3 = scaledSize * 0.7; // 212.8
+    const cY3 = scaledSize * 0.6; // 182.4
+    let grad3 = pCtx.createConicGradient((240 * Math.PI) / 180, cX3, cY3);
     grad3.addColorStop(0, "rgba(68,227,255,0.15)");
     grad3.addColorStop(100/360, "transparent");
     pCtx.fillStyle = grad3;
-    pCtx.fillRect(0, 0, 120, 120);
+    pCtx.fillRect(0, 0, scaledSize, scaledSize);
 
-    // 建立 pattern 並填滿
+    // 建立平鋪 pattern，並配合卡牌的左上角坐標進行偏移（平移矩陣）
+    // 這樣可以防止圖片旋轉或移動時，平鋪紋理的原點錯位
     const pattern = ctx.createPattern(patternCanvas, 'repeat');
+    
+    ctx.save();
+    // 將紋理起點對齊卡牌在畫布上的實際 targetCardX 和 targetCardY 位置
+    ctx.translate(x, y); 
     ctx.fillStyle = pattern;
     
-    // 繪製到主畫布上 (覆蓋整個卡片範圍)
-    ctx.fillRect(x, y, width, height);
+    // 填充卡牌範圍（因為上面做了 translate，這裡填色範圍要從 0, 0 開始填滿滿）
+    ctx.fillRect(0, 0, width, height);
+    ctx.restore();
     
     ctx.restore();
 }
