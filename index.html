@@ -186,10 +186,10 @@ body::before {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start; /* 從頂部開始排版，而非正中央 */
-    padding-top: 10dvh; /* 讓內容離頂部有 10% 的距離，位置更高 */
+    padding-top: 10vh; /* 讓內容離頂部有 10% 的距離，位置更高 */
     text-align: center;
     width: 100%;
-    height: 100dvh; }
+    height: 100vh; }
 
 .intro-content {
     display: flex;
@@ -198,8 +198,8 @@ body::before {
     gap: 8px; /* [關鍵] 直接控制標題與副標題的間距，越小越近 */
 }
         
-        /* 修正：移除 uppercase，保留 PiXXiE 原始大小寫 */
-        .main-title {
+
+    .main-title {
     font-family: 'Syne', sans-serif; /* 使用新的時尚字體 */
     font-size: clamp(2rem, 15vw, 3.5rem);
     font-weight: 800; margin: 0; top: 5dvh; line-height: 1;
@@ -274,7 +274,7 @@ body::before {
 
         .soul-orb { 
             width: clamp(100px, 20vh, 200px); height: clamp(100px, 20vh, 200px); border-radius: 50%; 
-            background: radial-gradient(circle at 30% 30%, #fff, var(--primary-fairy)); border: 4px solid rgba(212, 165, 255, 0.4); 
+            background: radial-gradient(circle at 30% 30%, #fff, #d98ee8); border: 4px solid rgba(212, 187, 239, 0.8); 
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
             cursor: pointer; position: relative; z-index: 5; 
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
@@ -310,10 +310,7 @@ body::before {
 }
         .soul-orb.recording { animation: recording-breathe 1.5s ease-in-out infinite; transform: scale(0.9); background: rgba(212, 165, 255, 0.3); border: 2px solid #ffffff !important; box-shadow: 0 0 25px rgba(255, 255, 255, 0.8), 
                 inset 0 0 15px rgba(255, 255, 255, 0.5); }
-@keyframes breathe { 
-    0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(212, 165, 255, 0.1), inset 0 0 20px rgba(255,255,255,0.1); } 
-    50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(212, 165, 255, 0.3), inset 0 0 30px rgba(255,255,255,0.2); } 
-}
+
 
         .particle { position: absolute; width: 4px; height: 4px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px var(--primary-fairy); pointer-events: none; opacity: 0; }
         @keyframes floatUp { 0% { opacity: 0.8; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); } }
@@ -348,7 +345,7 @@ body::before {
 		aspect-ratio: 300 / 520;
 		max-height: 78dvh; 
             background: transparent;
-            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); will-change: transform;
             border-radius: 28px; 
             position: relative; margin: 2vh auto 30px auto;
             transform-style: preserve-3d; 
@@ -429,7 +426,7 @@ body::before {
         }
 
 	/* --- 階級標籤設計 (高級感) --- */
-        .rank-badge { display: inline-block; padding: 3px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 900; margin-top: 18px; border: 1px solid rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }
+        .rank-badge { display: inline-block; padding: 3px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; margin-top: 18px; border: 1px solid rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; text-shadow: 0 0 18px #c219fd;}
         
         /* A Rank：清冷的冰藍銀色 */
         .a-style { color: #88ccff; border-color: rgba(136,204,255,0.5); background: rgba(136,204,255,0.1); }
@@ -438,7 +435,7 @@ body::before {
         .s-style { color: #ffcc00; border-color: #ffcc00; background: rgba(255,204,0,0.1); box-shadow: 0 0 12px rgba(255,204,0,0.2); }
         
         /* SS Rank：粉紫全息閃爍 (原本的) */
-        .ss-style { color: #ff75c3; border-color: #ff75c3; box-shadow: 0 0 15px rgba(255,117,195,0.3); background: rgba(255,117,195,0.1); animation: badgePulse 1.5s infinite alternate; }
+        .ss-style { color: #f9f941; border-color: #ff75c3; box-shadow: 0 0 15px rgba(255,117,195,0.3); background: rgba(255,117,195,0.1); animation: badgePulse 1.5s infinite alternate; }
         @keyframes badgePulse { 0% { box-shadow: 0 0 10px rgba(255,255,255,0.2); } 100% { box-shadow: 0 0 25px rgba(255,117,195,0.6); } }
 	/* --- SSS Rank Badge Style --- */
 .sss-style { 
@@ -487,8 +484,8 @@ body::before {
         .card-info { width: 85%; margin: 0 auto 35px auto; text-align: left; position: relative; z-index: 5; }
         .song-title { font-size: clamp(1.0rem, 4vw, 1.3rem); font-weight: 800; margin:10px 0; color: #fff; text-shadow: 0 0 18px var(--primary-fairy); letter-spacing: 1.5px; }
         .lyrics { font-size: 0.65rem; color: rgba(255,255,255,0.7); margin-top: 12px; line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 12px; text-shadow: 0 0 18px var(--primary-fairy);}
-        .rank-badge { display: inline-block; padding: 3px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; margin-top: 18px; border: 1px solid rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; }
-        .ss-style { color: #ff75c3; border-color: #ff75c3; box-shadow: 0 0 15px rgba(255,117,195,0.3); background: rgba(255,117,195,0.1); }
+        
+
         
         /* 重新設計的 Re-Try 按鈕 */
         .btn-group { display: flex; justify-content: center; width: 100%; z-index: 990; position: relative; align-items: flex-end; pointer-events: auto; flex-wrap: wrap;}
@@ -800,15 +797,18 @@ pointer-events: auto !important;
     from { opacity: 0; transform: translate(-50%, -40%); }
     to { opacity: 1; transform: translate(-50%, -50%); }
 }
+
 /* 當瀏覽器是 Chrome 時 (使用 @supports 判斷) */
 @supports (-webkit-touch-callout: none) and (not (overflow: -webkit-marquee)) {
     .your-container-class {
         /* 在這裡針對 Chrome 修正高度 */
-        height: calc(100vh - 56px); /* 56px 是預估網址列高度，可微調 */
-		height: 100vh; /* 備用 */
-    height: calc(var(--vh, 1vh) * 100); /* 強制使用 JavaScript 算出的正確高度 *
+        height: calc(100dvh - 56px); /* 56px 是預估網址列高度，可微調 */
+		height: 100dvh; /* 備用 */
+    height: calc(var(--dvh, 1dvh) * 100); /* 強制使用 JavaScript 算出的正確高度 *
     }
 }
+
+
 </style>
 </head>
 <body>
@@ -841,10 +841,11 @@ pointer-events: auto !important;
             <div class="mic-wave w4"></div>
             <div class="soul-orb" id="recordBtn" role="button" tabindex="0" aria-label="Hold to resonate your voice" aria-pressed="false"></div>
         </div>
-        <p style="font-size: clamp(0.4rem, 3vw, 0.6rem); color: rgba(212,165,255,0.5); letter-spacing: 3px; font-weight: bold; bottom: 15dvh; position: absolute" class="animate-item delay-2">HOLD ORB TO RESONATE</p>
+        <p style="font-size: clamp(0.4rem, 3vw, 0.6rem); color: rgba(212,165,255,0.5); letter-spacing: 3px; font-weight: bold; bottom: 7dvh; display: flex; position: absolute" class="animate-item delay-2">HOLD ORB TO RESONATE</p>
     </main>
 
     <div id="result-screen" aria-hidden="true">
+
         <div class="pixxie-card" id="soulCard" tabindex="0" aria-label="Your PiXXiE Resonance Card Results">
             <div id="webgl-container"></div>
             <div class="card-info">
@@ -854,6 +855,7 @@ pointer-events: auto !important;
             </div>
         </div>
 	<div id="downloadNotice" class="download-hint hidden" role="status">下載中</div>
+
         <div class="btn-group">
             <div id="musicHint" class="music-hint" role="tooltip">Toggle for ad-skipping & song-playing ♫</div>
             <button id="musicToggleBtn" class="music-btn" aria-label="Toggle Music Playback">□</button>
@@ -916,6 +918,7 @@ if (orbBtn) {
         }
     });
 }
+
 function setCorrectHeight() {
     // 獲取瀏覽器視窗真正的內部高度
     let vh = window.innerHeight * 0.01;
@@ -930,9 +933,9 @@ setCorrectHeight();
 // --- 核心資料庫 ---
 const songDatabase = {
     "Q1": [
-       { title: "Shake!", col1: "#ff3300", col2: "#ffcc00", bg1: "#bd9531", bg2: "#de992a", keywords: ["shake", "เชค", "summer shake", "shake it shake it"] , ytid: "GBJQAqNqQm4"},
+       { title: "Shake!", col1: "#ff3300", col2: "#ffcc00", bg1: "#f7b30b", bg2: "#f36262", keywords: ["shake", "เชค", "summer shake", "shake it shake it"] , ytid: "GBJQAqNqQm4"},
         { title: "FYI", col1: "#ff0066", col2: "#ff99cc", bg1: "#61b1c8", bg2: "#caf2fa", keywords: ["fyi","ก็มันชอบอยู่ชอบอยู่","เธอรู้ยัง","เขินอยู่", "แต่กลัวไม่ทัน","ยังโสดอยู่นะ","จีบเธอก่อนแล้วกัน"], ytid:"9bdUszs3E3Q" },
-        { title: "ACHOO!", col1: "#00ccff", col2: "#00ff99", bg1: "#ea0808", bg2: "#00ff99", keywords: ["achoo", "ฮัดชิ้ว", "พิมมา", "I'mma I'mma", "allergic", "allergic to you", "Pimma"], ytid:"ykfV6cbnUkM" },
+        { title: "ACHOO!", col1: "#017d7d", col2: "#00ff99", bg1: "#ea0808", bg2: "#530170", keywords: ["achoo", "ฮัดชิ้ว", "พิมมา", "I'mma I'mma", "allergic", "allergic to you", "Pimma"], ytid:"ykfV6cbnUkM" },
         { title: "Not Bad", col1: "#333333", col2: "#d40419",bg1: "#d40419", bg2: "#260308", keywords: ["not bad", "ไม่แย่", "ก็ไม่ได้แย่", "let it go", "ฉันไม่ได้มีใคร", "sorry แค่ไม่ได้มีใจ", "ก็ดีที่เธอเอาใจใส่", "เธอไม่แย่แค่ไม่ใช่นะ"], ytid:"uDfjZWUJ2P0"},
         { title: "Game Changer", col1: "#382c10", col2: "#f5e20f",bg1: "#f5e20f", bg2: "#382c10", keywords: ["game changer","hair flip", "heart flip", "ไม่ดี", "game switch","Pantene"], ytid:"k8BBoLMCQQo"}
     ],
@@ -941,25 +944,25 @@ const songDatabase = {
         { title: "Pick A Card", col1: "#302501", col2: "#f2d880", bg1: "#302501", bg2: "#f2d880", keywords: ["pick a card", "I'll tell you", "what to do","baby boo", "card"], ytid:"GSjkPB-Pbew" },
         { title: "DEJAYOU", col1: "#2ce88a", col2: "#102e1f", bg1: "#2ce88a", bg2: "#102e1f", keywords: ["dejayou", "deja","oh boy you make me","คิดถึงเธออีกแล้ว","morning", "evening","midnight","see you every night"], ytid:"B2VpO6lPsLA" },
         { title: "TOXIQUE", col1: "#111111", col2: "#ff0000", bg1: "#072418", bg2: "#0b473b", keywords: ["toxique", "toxic", "girl you're toxic", "come a little","closer now","you know it","don't ya", "silent"] , ytid:"D-qrzwwrz20"},
-        { title: "Magic Car", col1: "#0055ff", col2: "#00ffcc",  bg1: "#f2b19d", bg2: "#afa2e8", keywords: ["magic car","ทุกอย่างบนโลกใบนี้ช่าง","สวยงาม","ไปหมดเลย","ทุกที่ช่างดูสดใส", "แค่ร่วมทางไปกับเธอ"] , ytid:"D1lSFdA9GFY"},
-        { title: "ONE SHOT", col1: "#f2e80e", col2: "#8fd2d8", keywords: ["one shot", "I've got"] , ytid:"Jz_4GoqCF1Q"},
+        { title: "Magic Car", col1: "#0055ff", col2: "#00ffcc",  bg1: "#fed39d", bg2: "#a08df2", keywords: ["magic car","ทุกอย่างบนโลกใบนี้ช่าง","สวยงาม","ไปหมดเลย","ทุกที่ช่างดูสดใส", "แค่ร่วมทางไปกับเธอ"] , ytid:"D1lSFdA9GFY"},
+        { title: "ONE SHOT", col1: "#8fd2d8", col2: "#f2e80e", keywords: ["one shot", "I've got"] , ytid:"Jz_4GoqCF1Q"},
         { title: "HUH?", col1: "#ffff00", col2: "#000000", bg1: "#550f99", bg2: "#3d1366", keywords: ["huh","ไม่ได้เห็น", "พูดดังดังได้ไหม"],ytid:"mTHE8F4o2G0" },
         { title: "FEAT", col1: "#949094", col2: "#395269", bg1:"#312c2a", bg2:"#ddbfb0", keywords: ["feat","F E A T","F", "E","A", "T","get set go","are you a good boy","I'm a bad girl","lips"], ytid: "1FztEbqElt0"},
-        { title: "BADLY", col1: "#440000", col2: "#ff3300", bg1:"#b1aebe", bg2:"#050505", keywords: ["badly","I want you", "keep it inside", "touch"], ytid:"yj7dBMVfe8U"}
+        { title: "BADLY", col1: "#440000", col2: "#ff3300", bg1:"#9d9166", bg2:"#050505", keywords: ["badly","I want you", "keep it inside", "touch"], ytid:"yj7dBMVfe8U"}
     ],
     "Q3": [
         { title: "Too Cute", col1: "#90e8d8", col2: "#f1f5a2", bg1: "#90e8d8", bg2: "#f1f5a2", keywords: ["too cute", "cupid", "เกินต้าน","หลงเธออีกแล้ว","ก็เธอน่ารัก","จนเกินต้านขนาดนี้","จะรักคนคนนี้","ไม่ได้หรอก"], ytid:"9zXeLZTBd80" },
 	{ title: "Way Too Cute", col1: "#ff99cc", col2: "#fae3f7", bg1: "#ff99cc", bg2: "#fae3f7", keywords: ["narak", "ชอบเธอ", "ชอบไปหมด","cute","ชอบทุกๆ อย่าง","ชอบเธอมากกว่าใคร","สายตาและท่าทาง","รู้รึเปล่า"], ytid:"3JrrwtPrNh4" },
-        { title: "PiXXeL", col1: "#ffccff", col2: "#d4a5ff", bg1:"#a4513d", bg2:"#c4b9a6", keywords: ["pixxel","พักบ้างหรือยัง","หากเธอล้มฉันจะรับ","หากเธอล้าให้เธอพัก","song for you"], ytid:"sjRLlT7i2Xc" },
-        { title: "DED", col1: "#f9befa", col2: "#eaacfa", bg1: "#f9befa", bg2: "#e298f5", keywords: ["ded", "เด็ด","miss you", "อย่าให้ดอกไม้ เดี๋ยวฉันน่ะ","Ya-ya-ya-ya-ya-ya-a-a"], ytid:"c-sEwGkqkEo" },
-        { title: "Heartstopper", col1: "#4d0b1c", col2: "#f8dc2c", bg1: "#4d0b1c", bg2: "#9e082d", keywords: ["heartstopper", "มาเบล","Mabel","heart","stopper"], ytid:"p1vuJa83434" },
-        { title: "Into You", col1: "#cc99ff", col2: "#ffe6f2", keywords: ["into you","Like to spend my time with me","จะเปิดให้เธอเข้ามา","Cha-cha-di-da","Alright up to you"] , ytid:"kNOrFqW2ZYA"},
-        { title: "Boo", col1: "#fac3fa", col2: "#ffffff", keywords: ["boo","งอนนะ","ya ya ya","งอนแล้วนะ","งอนละ", "เธอไม่มาง้อกันสักที","ถ้าไม่มาขอโทษดีดี"], ytid:"Etq0SPYelLs" }
+        { title: "PiXXeL", col1: "#ffccff", col2: "#d4a5ff", bg1:"#e7694a", bg2:"#f0ca87", keywords: ["pixxel","พักบ้างหรือยัง","หากเธอล้มฉันจะรับ","หากเธอล้าให้เธอพัก","song for you"], ytid:"sjRLlT7i2Xc" },
+        { title: "DED", col1: "#f9befa", col2: "#eaacfa", bg1: "#f9befa", bg2: "#ff4efc", keywords: ["ded", "เด็ด","miss you", "อย่าให้ดอกไม้ เดี๋ยวฉันน่ะ","Ya-ya-ya-ya-ya-ya-a-a"], ytid:"c-sEwGkqkEo" },
+        { title: "Heartstopper", col1: "#4d0b1c", col2: "#fc2344", bg1: "#4d0b1c", bg2: "#9e082d", keywords: ["heartstopper", "มาเบล","Mabel","heart","stopper"], ytid:"p1vuJa83434" },
+        { title: "Into You", col1: "#cc99ff", col2: "#ffe6f2", bg1: "#d74dfa", bg2: "#e298f5", keywords: ["into you","Like to spend my time with me","จะเปิดให้เธอเข้ามา","Cha-cha-di-da","Alright up to you"] , ytid:"kNOrFqW2ZYA"},
+        { title: "Boo", col1: "#fac3fa", col2: "#ffffff", bg1: "#b77ff2", bg2: "#4fdeea", keywords: ["boo","งอนนะ","ya ya ya","งอนแล้วนะ","งอนละ", "เธอไม่มาง้อกันสักที","ถ้าไม่มาขอโทษดีดี"], ytid:"Etq0SPYelLs" }
     ],
     "Q4": [
         { title: "rain", col1: "#0a2a66", col2: "#5abfd1", bg1: "#0a2a66", bg2: "#5abfd1", keywords: ["rain", "ติดฝน","ติดเธอไม่ไหว", "ไม่ไหว", "เธอต้องไปรึยัง","อยากเจอเธอทุกวัน","พอเป็นไปได้ไหม","ยู่ด้วยกันก่อนได้ไหม"], ytid:"KhP8jEXA6MQ"},
         { title: "Aftercry", col1: "#1a1a2e", col2: "#16213e", bg1: "#2f4c6a", bg2: "#506782",  keywords: ["aftercry", "it will be better", "tears will make you fine", "wu wu wu"], ytid:"WD9ATqvDKIY" },
-        { title: "Deep Talk", col1: "#337ff2", col2: "#f2cc33", bg1: "#f2f2b8", bg2: "#dba353", keywords: ["deep talk", "Ingkho", "อิงโกะ","อยู่คุยกันคืนนี้ข้ามผ่านยามนิทรา","มาน่าฟังกว่าใคร","บทสนทนาไม่รู้เวลา", "ฉันฟังแต่เธอ"], ytid:"Gu5_YKQ2l_k" },
+        { title: "Deep Talk", col1: "#4d420b", col2: "#faf20a", bg1: "#ff2ec2", bg2: "#f08d00", keywords: ["deep talk", "Ingkho", "อิงโกะ","อยู่คุยกันคืนนี้ข้ามผ่านยามนิทรา","มาน่าฟังกว่าใคร","บทสนทนาไม่รู้เวลา", "ฉันฟังแต่เธอ"], ytid:"Gu5_YKQ2l_k" },
         { title: "Whatever", col1: "#ff66aa", col2: "#5f67f5", bg1:"#c27dfa", bg2:"#5f67f5", keywords: ["whatever", "ไม่ได้ก็ไม่เอา", "ไม่ได้","ฉันก็คงไม่รอแล้ว","ฉันก็คงต้องพอเสียที","ถ้าเธอไม่ใช่","ก็ไม่ต้องยื้อกันแบบนี้","เหนื่อยเต็มที","ไม่ได้ก็ไม่เอา"],ytid:"B7riGDoRpR8" }
     ]
 };
@@ -1042,13 +1045,38 @@ let hasMicrophonePermission = false;
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition;
 
+// 修改後的語音識別初始化
 if (SpeechRecognition) {
     recognition = new SpeechRecognition();
-    recognition.lang = 'th-TH'; recognition.continuous = true; recognition.interimResults = true;
+    recognition.lang = 'th-TH, en-US'; 
+    recognition.continuous = true; // 改為 true，這樣唱歌中間停頓才不會斷掉
+    recognition.interimResults = true; // 保留 true 以達到即時互動感
+
     recognition.onresult = (e) => {
-        recognizedText = "";
-        for (let i = 0; i < e.results.length; i++) { recognizedText += e.results[i][0].transcript.toLowerCase(); }
+        // 將所有片段拼接起來
+        let currentTranscript = "";
+        for (let i = 0; i < e.results.length; i++) {
+            currentTranscript += e.results[i][0].transcript.toLowerCase();
+        }
+        recognizedText = currentTranscript; // 更新全域變數
+        console.log("當前錄音內容:", recognizedText);
     };
+
+    recognition.onerror = (e) => console.error("語音識別錯誤:", e.error);
+}
+
+// 檢查歌詞匹配度
+function getLyricsMatchScore(transcript, keywords) {
+    if (!keywords || keywords.length === 0) return 0;
+    
+    let matchCount = 0;
+    keywords.forEach(keyword => {
+        // 確保關鍵字轉小寫比對
+        if (transcript.includes(keyword.toLowerCase())) {
+            matchCount++;
+        }
+    });
+    return matchCount; // 回傳匹配到的數量
 }
 
 let scene, camera, renderer, material;
@@ -1417,89 +1445,18 @@ if (shareBtn) {
 // ===== 尋找並完整替換 downloadBtn 的點擊事件 =====
 const downloadBtn = document.getElementById('downloadBtn');
 
-function drawHoloDiamonds(ctx, x, y, w, h) {
-    ctx.save();
-    
-    // 1. 設定混色模式為與網頁完全一致的 overlay，透明度設定為強效的 0.7
-    ctx.globalCompositeOperation = 'overlay';
-    ctx.globalAlpha = 0.7;
-
-    // 2. 建立平鋪網格 (對應 CSS 的 background-size: 120px 120px)
-    // 這樣可以確保不論卡片多大，全息碎鑽幾何塊的大小都能完美收細、維持最佳視覺印刷比例
-    const size = 120; 
-
-    // 計算在卡片範圍內，需要橫向和縱向平鋪多少個 120x120 的碎鑽單元
-    const cols = Math.ceil(w / size);
-    const rows = Math.ceil(h / size);
-
-    // 3. 仿照 CSS 建立三個 conic-gradient
-    // 注意：CSS 的 deg 轉為 Canvas 的弧度公式為：(角度 * Math.PI) / 180
-    // 原點坐標依照百分比換算 (例如 50% 50% 即為 size * 0.5)
-
-    for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-            // 計算當前這一格碎鑽單元的左上角起點
-            const cellX = x + c * size;
-            const cellY = y + r * size;
-
-            ctx.save();
-            // 裁剪繪製區域，確保漸層只會乖乖待在當前這格 120x120 的單元裡，形成幾何分塊感
-            ctx.beginPath();
-            ctx.rect(cellX, cellY, size, size);
-            ctx.clip();
-
-            // --- 🎯 第一層：conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0.12) 0deg, transparent 60deg) ---
-            const cX1 = cellX + size * 0.5;
-            const cY1 = cellY + size * 0.5;
-            const g1 = ctx.createConicGradient(0, cX1, cY1);
-            g1.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
-            g1.addColorStop(60 / 360, 'transparent');
-            g1.addColorStop(1, 'transparent');
-            ctx.fillStyle = g1;
-            ctx.fillRect(cellX, cellY, size, size);
-
-            // --- 🎯 第二層：conic-gradient(from 120deg at 30% 40%, rgba(212,165,255,0.2) 0deg, transparent 80deg) ---
-            const cX2 = cellX + size * 0.3;
-            const cY2 = cellY + size * 0.4;
-            const startAngle2 = (120 * Math.PI) / 180; // 換算 120deg 轉向
-            const g2 = ctx.createConicGradient(startAngle2, cX2, cY2);
-            g2.addColorStop(0, 'rgba(212, 165, 255, 0.2)');
-            g2.addColorStop(80 / 360, 'transparent');
-            g2.addColorStop(1, 'transparent');
-            ctx.fillStyle = g2;
-            ctx.fillRect(cellX, cellY, size, size);
-
-            // --- 🎯 第三層：conic-gradient(from 240deg at 70% 60%, rgba(68,227,255,0.15) 0deg, transparent 100deg) ---
-            const cX3 = cellX + size * 0.7;
-            const cY3 = cellY + size * 0.6;
-            const startAngle3 = (240 * Math.PI) / 180; // 換算 240deg 轉向
-            const g3 = ctx.createConicGradient(startAngle3, cX3, cY3);
-            g3.addColorStop(0, 'rgba(68, 227, 255, 0.15)');
-            g3.addColorStop(100 / 360, 'transparent');
-            g3.addColorStop(1, 'transparent');
-            ctx.fillStyle = g3;
-            ctx.fillRect(cellX, cellY, size, size);
-
-            ctx.restore();
-        }
-    }
-
-    ctx.restore();
-}
-
 if (downloadBtn) {
     downloadBtn.addEventListener('click', async (e) => {
         e.preventDefault();
 
-const notice = document.getElementById('downloadNotice');
-    
-    // 1. 顯示告示文字，並暫時禁用按鈕防止重複點擊
-    if (notice) notice.classList.remove('hidden');
-    downloadBtn.style.pointerEvents = 'none';
+        const notice = document.getElementById('downloadNotice');
+        
+        // 1. 顯示告示文字，並暫時禁用按鈕防止重複點擊
+        if (notice) notice.classList.remove('hidden');
+        downloadBtn.style.pointerEvents = 'none';
 
-    // 延遲一小個 frame 確保瀏覽器畫面順利渲染出文字
-    await new Promise(resolve => setTimeout(resolve, 100));
-
+        // 延遲一小個 frame 確保瀏覽器畫面順利渲染出文字
+        await new Promise(resolve => setTimeout(resolve, 100));
 
         const cardTarget = document.getElementById('soulCard');
         if (!cardTarget || !renderer || !scene || !camera) {
@@ -1510,130 +1467,84 @@ const notice = document.getElementById('downloadNotice');
         // 轉換按鈕狀態
         const originalText = downloadBtn.innerText;
         downloadBtn.innerText = "💜";
-        downloadBtn.style.pointerEvents = "none";
 
+        let finalCanvas; 
 
-	// 定義 finalCanvas 在這裡，確保整個 try 區塊都能存取
-    let finalCanvas; 
+        try {
+            const bgImage = new Image();
+            bgImage.crossOrigin = "anonymous";
+            bgImage.src = "https://raw.githubusercontent.com/grafittiii-hub/VoiceResonance_PiXXiE/main/design.png";
 
-    try {
-        const bgImage = new Image();
-        bgImage.crossOrigin = "anonymous";
-        bgImage.src = "https://raw.githubusercontent.com/grafittiii-hub/VoiceResonance_PiXXiE/main/design.png";
-
-        await new Promise((resolve, reject) => {
-            bgImage.onload = resolve;
-            bgImage.onerror = () => reject(new Error("Image load failed"));
-        });
-	
+            await new Promise((resolve, reject) => {
+                bgImage.onload = resolve;
+                bgImage.onerror = () => reject(new Error("Image load failed"));
+            });
+        
             // 2. 強制讓 Three.js 渲染最新一幀並擷取
             renderer.render(scene, camera);
             const webglCanvas = renderer.domElement;
 
-            // 3. 使用 html2canvas 擷取文字與 rank badge，並剝離原本的背景
+            // 3. 使用 html2canvas 擷取文字與 rank badge
             const domCanvas = await html2canvas(cardTarget, {
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: null, 
-                scale: 2, // 保持高解析度
+                scale: 2, 
                 onclone: (clonedDoc) => {
                     const clonedCanvas = clonedDoc.querySelector('#webgl-container canvas') || clonedDoc.querySelector('canvas');
                     if (clonedCanvas && webglCanvas) {
                         const clonedCtx = clonedCanvas.getContext('2d');
-                        if (clonedCtx) {
-                            clonedCtx.drawImage(webglCanvas, 0, 0);
-                        }
+                        if (clonedCtx) clonedCtx.drawImage(webglCanvas, 0, 0);
                     }
-                    // 拔除原本卡牌的背景與陰影，只留下內容以融合新底色
+                    
                     const clonedCard = clonedDoc.getElementById('soulCard');
                     if (clonedCard) {
+                        // 【修復 1：強制抹除 MouseMove 造成的 3D 傾斜】
+                        clonedCard.style.transform = "none";
+                        
+                        // 【關鍵修復 2：徹底拔除會導致白霧的 CSS Mask 與 背景濾鏡】
                         clonedCard.style.background = "transparent";
+                        clonedCard.style.backgroundColor = "rgba(0,0,0,0)";
                         clonedCard.style.backgroundImage = "none";
                         clonedCard.style.boxShadow = "none";
                         clonedCard.style.border = "none";
                         clonedCard.style.backdropFilter = "none";
                         clonedCard.style.webkitBackdropFilter = "none";
+                        clonedCard.style.webkitMaskImage = "none"; // 🔪 殺死白霧元兇
+                        clonedCard.style.maskImage = "none";       // 🔪 殺死白霧元兇
+                        
+                        // 【修復 3：圓角歸零，交給 Canvas 的 roundRect 完美裁切】
+                        clonedCard.style.borderRadius = "0px"; 
+                        clonedCard.classList.remove('special-holo');
                     }
                 }
             });
 
-            // 4. 創建最終輸出畫布 (嚴格遵循 design.png 的原圖尺寸)
-            const finalCanvas = document.createElement('canvas');
+            // 4. 創建最終輸出畫布
+            finalCanvas = document.createElement('canvas'); 
             finalCanvas.width = 1080;
             finalCanvas.height = 1920; 
             const ctx = finalCanvas.getContext('2d');
 
-            // 5. 繪製設計圖底圖 (100% 還原所有裝飾、排版與漸層)
+            // 5. 繪製設計圖底圖
             ctx.drawImage(bgImage, 0, 0, finalCanvas.width, finalCanvas.height);
 
             // 6. 計算覆蓋目標卡牌的精確位置與尺寸
             const targetCardW = 760;
             const targetCardH = 1064;
-            const targetCardX = 160; // 95
+            const targetCardX = 160; 
             const targetCardY = 180; 
-            const cornerRadius = 28; // 還原設計圖卡牌圓角
+            
+            // 🎯【完美圓角修復】：將 HTML 的 28px 等比例放大至 760px 畫布尺寸 (28 * 2.533 = 71)
+            const cornerRadius = 71; 
 
-            // 7. 建立卡牌圓角裁剪區域
+            // 7. 建立卡牌完美圓角裁剪區域 (使用原生 roundRect)
             ctx.save();
             ctx.beginPath();
-            ctx.moveTo(targetCardX + cornerRadius, targetCardY);
-            ctx.lineTo(targetCardX + targetCardW - cornerRadius, targetCardY);
-            ctx.quadraticCurveTo(targetCardX + targetCardW, targetCardY, targetCardX + targetCardW, targetCardY + cornerRadius);
-            ctx.lineTo(targetCardX + targetCardW, targetCardY + targetCardH - cornerRadius);
-            ctx.quadraticCurveTo(targetCardX + targetCardW, targetCardY + targetCardH, targetCardX + targetCardW - cornerRadius, targetCardY + targetCardH);
-            ctx.lineTo(targetCardX + cornerRadius, targetCardY + targetCardH);
-            ctx.quadraticCurveTo(targetCardX, targetCardY + targetCardH, targetCardX, targetCardY + targetCardH - cornerRadius);
-            ctx.lineTo(targetCardX, targetCardY + cornerRadius);
-            ctx.quadraticCurveTo(targetCardX, targetCardY, targetCardX + cornerRadius, targetCardY);
-            ctx.closePath();
-            ctx.clip(); // 接下來的繪製都會限制在此圓角卡牌內
+            ctx.roundRect(targetCardX, targetCardY, targetCardW, targetCardH, cornerRadius);
+            ctx.clip(); 
 
-// ========================================================
-// 7.5 繪製 YouTube QR Code (精確固定於歌名上方、ThreeJS 水晶物體正中間)
-// ========================================================
-const qrSize = 100;
-
-// 【精確垂直與水平居中計算】：
-// 水平：維持卡牌橫向的正中央
-const qrX = targetCardX + (targetCardW - qrSize) / 2;
-
-// 垂直：因為歌名與文字都在卡牌下半部，ThreeJS 物件主要集中在卡牌上半部。
-// 我們將 Y 軸設定在卡牌頂端往下大約 35% 的位置（完美避開下方的歌名文字），讓它正好壓在水晶球核心上。
-const qrY = targetCardY + (targetCardH * 0.35) - (qrSize / 2);
-
-// 使用 Google Chart API 生成 QR Code
-const ytUrl = `https://www.youtube.com/watch?v=${finalSong.ytid}`;
-// 將 QR Code 底色設為 white，前景色設為紫色 (#a55bb8)
-const qrApiUrl = `https://chart.googleapis.com/chart?chs=${qrSize}x${qrSize}&cht=qr&chl=${encodeURIComponent(ytUrl)}&choe=UTF-8&chcolor=a55bb8,ffffff`;
-
-const qrImg = new Image();
-qrImg.crossOrigin = "anonymous";
-qrImg.src = qrApiUrl;
-
-await new Promise((resolve) => {
-    qrImg.onload = () => {
-        ctx.save();
-        
-        // 重置所有陰影與發光效果，確保 QR Code 邊框乾淨俐落
-        ctx.shadowBlur = 0;
-        ctx.shadowColor = "transparent";
-
-        // 1. 繪製背景圓角方塊 (白色襯底)
-        ctx.fillStyle = "white";
-        // 往外擴展 5px 作為安全白邊保護區
-        ctx.fillRect(qrX - 5, qrY - 5, qrSize + 10, qrSize + 10);
-        
-        // 2. 繪製 YouTube QR Code 本體
-        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
-        
-        ctx.restore();
-        resolve();
-    };
-    qrImg.onerror = resolve; // 即使載入失敗也不阻斷使用者下載整張卡牌
-});
-
-
-            // 8. 根據當前隨機到的 Rank 級別，動態繪製對應的卡牌背景色
+            // 8. 繪製卡牌階級底色
             const currentRank = typeof finalRank !== 'undefined' ? finalRank : "A";
             const computedStyle = getComputedStyle(cardTarget);
             let bgG1 = computedStyle.getPropertyValue('--bg-g1').trim() || "#bd9531";
@@ -1646,69 +1557,95 @@ await new Promise((resolve) => {
                 grad.addColorStop(0, "#b868e3"); grad.addColorStop(0.25, "#68ace3");
                 grad.addColorStop(0.5, "#68e397"); grad.addColorStop(0.75, "#e3dd68"); grad.addColorStop(1, "#e36868");
                 ctx.fillStyle = grad;
-                ctx.fillRect(targetCardX, targetCardY, targetCardW, targetCardH);
             } else if (currentRank === "SS") {
                 const grad = ctx.createLinearGradient(targetCardX, targetCardY, targetCardX + targetCardW, targetCardY + targetCardH);
                 grad.addColorStop(0, "#d6a4f5"); grad.addColorStop(0.35, bgG1);
                 grad.addColorStop(0.65, bgG2); grad.addColorStop(1, "#55157d");
                 ctx.fillStyle = grad;
-                ctx.fillRect(targetCardX, targetCardY, targetCardW, targetCardH);
             } else if (currentRank === "S") {
                 const grad = ctx.createConicGradient(Math.PI / 2, targetCardX + targetCardW / 2, targetCardY + targetCardH / 2);
                 grad.addColorStop(0, bgG1); grad.addColorStop(90/360, bgG2);
-                grad.addColorStop(120/360, "rgba(255, 255, 255, 0.7)");
+                grad.addColorStop(120/360, "rgba(255, 255, 255, 0.2)"); 
                 grad.addColorStop(150/360, bgG1); grad.addColorStop(240/360, bgG2);
-                grad.addColorStop(300/360, "rgba(255, 255, 255, 0.4)");
+                grad.addColorStop(300/360, "rgba(255, 255, 255, 0.1)");
                 grad.addColorStop(1, bgG1);
                 ctx.fillStyle = grad;
-                ctx.fillRect(targetCardX, targetCardY, targetCardW, targetCardH);
             } else {
                 const grad = ctx.createLinearGradient(targetCardX, targetCardY, targetCardX + targetCardW, targetCardY + targetCardH);
                 grad.addColorStop(0, bgQColor); grad.addColorStop(1, "#0d0d10");
                 ctx.fillStyle = grad;
-                ctx.fillRect(targetCardX, targetCardY, targetCardW, targetCardH);
             }
+            ctx.fillRect(targetCardX, targetCardY, targetCardW, targetCardH);
 
-            // SSS 特效疊加
-            if (currentRank === "SSS") {
-                ctx.save();
-                ctx.globalCompositeOperation = "overlay";
-                ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
-                ctx.fillRect(targetCardX, targetCardY, targetCardW, targetCardH);
-                ctx.restore();
-            }
+// 1. 定義一個函數來繪製全息紋理
+function drawHoloEffect(ctx, x, y, width, height) {
+    ctx.save();
+    
+    // 設定疊加模式為 overlay
+    ctx.globalCompositeOperation = 'overlay';
+    ctx.globalAlpha = 0.7; // 對應 CSS 的 opacity: 0.7
 
-if (currentRank === "SS" || currentRank === "SSS") {
-            drawHoloDiamonds(ctx, targetCardX, targetCardY, targetCardW, targetCardH);
-        }
+    // 建立一個 120x120 的暫存畫布來製作重複紋理
+    const patternCanvas = document.createElement('canvas');
+    patternCanvas.width = 120;
+    patternCanvas.height = 120;
+    const pCtx = patternCanvas.getContext('2d');
 
-            // 9. 將當前應用的文字、Rank 標籤和 3D 水晶體完美疊加到卡牌位置
+    // --- 繪製三個 Conic Gradients ---
+    // 1. 白色層
+    let grad1 = pCtx.createConicGradient(0, 60, 60);
+    grad1.addColorStop(0, "rgba(255,255,255,0.12)");
+    grad1.addColorStop(60/360, "transparent");
+    pCtx.fillStyle = grad1;
+    pCtx.fillRect(0, 0, 120, 120);
+
+    // 2. 紫色層 (偏移 120deg)
+    let grad2 = pCtx.createConicGradient((120 * Math.PI) / 180, 36, 48); // 30% 40% -> x=36, y=48
+    grad2.addColorStop(0, "rgba(212,165,255,0.2)");
+    grad2.addColorStop(80/360, "transparent");
+    pCtx.fillStyle = grad2;
+    pCtx.fillRect(0, 0, 120, 120);
+
+    // 3. 藍色層 (偏移 240deg)
+    let grad3 = pCtx.createConicGradient((240 * Math.PI) / 180, 84, 72); // 70% 60% -> x=84, y=72
+    grad3.addColorStop(0, "rgba(68,227,255,0.15)");
+    grad3.addColorStop(100/360, "transparent");
+    pCtx.fillStyle = grad3;
+    pCtx.fillRect(0, 0, 120, 120);
+
+    // 建立 pattern 並填滿
+    const pattern = ctx.createPattern(patternCanvas, 'repeat');
+    ctx.fillStyle = pattern;
+    
+    // 繪製到主畫布上 (覆蓋整個卡片範圍)
+    ctx.fillRect(x, y, width, height);
+    
+    ctx.restore();
+}
+            // 9. 將乾淨、去除了 Mask 的 html2canvas 蓋上
             ctx.drawImage(domCanvas, targetCardX, targetCardY, targetCardW, targetCardH);
 
-
-            // 10. 繪製動態卡牌邊框線
-            ctx.restore(); // 先解除 clip 裁剪，以便繪製邊框
+// 🎯【新增】：如果是 SS 或 SSS 等級，自動加上全息碎鑽感
+if (currentRank === "SS" || currentRank === "SSS") {
+    drawHoloEffect(ctx, targetCardX, targetCardY, targetCardW, targetCardH);
+}
+            // 10. 繪製動態卡牌外框描邊線 (完美內縮，防止裁切變細)
+            ctx.restore(); // 退出剪裁
             ctx.save();
+            
+            const borderWidth = 6;
+            const inset = borderWidth / 2;
             ctx.beginPath();
-            ctx.moveTo(targetCardX + cornerRadius, targetCardY);
-            ctx.lineTo(targetCardX + targetCardW - cornerRadius, targetCardY);
-            ctx.quadraticCurveTo(targetCardX + targetCardW, targetCardY, targetCardX + targetCardW, targetCardY + cornerRadius);
-            ctx.lineTo(targetCardX + targetCardW, targetCardY + targetCardH - cornerRadius);
-            ctx.quadraticCurveTo(targetCardX + targetCardW, targetCardY + targetCardH, targetCardX + targetCardW - cornerRadius, targetCardY + targetCardH);
-            ctx.lineTo(targetCardX + cornerRadius, targetCardY + targetCardH);
-            ctx.quadraticCurveTo(targetCardX, targetCardY + targetCardH, targetCardX, targetCardY + targetCardH - cornerRadius);
-            ctx.lineTo(targetCardX, targetCardY + cornerRadius);
-            ctx.quadraticCurveTo(targetCardX, targetCardY, targetCardX + cornerRadius, targetCardY);
-            ctx.closePath();
+            // 邊框向內偏移，並且半徑稍微縮小對齊
+            ctx.roundRect(targetCardX + inset, targetCardY + inset, targetCardW - inset * 2, targetCardH - inset * 2, cornerRadius - inset);
 
-            ctx.lineWidth = 6;
+            ctx.lineWidth = borderWidth;
             let borderGrad;
+            
             if (currentRank === "SSS") {
-                ctx.shadowColor = "rgba(255, 255, 255, 0.3)"; ctx.shadowBlur = 30;
                 borderGrad = ctx.createConicGradient(0, targetCardX + targetCardW / 2, targetCardY + targetCardH / 2);
                 ["#ff0000", "#ff7f00", "#ffff00", "#00ff00", "#0000ff", "#4b0082", "#8b00ff", "#ff0000"].forEach((c, i) => borderGrad.addColorStop(i / 7, c));
             } else if (currentRank === "SS") {
-                ctx.shadowColor = "rgba(212, 165, 255, 0.4)"; ctx.shadowBlur = 30;
                 borderGrad = ctx.createConicGradient(0, targetCardX + targetCardW / 2, targetCardY + targetCardH / 2);
                 ["#ffffff", "#ffb6c1", "#d4a5ff", "#ffffff", "#ffb6c1", "#d4a5ff", "#ffffff"].forEach((c, i) => borderGrad.addColorStop(i / 6, c));
             } else if (currentRank === "S") {
@@ -1724,7 +1661,65 @@ if (currentRank === "SS" || currentRank === "SSS") {
             ctx.stroke();
             ctx.restore();
 
-            // 11. 導出並觸發圖片下載
+            // 11. 繪製 YouTube QR Code 🎯【穩定繪製版：強制分離白底與條碼】
+const qrSize = 110;
+const qrX = targetCardX + (targetCardW - qrSize) / 2;
+const qrY = targetCardY + (targetCardH * 0.35) - (qrSize / 2);
+
+let currentYtid = "GBJQAqNqQm4";
+if (typeof finalSong !== 'undefined' && finalSong && finalSong.ytid) {
+    currentYtid = finalSong.ytid;
+}
+const ytUrl = `https://www.youtube.com/watch?v=${currentYtid}`;
+
+// 獲取標準黑白 QR Code
+const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(ytUrl)}&color=000000&bgcolor=ffffff&margin=0`;
+
+const qrImg = new Image();
+qrImg.crossOrigin = "anonymous";
+
+await new Promise((resolve) => {
+    qrImg.onload = () => {
+        // 1. 建立暫存畫布取得像素資訊
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = 200;
+        tempCanvas.height = 200;
+        const tCtx = tempCanvas.getContext('2d');
+        tCtx.drawImage(qrImg, 0, 0);
+        
+        // 2. 獲取像素資料，將「黑色」改成「紫色」，「白色」設為「透明」
+        const imageData = tCtx.getImageData(0, 0, 200, 200);
+        const data = imageData.data;
+        for (let i = 0; i < data.length; i += 4) {
+            // 如果是黑色 (r,g,b 都很小)
+            if (data[i] < 128) {
+                data[i] = 212;   // R: #d4
+                data[i+1] = 165; // G: #a5
+                data[i+2] = 255; // B: #ff
+                data[i+3] = 255; // Alpha: 不透明
+            } else {
+                // 如果是白色，強制變透明
+                data[i+3] = 0;
+            }
+        }
+        tCtx.putImageData(imageData, 0, 0);
+
+        // 3. 繪製到主畫布
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(qrX, qrY, qrSize, qrSize, 8);
+        ctx.clip();
+        
+        // 畫上處理好的紫色條碼 (背景已透明)
+        ctx.drawImage(tempCanvas, qrX, qrY, qrSize, qrSize);
+        ctx.restore();
+        resolve();
+    };
+    qrImg.onerror = () => resolve();
+    qrImg.src = qrApiUrl;
+});
+
+            // 12. 導出並觸發圖片下載
             const link = document.createElement('a');
             const songName = typeof finalSong !== 'undefined' && finalSong ? finalSong.title : 'Resonance';
             link.download = `PiXXiE-${songName}-Card.png`;
@@ -1776,8 +1771,9 @@ if (recognition) { try { recognition.stop(); } catch(err) {} }
 }
 
 
-function calculateResult() {
-    console.log("計算結果開始..."); // 檢查是否觸發
+// 🎯 修正後的函數：允許接收外部測試參數，完美連接排版與下載
+function calculateResult(testOverride = null) {
+    console.log("計算結果開始...", testOverride ? "執行測試覆蓋: " + testOverride : "正常錄音計算"); 
     const overlay = document.getElementById('transition-overlay');
     const intro = document.getElementById('intro-screen');
     const result = document.getElementById('result-screen');
@@ -1789,7 +1785,7 @@ function calculateResult() {
     const avgVol = frames > 0 ? (audioHistory.reduce((a, b) => a + b, 0) / frames) : 0;
     const allSongs = Object.values(songDatabase).flat();
     
-    finalSong = null
+    finalSong = null;
     finalRank = null;
 
     const text = recognizedText.toLowerCase();
@@ -1820,7 +1816,7 @@ function calculateResult() {
     if (!finalSong) {
         let quarterIndex;
 
-	// 【核心修正】：如果完全沒有音量 (avgVol 為 0)，或者是 NaN，給予真正的隨機抽卡！
+        // 【核心修正】：如果完全沒有音量 (avgVol 為 0)，或者是 NaN，給予真正的隨機抽卡！
         if (!avgVol || avgVol === 0 || isNaN(avgVol)) {
             quarterIndex = Math.floor(Math.random() * 4);
         } else {
@@ -1850,17 +1846,23 @@ function calculateResult() {
     // 清空舊樣式並套用新季度背景裝飾
     if (card) card.className = "pixxie-card";
 
-    // --- 階級分類邏輯 ---
-    const ssSpecial = ["ACHOO!", "Deep Talk", "Heartstopper"].includes(finalSong.title);
+const matchScore = getLyricsMatchScore(recognizedText, finalSong.keywords);
 
-    if (frames > 80 && avgVol > 35) {
-        finalRank = "SSS";
-    } else if (ssSpecial || isMemberKey) {
-        finalRank = "SS";
-    } else if (finalSong.bg1 || frames > 60 || avgVol > 30) {
-        finalRank = "S";
+    // --- 階級分類邏輯 (完美連接測試參數) ---
+    if (testOverride !== null) {
+        finalRank = testOverride; // 🎯 如果按下測試按鈕，直接覆蓋結果，供排版與下載讀取
     } else {
-        finalRank = "A";
+        // 原本正常的錄音判斷邏輯
+        const ssSpecial = ["ACHOO!", "Deep Talk", "Heartstopper"].includes(finalSong.title);
+        if (matchScore >= 3 || (avgVol > 25 && matchScore >= 1)) {
+            finalRank = "SSS";
+        } else if (matchScore >= 1 || ssSpecial || isMemberKey) {
+            finalRank = "SS";
+        } else if (avgVol > 18) {
+            finalRank = "S";
+        } else {
+            finalRank = "A";
+        }
     }
 
     // --- 套用 Rank 專屬視覺 ---
@@ -1873,8 +1875,10 @@ function calculateResult() {
             card.classList.add("rank-ss", "special-holo");
             badge.innerText = "SS Rank Harmony";
             badge.className = "rank-badge ss-style";
-            card.style.setProperty('--bg-g1', finalSong.bg1); 
-            card.style.setProperty('--bg-g2', finalSong.bg2);
+            
+            // 🎯 確保測試點擊時，SS 擁有正確的 CSS 漸層變數，這樣 html2canvas 下載才不會黑畫面上傳失敗
+            card.style.setProperty('--bg-g1', finalSong.bg1 || '#ff75c3'); 
+            card.style.setProperty('--bg-g2', finalSong.bg2 || '#a18cd1');
         } else if (finalRank === "S") {
             card.classList.add("rank-s");
             badge.innerText = "S Rank Harmony";
@@ -2017,6 +2021,75 @@ document.addEventListener('keydown', event => {
 
 // 3. 禁用拖曳文本或元素
 document.addEventListener('dragstart', event => event.preventDefault());
+
+/**
+ * Result View Testing Component Modifier
+ * Dynamic runtime layout engine updates parameters specifically for layout checking and exporter tests.
+ */
+function swapCurrentResult(targetRank) {
+    console.log(`[QA Switcher] Real-time engine conversion to: ${targetRank.toUpperCase()}`);
+    
+    const card = document.querySelector('.pixxie-card');
+    if (!card) return;
+    
+    // Explicitly update global runtime variables so your download engine outputs the right data file
+    window.finalRank = targetRank.toUpperCase(); 
+    
+    // Clear structural layout definitions
+    card.classList.remove('rank-a', 'rank-s', 'rank-ss', 'rank-sss');
+    
+    const badge = card.querySelector('.rank-badge');
+    const songTitle = card.querySelector('.song-title');
+    const lyricBox = card.querySelector('.lyrics');
+    
+    if (targetRank === 'ss') {
+        card.classList.add('rank-ss');
+        card.style.setProperty('--bg-g1', '#ff75c3');
+        card.style.setProperty('--bg-g2', '#a18cd1');
+        
+        if (badge) {
+            badge.className = 'rank-badge ss-style';
+            badge.textContent = 'Rank SS';
+        }
+        if (songTitle) songTitle.textContent = 'DEEP TALK (SS Remaster)';
+        if (lyricBox) lyricBox.innerHTML = 'ลองคิดดูไหม ถ้าเรื่องวันนั้นเราไม่ได้พูดคุยกัน...<br>Soul Alignment Level: 94%';
+        
+        // Match WebGL shader uniforms configuration
+        if (typeof material !== 'undefined' && material.uniforms) {
+            material.uniforms.colBright.value.set('#ff75c3');
+            material.uniforms.colShadow.value.set('#a18cd1');
+            material.uniforms.uRatio.value = 0.7;
+        }
+        
+    } else if (targetRank === 'sss') {
+        card.classList.add('rank-sss');
+        card.style.setProperty('--bg-g1', '#b868e3');
+        card.style.setProperty('--bg-g2', '#e36868');
+        
+        if (badge) {
+            badge.className = 'rank-badge sss-style';
+            badge.textContent = 'Rank SSS';
+        }
+        if (songTitle) songTitle.textContent = 'ACHOO! (Absolute Ultimate)';
+        if (lyricBox) lyricBox.innerHTML = 'Achoo! ให้เธอรู้ว่ามีใครสั่นไหวหัวใจ...<br>Soul Alignment Level: 99% Absolute Perfection';
+        
+        if (typeof material !== 'undefined' && material.uniforms) {
+            material.uniforms.colBright.value.set('#f8e8fa');
+            material.uniforms.colShadow.value.set('#f5cdfa');
+            material.uniforms.uRatio.value = 0.5;
+        }
+    }
+    
+    // Re-trigger card entrance animation sequence to apply full visual updates
+    card.classList.remove('revealed');
+    setTimeout(() => {
+        card.classList.add('revealed');
+    }, 100);
+}
 </script>
+<div style="position: fixed; bottom: -100%; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 9999999; pointer-events: auto; touch-action: auto;">
+    <button style="padding: 2px 20px; border-radius: 25px; font-size: 11px; font-weight: 900; font-family: 'Montserrat', sans-serif; letter-spacing: 1px; color: #fff; background: linear-gradient(135deg, #ff75c3, #a18cd1); border: 1px solid rgba(255,255,255,0.2); cursor: pointer; pointer-events: auto;" onclick="calculateResult('SS')">✨RANK SS</button>
+    <button style="padding: 12px 20px; border-radius: 25px; font-size: 11px; font-weight: 900; font-family: 'Montserrat', sans-serif; letter-spacing: 1px; color: #fff; background: linear-gradient(135deg, #b868e3, #e36868); border: 1px solid rgba(255,255,255,0.2); cursor: pointer; pointer-events: auto;" onclick="calculateResult('SSS')"> ✨RANK SSS</button>
+</div>
 </body>
 </html>
