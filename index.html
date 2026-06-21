@@ -1005,7 +1005,7 @@ pointer-events: auto !important;
             <div class="soul-orb" id="recordBtn" role="button" tabindex="0" aria-label="Hold to resonate your voice" aria-pressed="false"></div>
         </div>
         <p style="font-size: clamp(0.4rem, 1.5dvh, 1.3rem); color: rgba(212,165,255,0.5); letter-spacing: 3px; font-weight: bold; bottom: 15dvh; display: flex; position: absolute" class="animate-item delay-2">HOLD ORB TO RESONATE</p>
-        <div class="app-footer" style="position: relative; bottom: 15px;left: 0; width: 100%;text-align: center;color: rgba(183, 134, 221, 0.8);font-size: clamp(0.4rem, 2vw, 0.6rem);font-family: 'Syne', sans-serif; letter-spacing: 2px; pointer-events: none; z-index: 99;">Voice Resonance© Grafittiii | PiXXiE fan art</div>
+        <div class="app-footer" style="position: fixed; bottom: 15px;left: 0; width: 100%;text-align: center;color: rgba(183, 134, 221, 0.8);font-size: clamp(0.4rem, 2vw, 0.6rem);font-family: 'Syne', sans-serif; letter-spacing: 2px; pointer-events: none; z-index: 99;">Voice Resonance© Grafittiii | PiXXiE fan art</div>
     </main>
 
     <div id="result-screen" aria-hidden="true">
@@ -1117,7 +1117,7 @@ const songDatabase = {
         { title: "Magic Car", col1: "#fed39d", col2: "#00ffcc",  bg1: "#fed39d", bg2: "#a08df2", keywords: ["magic car","ทุกอย่างบนโลกใบนี้ช่าง","สวยงาม","ไปหมดเลย","ทุกที่ช่างดูสดใส", "แค่ร่วมทางไปกับเธอ"] , ytid:"D1lSFdA9GFY"},
         { title: "ONE SHOT", col1: "#8fd2d8", col2: "#f2e80e", keywords: ["one shot", "I've got"] , ytid:"Jz_4GoqCF1Q"},
         { title: "HUH?", col1: "#ffff00", col2: "#3b1c57", bg1: "#550f99", bg2: "#3d1366", keywords: ["huh","ไม่ได้เห็น", "พูดดังดังได้ไหม"],ytid:"mTHE8F4o2G0" },
-        { title: "FEAT", col1: "#949094", col2: "#395269", bg1:"#312c2a", bg2:"#ddbfb0", keywords: ["feat","F E A T","F", "E","A", "T","get set go","are you a good boy","I'm a bad girl","lips"], ytid: "1FztEbqElt0"},
+        { title: "FEAT", col1: "#967786", col2: "#821428", bg1:"#47383c", bg2:"#7d6469", keywords: ["feat","F E A T","F", "E","A", "T","get set go","are you a good boy","I'm a bad girl","lips"], ytid: "1FztEbqElt0"},
         { title: "BADLY", col1: "#440000", col2: "#ff3300", bg1:"#9d9166", bg2:"#050505", keywords: ["badly","I want you", "keep it inside", "touch"], ytid:"yj7dBMVfe8U"}
     ],
     "Q3": [
@@ -1131,8 +1131,8 @@ const songDatabase = {
     ],
     "Q4": [
         { title: "rain", col1: "#0a2a66", col2: "#5abfd1", bg1: "#0a2a66", bg2: "#5abfd1", keywords: ["rain", "ติดฝน","ติดเธอไม่ไหว", "ไม่ไหว", "เธอต้องไปรึยัง","อยากเจอเธอทุกวัน","พอเป็นไปได้ไหม","ยู่ด้วยกันก่อนได้ไหม"], ytid:"KhP8jEXA6MQ"},
-        { title: "Aftercry", col1: "#2f4c6a", col2: "#416e9c", bg1: "#2f4c6a", bg2: "#416e9c",  keywords: ["aftercry", "it will be better", "tears will make you fine", "wu wu wu"], ytid:"WD9ATqvDKIY" },
-        { title: "Deep Talk", col1: "#faf20a", col2: "#4d420b", bg1: "#ff2ec2", bg2: "#f08d00", keywords: ["deep talk", "Ingkho", "อิงโกะ","อยู่คุยกันคืนนี้ข้ามผ่านยามนิทรา","มาน่าฟังกว่าใคร","บทสนทนาไม่รู้เวลา", "ฉันฟังแต่เธอ"], ytid:"Gu5_YKQ2l_k" },
+        { title: "Aftercry", col1: "#416e9c", col2: "#204469", bg1: "#2f4c6a", bg2: "#416e9c",  keywords: ["aftercry", "it will be better", "tears will make you fine", "wu wu wu"], ytid:"WD9ATqvDKIY" },
+        { title: "Deep Talk", col1: "#faf20a", col2: "#a67f16", bg1: "#ff2ec2", bg2: "#f08d00", keywords: ["deep talk", "Ingkho", "อิงโกะ","อยู่คุยกันคืนนี้ข้ามผ่านยามนิทรา","มาน่าฟังกว่าใคร","บทสนทนาไม่รู้เวลา", "ฉันฟังแต่เธอ"], ytid:"Gu5_YKQ2l_k" },
         { title: "Whatever", col1: "#ff66aa", col2: "#5f67f5", bg1:"#c27dfa", bg2:"#5f67f5", keywords: ["whatever", "ไม่ได้ก็ไม่เอา", "ไม่ได้","ฉันก็คงไม่รอแล้ว","ฉันก็คงต้องพอเสียที","ถ้าเธอไม่ใช่","ก็ไม่ต้องยื้อกันแบบนี้","เหนื่อยเต็มที","ไม่ได้ก็ไม่เอา"],ytid:"B7riGDoRpR8" }
     ]
 };
@@ -1554,7 +1554,8 @@ document.getElementById('retryBtn').addEventListener('click', function(e) {
     if (player && typeof player.stopVideo === 'function') {
         player.stopVideo();
     }
-    
+
+
 setTimeout(() => {
     this.classList.remove('animating');
 
@@ -1589,11 +1590,17 @@ setTimeout(() => {
             title.style.transform = "translateY(0)";
         }
         
-if (result) {
-    result.classList.remove('active');
-    result.style.display = 'none';
-    result.setAttribute('aria-hidden', 'true');  // 👈 退場時重新設為隱藏
-}
+    const historyPanel = document.getElementById('history-panel');
+    if (historyPanel) {
+        historyPanel.classList.remove('open');
+        historyPanel.setAttribute('aria-hidden', 'true');
+        historyPanel.setAttribute('inert', '');
+    }
+        if (result) {
+            result.classList.remove('active');
+            result.style.display = 'none';
+            result.setAttribute('aria-hidden', 'true');  //退場時重新設為隱藏
+        }
 
 	const animItems = intro.querySelectorAll('.animate-item');
         animItems.forEach(item => {
